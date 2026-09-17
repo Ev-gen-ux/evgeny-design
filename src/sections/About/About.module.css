@@ -1,0 +1,30 @@
+.inner {
+  display: grid;
+  grid-template-columns: minmax(160px, 220px) 1fr;
+  gap: var(--space-32) var(--space-48);
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* The dots/line mechanic itself now lives in the shared `components/PromptSteps` — this is just the heading's own spacing right after it. */
+.promptAnswer {
+  margin: 0;
+}
+
+.text {
+  font-size: var(--fs-fluid-sm);
+  line-height: var(--lh-relaxed-sm);
+  color: var(--color-text-primary);
+  margin: 0;
+  max-width: 56ch;
+}
+
+@media (max-width: 640px) {
+  .inner {
+    grid-template-columns: 1fr;
+  }
+}

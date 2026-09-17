@@ -1,0 +1,772 @@
+/* 1:1 with Case Study.dc.html — layout/content only, no assembly-animation,
+   canvas-field, or matrix bar-reveal scroll animation yet (deferred per user). */
+
+.grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(var(--color-slate-mist-rgb), 0.07) 0px, rgba(var(--color-slate-mist-rgb), 0.07) 1px, transparent 1px, transparent 64px),
+    repeating-linear-gradient(90deg, rgba(var(--color-slate-mist-rgb), 0.07) 0px, rgba(var(--color-slate-mist-rgb), 0.07) 1px, transparent 1px, transparent 64px);
+}
+
+.glow {
+  position: fixed;
+  left: -10%;
+  top: -10%;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(circle, rgba(var(--color-accent-rgb), 0.07), transparent 62%);
+}
+
+/* Fixed left-side progress rail, reusing Pipeline's AgentSessionTimeline
+   component wholesale per user request (2026-08-02) — same spacing/dot
+   mechanics, just case-page step content (content/caseAgentSteps.ts). Hidden
+   below 1180px (CaseStudy.tsx switches to the STAGE badge there instead) —
+   the 840px content column doesn't leave enough side margin under that.
+   max-height + scroll is a safety net for the longest case (ai-pdp-ds, 9
+   sections) on shorter viewports — needs a live look to confirm it doesn't
+   clip awkwardly instead. */
+.timelineRail {
+  position: fixed;
+  left: clamp(20px, 3.4vw, 56px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.timelineRail::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 1180px) {
+  .timelineRail {
+    display: none;
+  }
+}
+
+/* Cursor-follow glow over the background grid — same mechanic as Hero's .spot (useSpotGlow), added to case pages per user request (2026-08-02): active over the bare grid, hidden the moment the cursor is over actual content (handled by the onMouseMove/onMouseLeave logic in CaseStudy.tsx, not by this CSS). */
+.spot {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  transition: background var(--duration-300) var(--ease-standard);
+}
+
+.main {
+  position: relative;
+  z-index: 1;
+  max-width: 840px;
+  margin: 0 auto;
+  padding: 120px var(--space-container-x) 120px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-10);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-28);
+  transition: color var(--duration-250) var(--ease-standard);
+}
+
+.backLink:hover,
+.backLink:focus-visible {
+  color: var(--color-accent);
+}
+
+.tagsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-10);
+  margin-bottom: var(--space-26);
+}
+
+.title {
+  font-size: clamp(32px, 5vw, 58px);
+  font-weight: var(--fw-bold);
+  line-height: 1.08;
+  letter-spacing: var(--tracking-tightest);
+  margin: 0 0 var(--space-24);
+  text-wrap: pretty;
+}
+
+.subtitle {
+  font-size: clamp(17px, 1.7vw, 21px);
+  line-height: var(--lh-relaxed);
+  color: var(--color-text-body);
+  margin: 0;
+  max-width: 60ch;
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-24);
+  margin: 44px 0 0;
+  padding-top: var(--space-28);
+  border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+}
+
+.metaLabel {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-8);
+}
+
+.metaValue {
+  margin: 0;
+  font-size: var(--fs-md);
+  line-height: var(--lh-relaxed);
+  color: var(--color-text-primary);
+}
+
+.section {
+  margin-top: 96px;
+}
+
+.sectionTitle {
+  font-size: clamp(26px, 3.4vw, 38px);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tighter);
+  margin: 0 0 var(--space-24);
+  text-wrap: pretty;
+}
+
+.para {
+  font-size: var(--fs-lg);
+  line-height: 1.75;
+  color: var(--color-text-body);
+  margin: 0 0 var(--space-20);
+  max-width: 66ch;
+  text-wrap: pretty;
+}
+
+.numberedList {
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.numberedRow {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: var(--space-16);
+  align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.14);
+}
+
+.numberedNum {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+}
+
+.numberedText {
+  font-size: var(--fs-lg);
+  line-height: var(--lh-relaxed-md);
+  color: var(--color-text-body);
+}
+
+/* Matrix (log-service only) */
+.matrixBox {
+  margin-top: 52px;
+  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+  padding: clamp(22px, 3.5vw, 44px);
+  background: rgba(var(--color-graphite-rgb), 0.35);
+}
+
+.matrixBoxLabel {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-28);
+}
+
+.matrixBars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-18);
+}
+
+.matrixBarRow {
+  display: grid;
+  grid-template-columns: minmax(120px, 180px) 1fr auto;
+  gap: var(--space-16);
+  align-items: center;
+}
+
+.matrixBarTrack {
+  height: 10px;
+  background: rgba(var(--color-slate-mist-rgb), 0.14);
+  position: relative;
+  overflow: hidden;
+}
+
+.matrixBarFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.matrixNote {
+  margin: 32px 0 0;
+  font-size: var(--fs-md);
+  line-height: var(--lh-loose);
+  color: var(--color-text-secondary);
+  max-width: 60ch;
+}
+
+/* Desktop/tablet: no horizontal scroll wrapper needed — matches source, the
+   table sits directly in the 840px content column and just fits (6 columns
+   of short yes/partial/no values). Responsive pass (2026-09-17): below the
+   phone breakpoint `table-layout: fixed` would force those same columns to
+   divide evenly across ~340px of real width, wrapping every cell onto
+   several lines — cheaper and lower-risk to let the table scroll
+   horizontally there than to restructure it into stacked cards. */
+.tableWrap {
+  margin-top: var(--space-44);
+}
+
+@media (max-width: 640px) {
+  .tableWrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  font-size: var(--fs-sm-md);
+}
+
+@media (max-width: 640px) {
+  .table {
+    min-width: 560px;
+  }
+}
+
+.tableCaption {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-secondary);
+  padding-bottom: var(--space-14);
+}
+
+.tableHeadFeature {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-secondary);
+  padding: 0 14px 12px 0;
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+  font-weight: var(--fw-regular);
+}
+
+.tableHeadCol {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  padding: 0 10px 12px;
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+  text-align: center;
+  font-weight: var(--fw-regular);
+}
+
+.tableRowFeature {
+  text-align: left;
+  font-weight: var(--fw-medium);
+  color: var(--color-text-body);
+  padding: 12px 14px 12px 0;
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.14);
+  line-height: var(--lh-normal);
+}
+
+.tableCell {
+  padding: 12px 10px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.14);
+}
+
+/* Personas */
+.personaList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+}
+
+.personaCard {
+  padding: clamp(20px, 3vw, 32px);
+}
+
+.personaHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-16);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-16);
+}
+
+.personaName {
+  font-size: var(--fs-xxl);
+  font-weight: var(--fw-bold);
+  margin: 0;
+  letter-spacing: var(--tracking-tight);
+}
+
+.personaBadge {
+  font-family: var(--font-mono);
+  font-size: var(--fs-tiny);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  padding: var(--space-4) var(--space-8);
+  border: 1px solid transparent;
+}
+
+.personaGrid {
+  display: grid;
+  grid-template-columns: minmax(80px, 120px) 1fr;
+  gap: 14px var(--space-20);
+  font-size: var(--fs-md);
+  line-height: var(--lh-relaxed-md);
+}
+
+.personaGridLabel {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  padding-top: 3px;
+}
+
+.personaGridValue {
+  color: var(--color-text-body);
+}
+
+/* Solution (log-service) */
+.solutionParts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-18);
+  margin-bottom: 56px;
+}
+
+.solutionPart {
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) 1fr;
+  gap: var(--space-20);
+  padding-bottom: var(--space-18);
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.14);
+}
+
+.solutionPartName {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-lg);
+}
+
+.solutionPartText {
+  margin: 0;
+  font-size: var(--fs-md);
+  line-height: var(--lh-loose);
+  color: var(--color-text-body);
+}
+
+.scenarioHeading {
+  font-size: var(--fs-xxl);
+  font-weight: var(--fw-bold);
+  margin: 0 0 var(--space-8);
+}
+
+.scenarioSub {
+  margin: 0 0 var(--space-32);
+  font-size: var(--fs-md);
+  color: var(--color-text-secondary);
+}
+
+.scenarioList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  padding-left: 34px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-26);
+}
+
+.scenarioItem {
+  position: relative;
+}
+
+/*
+ * Connecting line between consecutive scenario dots (2026-08-03) — replaces
+ * the old single `border-left` on `.scenarioList`, which ran straight
+ * through every dot with no gap and dangled past the last one. Same 4px-gap
+ * convention as `.promptStep`/`AgentSessionTimeline`'s `.agentStep`: `top:
+ * 17px` clears this item's own dot (4px top + 9px height + 4px gap), and
+ * `bottom: -26px` (the exact flex `gap` between items) lands the line's end
+ * exactly 4px above the *next* item's dot — dot position is a fixed `top:
+ * 4px` here (not center-aligned like the prompt dots), so this works without
+ * needing a forced `line-height` like that other case did.
+ * `left: -34px` centers the line on the same x as `.scenarioDot` below,
+ * which is `.scenarioList`'s own left edge (34px = the list's padding-left)
+ * — flush with `.scenarioHeading`'s left text edge, since both are plain
+ * sibling blocks in the same section with no extra indent between them.
+ */
+.scenarioItem:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: -34px;
+  top: 17px;
+  bottom: calc(-1 * var(--space-26));
+  width: 1px;
+  background: rgba(var(--color-slate-mist-rgb), 0.25);
+}
+
+.scenarioDot {
+  position: absolute;
+  left: -38.5px;
+  top: 4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.scenarioNum {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+.scenarioText {
+  font-size: var(--fs-lg);
+  line-height: var(--lh-relaxed-md);
+  color: var(--color-text-body);
+}
+
+.edgeCaseNote {
+  margin: 40px 0 0;
+  font-size: var(--fs-md);
+  line-height: var(--lh-loose);
+  color: var(--color-text-secondary);
+  max-width: 64ch;
+}
+
+/* Metrics (log-service) */
+.northStar {
+  border: 1px solid rgba(var(--color-accent-rgb), 0.4);
+  padding: clamp(22px, 3vw, 36px);
+  margin-bottom: 36px;
+  background: rgba(var(--color-accent-rgb), 0.06);
+}
+
+.northStarTag {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-accent);
+  margin-bottom: var(--space-14);
+}
+
+.northStarText {
+  margin: 0;
+  font-size: clamp(19px, 2.4vw, 26px);
+  line-height: 1.4;
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.metricsList {
+  display: flex;
+  flex-direction: column;
+}
+
+.metricRow {
+  display: grid;
+  grid-template-columns: minmax(110px, 150px) 1fr;
+  gap: var(--space-20);
+  align-items: baseline;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.14);
+}
+
+.metricValue {
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+}
+
+.metricText {
+  font-size: var(--fs-md);
+  line-height: var(--lh-relaxed-md);
+  color: var(--color-text-body);
+}
+
+/* Generic section extras (defs / pairs / groups / code) */
+.defsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-18);
+  margin-top: var(--space-32);
+}
+
+.defRow {
+  display: grid;
+  grid-template-columns: minmax(160px, 240px) 1fr;
+  gap: var(--space-20);
+  padding-bottom: var(--space-18);
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.14);
+}
+
+.defName {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-md);
+}
+
+.defText {
+  margin: 0;
+  font-size: var(--fs-md);
+  line-height: var(--lh-loose);
+  color: var(--color-text-body);
+}
+
+.pairsBox {
+  margin-top: var(--space-32);
+  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+}
+
+.pairsHead {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+}
+
+.pairsHeadCell {
+  padding: 12px 16px;
+}
+
+.pairsHeadCell + .pairsHeadCell {
+  border-left: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+}
+
+.pairRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.12);
+}
+
+.pairWas {
+  padding: 12px 16px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+  text-decoration: line-through;
+  word-break: break-word;
+}
+
+.pairShould {
+  padding: 12px 16px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--color-accent);
+  border-left: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+  word-break: break-word;
+}
+
+.groupsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-26);
+  margin-top: var(--space-32);
+}
+
+.groupName {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-12);
+}
+
+.groupItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.groupItem {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--color-text-body);
+  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.3);
+  padding: var(--space-6) 11px;
+}
+
+.sectionNote {
+  margin: 28px 0 0;
+  font-size: var(--fs-md);
+  line-height: var(--lh-loose);
+  color: var(--color-text-secondary);
+  max-width: 64ch;
+}
+
+/* Outcome */
+.outcomeText {
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: var(--lh-relaxed-md);
+  color: var(--color-text-primary);
+  margin: 0;
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+.ndaBox {
+  margin-top: 40px;
+  padding: 22px 24px;
+  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
+  display: flex;
+  gap: var(--space-16);
+  align-items: flex-start;
+}
+
+.ndaTag {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-text-secondary);
+  letter-spacing: var(--tracking-wider);
+  padding-top: 2px;
+}
+
+.ndaText {
+  margin: 0;
+  font-size: var(--fs-base);
+  line-height: var(--lh-loose);
+  color: var(--color-text-secondary);
+  max-width: 56ch;
+}
+
+.outcomeLinks {
+  display: flex;
+  gap: var(--space-20);
+  margin-top: 40px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm-md);
+  flex-wrap: wrap;
+}
+
+/* Sibling nav */
+.siblingsNav {
+  margin-top: 120px;
+  padding-top: 36px;
+  border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-18);
+}
+
+.siblingLink {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm-md);
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.4);
+  text-decoration: none;
+  padding-bottom: 3px;
+  transition:
+    color var(--duration-200) var(--ease-standard),
+    border-color var(--duration-200) var(--ease-standard);
+}
+
+.siblingLink:hover,
+.siblingLink:focus-visible {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+/* The bare copyright-only sub-footer that used to live here is now the shared `components/Footer` (2026-08-03) — same one Contact uses, with the full contact-links row, not just copyright. */
+
+@media (max-width: 640px) {
+  .metaGrid,
+  .personaGrid,
+  .solutionPart,
+  .defRow,
+  .pairsHead,
+  .pairRow,
+  .matrixBarRow {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}
+
+/*
+ * "you ask / agent replies" prompt for case-study sections — the dots/line
+ * mechanic itself now lives in the shared `components/PromptSteps`
+ * (extracted 2026-08-03 once About and six home-page sections needed the
+ * exact same markup). What's left here is purely this page's own layout:
+ * `.promptSection` gives each prompted section a `padding-left` gutter for
+ * the dot column (heading/paragraphs/etc. sit indented at that padding,
+ * normal flow); `PromptSteps`'s own root has no left-margin opinion, so
+ * `.promptStepsIndent` (passed as its `className` prop at each call site)
+ * pulls it back by the same amount, landing its dots at x=0 in that gutter.
+ */
+.promptSection {
+  position: relative;
+  padding-left: 24px;
+}
+
+.promptStepsIndent {
+  margin-left: -24px;
+}
+
+/*
+ * The line used to continue from the agent dot through the rest of a
+ * section's body into the next prompted section's you-dot
+ * (.promptSectionContinues / .promptSectionChained) — removed 2026-08-03 per
+ * explicit user feedback: the connecting line should exist only *within* a
+ * block (you-dot to agent-dot), not stretch between sections. Each prompted
+ * section is back to a plain `marginTop: 112` gap from its predecessor, same
+ * as before this feature existed.
+ */

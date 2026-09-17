@@ -1,0 +1,95 @@
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-16);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-48);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+}
+
+.timeline {
+  position: relative;
+  padding-left: var(--space-28);
+}
+
+.item {
+  position: relative;
+  margin-bottom: var(--space-44);
+  padding-bottom: var(--space-20);
+  padding-left: 0;
+  border-bottom: 1px solid rgba(var(--color-accent-rgb), 0);
+  transition:
+    border-color var(--duration-250) var(--ease-standard),
+    padding-left var(--duration-250) var(--ease-standard);
+}
+
+.item:hover,
+.item:focus-within {
+  border-bottom-color: rgba(var(--color-accent-rgb), 0.5);
+  padding-left: var(--space-16);
+}
+
+/*
+ * Connecting line between consecutive timeline dots (2026-08-03) — replaces
+ * the old single `border-left` on `.timeline`, which ran straight through
+ * every dot with no gap and dangled past the last one (same issue already
+ * fixed for the case-study "Сценарий инцидента" list — see
+ * `.scenarioItem:not(:last-child)::before` in `pages/CaseStudy.module.css`
+ * for the identical technique). `top: 19px` clears this item's own dot (6px
+ * top + 9px height + 4px gap); `bottom: calc(-1 * var(--space-44) - 2px)`
+ * lands the line's end exactly 4px above the *next* item's dot (dot position
+ * is a fixed `top: 6px`, not center-aligned, so this is exact, not a guess).
+ * Grey (2026-08-03) — reverted from an orange trial per explicit feedback,
+ * back to the same neutral connecting-line color used everywhere else
+ * (PromptSteps, the case-study scenario list): `rgba(var(--color-slate-mist-rgb), 0.25)`.
+ * `.dot` itself stays accent-colored, untouched — only the line changed.
+ */
+.item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: -28.5px;
+  top: 19px;
+  bottom: calc(-1 * var(--space-44) - 2px);
+  width: 1px;
+  background: rgba(var(--color-slate-mist-rgb), 0.25);
+}
+
+.dot {
+  position: absolute;
+  left: -33px;
+  top: 6px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.dates {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-6);
+}
+
+.role {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  margin-bottom: var(--space-4);
+}
+
+.company {
+  font-size: var(--fs-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-10);
+}
+
+.text {
+  margin: 0;
+  font-size: var(--fs-base);
+  line-height: var(--lh-relaxed);
+  color: var(--color-text-body);
+  max-width: 620px;
+}

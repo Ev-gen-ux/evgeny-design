@@ -1,0 +1,59 @@
+/* Values pulled 1:1 from the shipped .dc.html files (grepped font-size/weight/
+   letter-spacing/line-height across Portfolio, Case Study, Site Header) — not a
+   redesigned scale, a named catalogue of what's already live. */
+:root {
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Fixed sizes — spec chrome / labels / body text */
+  --fs-micro: 9px;
+  --fs-tiny: 10px;
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-sm-md: 13px;
+  --fs-base: 14px;
+  --fs-md: 15px;
+  --fs-lg: 16px;
+  --fs-xl: 19px;
+  --fs-xxl: 22px;
+
+  /* Fluid display/heading sizes — named by where they're used, one clamp() per
+     distinct usage found in source (several recur across sections, some are
+     one-off hero/heading sizes) */
+  --fs-fluid-xs: clamp(16px, 2vw, 20px);
+  --fs-fluid-sm: clamp(17px, 2.2vw, 24px);
+  --fs-fluid-cs-subtitle: clamp(17px, 1.7vw, 21px);
+  --fs-fluid-section-heading: clamp(24px, 3vw, 32px);
+  --fs-fluid-md-alt: clamp(24px, 3vw, 36px);
+  --fs-fluid-lg-a: clamp(26px, 3.2vw, 44px);
+  --fs-fluid-cs-heading: clamp(26px, 3.4vw, 38px);
+  --fs-fluid-lg-b: clamp(28px, 4vw, 44px);
+  --fs-fluid-cs-metric: clamp(22px, 3vw, 30px);
+  --fs-fluid-xl: clamp(32px, 6vw, 72px);
+  --fs-fluid-cs-hero: clamp(32px, 5vw, 58px);
+  --fs-fluid-hero: clamp(44px, 8.5vw, 112px);
+
+  /* Weights */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* Letter-spacing — negative on display/heading sizes, positive on mono labels */
+  --tracking-tightest: -0.02em;
+  --tracking-tighter: -0.015em;
+  --tracking-tight: -0.01em;
+  --tracking-wide: 0.05em;
+  --tracking-wider: 0.06em;
+  --tracking-widest: 0.08em;
+
+  /* Line-heights */
+  --lh-tight: 1.08;
+  --lh-snug: 1.4;
+  --lh-normal: 1.5;
+  --lh-relaxed-sm: 1.55;
+  --lh-relaxed: 1.6;
+  --lh-relaxed-md: 1.65;
+  --lh-loose: 1.7;
+  --lh-looser: 1.75;
+}

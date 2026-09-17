@@ -1,0 +1,137 @@
+/*
+ * Fixed to the viewport bottom, not the document — `useChatBar` handles the
+ * "don't cover the footer" requirement by fading this out (opacity, no
+ * layout shift) once the real page bottom is within reach, rather than any
+ * scroll-position math on this side; Contact's own `.footer` reserves extra
+ * bottom padding so the bar never sits over its text even while still
+ * visible. Hidden by default (`opacity: 0`) until the first chat line
+ * activates — there's nothing to show while still inside Hero.
+ */
+.bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  /* Not a bare `0` (2026-09-17, `viewport-fit=cover` added to index.html for
+     MobileNavOverlay's own safe-area padding) — that meta change lets the
+     page draw under iOS/Android's bottom gesture bar everywhere, not just
+     the overlay, so every other bottom-fixed element needs its own inset
+     now too or it ends up sitting behind/under that system bar. Falls back
+     to `0` wherever `env()` isn't supported or `viewport-fit=cover` isn't
+     honored (Android, most desktop browsers). */
+  bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+  height: 52px;
+  padding: 0 clamp(20px, 4vw, 56px);
+  /* Same glass-surface values as components/Card (2026-08-03, per explicit request) — background/backdrop-filter/border color 1:1, border-top only (not all sides) since this is an edge-to-edge bar, not a boxed card. */
+  background: rgba(var(--color-graphite-rgb), 0.18);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-350) var(--ease-standard);
+}
+
+.bar[data-visible='1'] {
+  opacity: 1;
+}
+
+.arrow {
+  flex-shrink: 0;
+  color: var(--color-accent);
+}
+
+/*
+ * `.text` used to be `flex: 1` directly inside `.bar` — that stretched its
+ * box to fill all the remaining row width regardless of how much text was
+ * actually typed, so `.cursor` (the next flex sibling) sat at the end of
+ * that stretched box, nowhere near the last visible character. `.typing`
+ * groups text+cursor into one shrink-to-fit unit (`min-width: 0` so it can
+ * still truncate via `.text`'s own ellipsis if a line is ever too long for
+ * the viewport) — the cursor now sits immediately after the real text,
+ * however short or long it is, and `.status`'s own `margin-left: auto`
+ * takes over pinning the right side instead.
+ */
+.typing {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-primary);
+}
+
+.cursor {
+  flex-shrink: 0;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  background: var(--color-text-primary);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.status {
+  flex-shrink: 0;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--color-text-secondary);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wider);
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-text-secondary);
+  transition: background var(--duration-200) var(--ease-standard);
+}
+
+/* `--color-redline`, not `--color-accent` (2026-09-17, mono theme) — this is
+   a status indicator, stays real red even under the monochrome theme. */
+.statusDot[data-state='active'] {
+  background: var(--color-redline);
+}
+
+.statusDot[data-state='done'] {
+  background: #4ade80;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .bar {
+    padding: 0 var(--space-16);
+  }
+
+  .status {
+    display: none;
+  }
+}

@@ -1,0 +1,37 @@
+/* Every distinct padding/margin/gap value grepped from the shipped .dc.html files.
+   The current site is hand-styled per element rather than built on a strict base
+   grid, so this catalogues real values rather than imposing a new scale — the
+   goal of this migration is parity, not a spacing redesign. */
+:root {
+  --space-2: 2px;
+  --space-3: 3px;
+  --space-4: 4px;
+  --space-5: 5px;
+  --space-6: 6px;
+  --space-7: 7px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-14: 14px;
+  --space-16: 16px;
+  --space-18: 18px;
+  --space-20: 20px;
+  --space-22: 22px;
+  --space-24: 24px;
+  --space-26: 26px;
+  --space-28: 28px;
+  --space-32: 32px;
+  --space-36: 36px;
+  --space-40: 40px;
+  --space-44: 44px;
+  --space-48: 48px;
+  --space-60: 60px;
+  --space-100: 100px;
+  --space-120: 120px;
+  --space-140: 140px;
+
+  /* Fluid gutters — reused structurally (container horizontal padding, nav padding),
+     not one-off values, so named separately from the fixed scale above. */
+  --space-container-x: clamp(20px, 6vw, 80px);
+  --space-nav-x: clamp(20px, 5vw, 64px);
+}

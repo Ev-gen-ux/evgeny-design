@@ -1,0 +1,27 @@
+.inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  /* Bottom padding — the gap before whatever follows (the shared Footer, on
+     both pages this is used on) — space-40, same as `.title`'s own
+     margin-bottom (the title→email gap above it). */
+  padding: var(--space-100) var(--space-container-x) var(--space-40);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* PromptSteps' own root has no width opinion (a plain block stretches to `.inner`'s full centered width) — `width: fit-content` shrinks it to its actual content so `margin: 0 auto` can center it as a block, same effect AgentExchange got from its own `max-width`. */
+.prompt {
+  width: fit-content;
+  margin: 0 auto var(--space-48);
+  text-align: left;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  margin-bottom: var(--space-20);
+}
+
+.title {
+  margin-bottom: var(--space-40);
+}

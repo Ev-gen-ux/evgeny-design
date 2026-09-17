@@ -1,0 +1,55 @@
+.eyebrow {
+  margin-bottom: var(--space-32);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-20);
+}
+
+/*
+ * Static shell only — the current site also shows a cursor-following spinning
+ * icon glow on hover (0% opacity by default, mouse-position tracked), which is
+ * invisible until hovered anyway; deferred to the cursor-interaction hook step
+ * rather than built here since it contributes nothing to the static appearance.
+ */
+.card {
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  padding: var(--space-28);
+  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
+  transition:
+    border-color var(--duration-300) var(--ease-standard),
+    transform var(--duration-300) var(--ease-signature),
+    box-shadow var(--duration-300) var(--ease-standard);
+}
+
+/* Not reduced-motion-gated in the source's projectCardStyle() — left as-is. */
+.card:hover,
+.card:focus-within {
+  border-color: var(--color-accent);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -24px rgba(var(--color-accent-rgb), 0.35);
+}
+
+.title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  margin-bottom: var(--space-8);
+}
+
+.desc {
+  font-size: var(--fs-sm-md);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-16);
+  line-height: var(--lh-normal);
+}
+
+.links {
+  display: flex;
+  gap: var(--space-16);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}

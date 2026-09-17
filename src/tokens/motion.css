@@ -1,0 +1,28 @@
+/* Durations/easings grepped 1:1 from transition/animation declarations across the
+   shipped .dc.html files. --ease-signature is the one curve reused everywhere for
+   the site's deliberate motion (hover states, reveals, callouts) — cubic-bezier
+   expo-out, distinct from the plain "ease" used for smaller incidental transitions. */
+:root {
+  --duration-150: 0.15s;
+  --duration-180: 0.18s;
+  --duration-200: 0.2s;
+  --duration-250: 0.25s;
+  --duration-300: 0.3s;
+  --duration-350: 0.35s;
+  --duration-400: 0.4s;
+  --duration-500: 0.5s;
+  --duration-700: 0.7s;
+  --duration-1100: 1.1s;
+
+  /* Slow ambient/background motion (three.js orbit-style rotation, canvas drift) */
+  --duration-ambient-7s: 7s;
+  --duration-ambient-20s: 20s;
+  --duration-ambient-26s: 26s;
+  --duration-ambient-50s: 50s;
+
+  --ease-linear: linear;
+  --ease-standard: ease;
+  --ease-in-out: ease-in-out;
+  --ease-out: ease-out;
+  --ease-signature: cubic-bezier(0.16, 1, 0.3, 1);
+}

@@ -1,0 +1,175 @@
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-18) var(--space-nav-x);
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  font-family: var(--font-display);
+  isolation: isolate;
+}
+
+/* Phone (2026-09-17, follow-up) — `--space-nav-x` is `clamp(20px, 5vw, 64px)`,
+   fluid on purpose for desktop/tablet, but that means the menu trigger's
+   right-edge distance varies by a sub-pixel-to-few-pixel amount between
+   e.g. 375px and 411px viewports (5vw of each), read by the user as
+   inconsistent positioning "on every screen and page." `.nav` is one
+   shared component (Header.tsx's own docstring) already rendered
+   identically everywhere — pinning this one breakpoint's padding to a
+   fixed, non-fluid value removes the last source of variance, so the
+   trigger sits at the exact same offset on every phone width, every page. */
+@media (max-width: 640px) {
+  .nav {
+    padding-left: var(--space-20);
+    padding-right: var(--space-20);
+  }
+}
+
+/* Was a hardcoded blueprint-blue gradient (2026-09-17: `rgba(14,27,46,…)`,
+   the one literal this whole file's mono-theme sweep missed, since it never
+   matched the `232,67,43`/`138,150,166`/`27,42,63` greps that pass used) —
+   read by the user as a stray "blue glow," not a glass effect. Replaced
+   with the same neutral glass tint as ChatBar's `.bar` (rgba(graphite),
+   backdrop-blur, no saturate boost — that boost was amplifying the blue
+   further). Deliberately no border, unlike ChatBar — per explicit user
+   request, this one shouldn't have the dividing line. */
+.scrim {
+  position: absolute;
+  inset: -24px 0 -24px 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(var(--color-graphite-rgb), 0.72) 0%,
+    rgba(var(--color-graphite-rgb), 0.62) 55%,
+    rgba(var(--color-graphite-rgb), 0) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 52%, rgba(0, 0, 0, 0.45) 78%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 52%, rgba(0, 0, 0, 0.45) 78%, transparent 100%);
+  pointer-events: none;
+}
+
+.wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-14);
+  text-decoration: none;
+  position: relative;
+  z-index: 1;
+}
+
+/* Phone (2026-09-17, responsive pass follow-up) — name + status tag side by
+   side plus all 5 nav links never fit a 375-411px viewport; user's own
+   suggested fix over shrinking the font further — stack the tag under the
+   name instead. `.links` moves behind MobileNavOverlay's trigger below. */
+@media (max-width: 640px) {
+  .wordmark {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+}
+
+.name {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-lg);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text-primary);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-text-secondary);
+}
+
+/* "Agent session" indicator — added 2026-08-02 per user request, same simulated-session concept as Pipeline's AGENT SESSION timeline, shown in the header on every page (Header is one shared component). */
+/*
+ * No more `animation: … infinite` here (2026-08-03, design-anti-slop audit,
+ * catalog T23) — a dot that pulses forever with no real event behind it is
+ * a recognizable AI-generated-UI tell. `useSessionDotPulse` now drives the
+ * ring/opacity directly, tied to actual scroll activity, instead of a timed
+ * CSS loop — see that hook for the full reasoning.
+ */
+.sessionDot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.links {
+  display: flex;
+  gap: var(--space-24);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--tracking-wide);
+  position: relative;
+  z-index: 1;
+}
+
+/* Phone (2026-09-17) — replaced by MobileNavOverlay's trigger, see Header.tsx. */
+@media (max-width: 640px) {
+  .links {
+    display: none;
+  }
+}
+
+/* Menu trigger for MobileNavOverlay — desktop/tablet hidden (`.links` shows
+   the real nav there), only shown on phone. A monospace `[ menu ]` label
+   rather than a generic 3-bar icon, matching the site's own terminal/agent
+   aesthetic (see design-anti-slop skill's take on generic AI-UI icon tells). */
+.menuTrigger {
+  display: none;
+  /* No border/box chrome (2026-09-17 follow-up, explicit user request) —
+     just the bracket characters in the text itself as framing, plain text
+     otherwise, no button-shaped box around it. */
+  border: none;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  /* Text content is owned entirely by useLabelMorph (see Header.tsx) — it
+     scatter-morphs between "[ menu ]" and "[ close ]", so no React children
+     here. min-width in `ch` units (the longer of the two labels) keeps the
+     text from visibly shifting the row mid-morph. */
+  min-width: 9.5ch;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  position: relative;
+  /* Above MobileNavOverlay's own z-index:200 (2026-09-17 follow-up) — this
+     button is the ONLY open/close control now (see that component's
+     docstring for why its own in-panel close button was removed); it needs
+     to stay visible and clickable in place while the panel is slid in over
+     the rest of the header, not get covered by it. */
+  z-index: 201;
+}
+
+.menuTrigger:hover,
+.menuTrigger:focus-visible {
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 640px) {
+  .menuTrigger {
+    display: block;
+    /* `.nav` is `align-items:center` — fine when `.wordmark` was one line,
+       but on phone it's now name+tag stacked (see `.wordmark`'s own
+       ≤640px rule), two lines tall. Centered against that taller block put
+       the button visibly below the top of the name, not level with it —
+       reported by the user as "not balanced against the name." Pins it to
+       the top of the row instead, level with the first line (the name). */
+    align-self: flex-start;
+  }
+}

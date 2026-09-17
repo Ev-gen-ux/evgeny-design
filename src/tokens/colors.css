@@ -1,0 +1,43 @@
+/* 1:1 with the palette locked in uploads/PORTFOLIO-README.md — 5 colors, no substitutions. */
+:root {
+  --color-blueprint: #0e1b2e;
+  --color-redline: #e8432b;
+  --color-vellum: #f2f0eb;
+  --color-slate-mist: #8a96a6;
+  --color-graphite: #1b2a3f;
+
+  /* Functional greys found in the shipped site (Case Study body copy / table states),
+     not part of the 5-color brief but present 1:1 in the current output — kept as
+     named derivatives of Vellum/Slate Mist rather than new accent colors. */
+  --color-vellum-muted: #c8cdd6;
+  --color-slate-mist-dim: #5c6675;
+
+  --color-bg-page: var(--color-blueprint);
+  --color-text-primary: var(--color-vellum);
+  --color-text-secondary: var(--color-slate-mist);
+  --color-text-body: var(--color-vellum-muted);
+  --color-text-disabled: var(--color-slate-mist-dim);
+  --color-accent: var(--color-redline);
+  --color-surface: var(--color-graphite);
+
+  /*
+   * RGB triplets (2026-09-17, for the mono theme) — a handful of glows/
+   * gradients across the site are built as `rgba(R, G, B, alpha)` literals,
+   * in plain CSS *and* in JS-computed inline styles (PageBackdrop's mesh
+   * blobs, Hero's cursor-follow spot glow, useCardTilt's hover shadow) —
+   * neither picks up a hex-token override the way `background: var(--color-accent)`
+   * does. `var()` substitution works fine *inside* an rgba() argument list
+   * though, even from a JS template string, so every such literal got
+   * swapped for `rgba(var(--color-X-rgb), alpha)` — these triplets are that
+   * substitution's source of truth. `--color-redline-rgb` is intentionally
+   * separate from `--color-accent-rgb` and never themed (see theme-mono.css):
+   * status-indicator glows (AgentSessionTimeline's active dot) stay true red,
+   * everything else reading `--color-accent-rgb` goes neutral under mono.
+   */
+  --color-blueprint-rgb: 14, 27, 46;
+  --color-redline-rgb: 232, 67, 43;
+  --color-accent-rgb: var(--color-redline-rgb);
+  --color-vellum-rgb: 242, 240, 235;
+  --color-slate-mist-rgb: 138, 150, 166;
+  --color-graphite-rgb: 27, 42, 63;
+}

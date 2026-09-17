@@ -1,0 +1,206 @@
+/* Slides in from the right (2026-09-17 follow-up, explicit user request) —
+   `translateX(100%)` already moves the whole panel fully off-screen, so no
+   `visibility`/`display` toggle is needed on top of it for the closed
+   state; `pointer-events:none` + `aria-hidden` (set in the .tsx) keep it
+   out of interaction/AT while off-screen without unmounting it, so the
+   reverse (closing) transition has something to animate. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  /* `100vh` fallback + `100dvh` override (2026-09-17 follow-up) — on mobile
+     Safari, a `position:fixed` element with `inset:0` sizes against the
+     LARGE/static viewport (as if the address bar were already hidden), not
+     the actually-visible one — the classic cause of "have to scroll to see
+     the rest of a supposedly fullscreen fixed overlay," exactly what the
+     user reported (had to scroll to reach `.bottomBar`). `dvh` tracks the
+     real visible viewport instead. Also why `.bottomBar` below is
+     `position:fixed` but effectively anchored to *this* box, not the raw
+     viewport — `transform` on this element makes it the containing block
+     for fixed descendants (CSS spec), which is fine as long as this box's
+     own height is correct, hence fixing it here rather than there. */
+  height: 100vh;
+  height: 100dvh;
+  /* Above Header's .nav (z-index:100), below CursorOverlay's 9999 — see
+     process log for the full z-index survey done before picking this. */
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: rgba(var(--color-blueprint-rgb), 0.97);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  /* Longhand, not the `padding` shorthand (2026-09-17 follow-up — reported
+     by the user as "no left/right padding at all" when open) — kept as
+     four independent declarations so a problem resolving any one custom
+     property can't invalidate the whole shorthand and silently zero out
+     every side at once. */
+  padding-top: var(--space-24);
+  padding-right: var(--space-container-x);
+  padding-bottom: 0;
+  padding-left: var(--space-container-x);
+  transform: translateX(100%);
+  pointer-events: none;
+  transition: transform var(--duration-400) var(--ease-signature);
+}
+
+/* Same repeating-grid backdrop as Hero (2026-09-17 follow-up, explicit user
+   request — "тот же самый эффект сетки, что и в Hero-блоке"), 1:1 pattern
+   copied from Hero.module.css's `.grid` rather than shared as a class
+   across files (the two components don't otherwise share any styling
+   relationship, not worth introducing a cross-cutting utility for one
+   reused rule). Static, no drift animation — this is a brief overlay, not
+   a page section someone lingers on. */
+.grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(var(--color-slate-mist-rgb), 0.1) 0px, rgba(var(--color-slate-mist-rgb), 0.1) 1px, transparent 1px, transparent 48px),
+    repeating-linear-gradient(90deg, rgba(var(--color-slate-mist-rgb), 0.1) 0px, rgba(var(--color-slate-mist-rgb), 0.1) 1px, transparent 1px, transparent 48px);
+}
+
+/* Small ambient glow, right side (2026-09-17 follow-up, explicit user
+   request — "небольшой" per their own wording, deliberately modest next to
+   PageBackdrop's much bigger 260-460px blobs elsewhere on the site). Static
+   (no cursor-follow, no drift) — same blur-heavy treatment as
+   PageBackdrop's blobs, just smaller and stationary. */
+.glow {
+  position: absolute;
+  top: 12%;
+  right: -8%;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--color-accent-rgb), 0.35), transparent 70%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.overlay[data-open='1'] {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    transition: none;
+  }
+}
+
+/* No close button here (2026-09-17 follow-up) — see MobileNavOverlay.tsx's
+   docstring for why; `.topRow` now only ever holds `.name`, kept as its own
+   wrapper for the position:relative/z-index stacking fix below rather than
+   applying that directly to `.name`, in case something else joins this row
+   later. */
+.topRow {
+  /* position:relative + z-index (2026-09-17, added alongside .grid/.glow) —
+     without it, `.grid`/`.glow` (position:absolute) would stack ABOVE this
+     plain-flow flex child regardless of DOM order, per CSS stacking rules
+     (any positioned element outranks a non-positioned one in the same
+     context). Same fix on `.links`/`.bottomBar` below. */
+  position: relative;
+  z-index: 1;
+}
+
+.name {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-lg);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text-primary);
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  /* Close to the header, not vertically centered (2026-09-17 follow-up, per
+     user's own screenshot feedback) — links start right under the top row
+     instead of floating in the middle of a mostly-empty viewport. No
+     internal scroll container here (dropped the earlier `overflow-y:auto`
+     safety net, per explicit user request) — `.bottomBar` below is now
+     genuinely `position:fixed` to the true viewport bottom, not part of
+     this flex flow, so this column doesn't need to manage the leftover
+     space around it at all; `padding-bottom` just keeps its own content
+     clear of the fixed bar. */
+  gap: var(--space-24);
+  padding-top: var(--space-32);
+  padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px) + var(--space-24));
+  position: relative;
+  z-index: 1;
+}
+
+.link {
+  /* Lowercase (2026-09-17 follow-up) — matches the desktop header's own
+     `.links` (content/nav.ts's labels are authored lowercase, rendered
+     as-is there, no text-transform). This panel had them force-uppercased;
+     per explicit user request, only that transform comes off — size,
+     weight, family all stay exactly as they were. */
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-fluid-xl);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: var(--color-accent);
+}
+
+/* Bottom bar — same visual language as components/ChatBar (arrow + "you:"
+   prompt, status dot on the right). Genuinely `position:fixed` to the true
+   viewport bottom (2026-09-17 follow-up, per explicit user request — it was
+   a flex child before, pinned only "within" the overlay's own flow, which
+   read as not truly docked). Safe-area padding accounts for iOS/Android's
+   bottom gesture bar — real only once `viewport-fit=cover` is set on the
+   page's viewport meta tag (see index.html); falls back to 0 everywhere
+   else. */
+.bottomBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+  height: 52px;
+  padding: 0 var(--space-16);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
+  background: rgba(var(--color-graphite-rgb), 0.18);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.arrow {
+  flex-shrink: 0;
+  color: var(--color-accent);
+}
+
+.bottomText {
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bottomStatus {
+  flex-shrink: 0;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--color-text-secondary);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wider);
+}
+
+.bottomDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+}

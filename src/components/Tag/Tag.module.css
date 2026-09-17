@@ -1,0 +1,38 @@
+.tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  padding: var(--space-5) var(--space-10);
+  border: 1px solid transparent;
+  transition:
+    border-color var(--duration-250) var(--ease-standard),
+    color var(--duration-250) var(--ease-standard),
+    transform var(--duration-250) var(--ease-signature);
+}
+
+/* Case-study problem-type badge — always Redline, no hover state (it's a label, not interactive). */
+.accent {
+  color: var(--color-accent);
+  border-color: rgba(var(--color-accent-rgb), 0.4);
+}
+
+/* Skills chip — neutral by default, lights up to Redline on hover/focus. */
+.chip {
+  padding: var(--space-7) var(--space-12);
+  font-size: var(--fs-sm-md);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--color-text-primary);
+  border-color: rgba(var(--color-slate-mist-rgb), 0.35);
+}
+
+/* Not reduced-motion-gated — matches source: this hover is a static template
+   attribute, not one of the JS-conditioned effects, so it stays as-is. */
+.chip:hover,
+.chip:focus-visible {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: translateY(-2px) scale(1.03);
+}

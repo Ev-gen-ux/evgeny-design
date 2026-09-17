@@ -1,0 +1,77 @@
+/*
+ * `line-height: 1` on the role/question text is what makes the 4px gap exact
+ * rather than an eyeballed guess: at `--fs-xs` (11px) it forces each row's
+ * content height to a known, fixed 11px (taller than the 7px dot, so it's
+ * what `align-items: center` centers against), independent of the browser's
+ * font-metric-dependent default line-height. A 7px dot centered in an 11px
+ * row sits at 2px..9px from the row's own top, so `top: 13px` (9 + 4) and
+ * `bottom: 2px` (worked out so the line ends exactly 4px above the *next*
+ * row's dot regardless of that row's own padding-bottom) both resolve to a
+ * true 4px gap. Grey (request) and green (resolved) are permanent — there's
+ * no "pending/active" state to animate through, unlike Pipeline/
+ * AgentSessionTimeline's scroll-driven version.
+ */
+.promptSteps {
+  position: relative;
+  margin-bottom: var(--space-16);
+}
+
+.promptStep {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+}
+
+.promptStep:first-child {
+  padding-bottom: var(--space-16);
+}
+
+.promptStep:first-child::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 13px;
+  bottom: 2px;
+  width: 1px;
+  background: rgba(var(--color-slate-mist-rgb), 0.25);
+}
+
+.promptDot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.promptDot[data-tone='pending'] {
+  background: rgba(var(--color-slate-mist-rgb), 0.4);
+}
+
+.promptDot[data-tone='done'] {
+  background: #4ade80;
+}
+
+.promptRole {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 1;
+  color: var(--color-text-secondary);
+  letter-spacing: var(--tracking-wider);
+}
+
+.promptQuestion {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 1;
+  color: var(--color-text-primary);
+}
+
+.sectionTagHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}

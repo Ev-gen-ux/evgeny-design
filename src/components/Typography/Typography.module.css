@@ -1,0 +1,90 @@
+.base {
+  margin: 0;
+  font-family: var(--font-display);
+  color: var(--color-text-primary);
+}
+
+.hero {
+  font-size: var(--fs-fluid-hero);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tightest);
+  line-height: var(--lh-tight);
+}
+
+.displayXl {
+  font-size: var(--fs-fluid-xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tightest);
+  line-height: var(--lh-tight);
+}
+
+.displayLg {
+  font-size: var(--fs-fluid-lg-b);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.pipelineHeading {
+  font-size: var(--fs-fluid-lg-a);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tighter);
+}
+
+.sectionHeading {
+  font-size: var(--fs-fluid-section-heading);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.cardTitle {
+  font-size: var(--fs-fluid-md-alt);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+}
+
+.body {
+  font-family: var(--font-display);
+  font-weight: var(--fw-regular);
+  line-height: var(--lh-relaxed);
+  color: var(--color-text-body);
+}
+
+.bodySm {
+  composes: body;
+  font-size: var(--fs-base);
+}
+
+.bodyMd {
+  composes: body;
+  font-size: var(--fs-md);
+}
+
+.bodyLg {
+  composes: body;
+  font-size: var(--fs-lg);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  color: var(--color-text-secondary);
+}
+
+.eyebrow {
+  composes: mono;
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+}
+
+.tagText {
+  composes: mono;
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+
+.caption {
+  composes: mono;
+  font-size: var(--fs-tiny);
+  text-transform: uppercase;
+}

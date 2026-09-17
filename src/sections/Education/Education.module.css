@@ -1,0 +1,67 @@
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-16);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-32);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+}
+
+.row {
+  display: flex;
+  gap: var(--space-24);
+  align-items: baseline;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.15);
+  padding-bottom: var(--space-16);
+  padding-left: var(--space-8);
+  margin-left: calc(var(--space-8) * -1);
+  transition:
+    border-color var(--duration-250) var(--ease-standard),
+    padding-left var(--duration-250) var(--ease-standard),
+    margin-left var(--duration-250) var(--ease-standard);
+}
+
+.row:hover,
+.row:focus-within {
+  border-color: rgba(var(--color-accent-rgb), 0.5);
+  padding-left: var(--space-16);
+  margin-left: 0;
+}
+
+.year {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm-md);
+  color: var(--color-text-secondary);
+  min-width: 48px;
+}
+
+.title {
+  font-size: var(--fs-md);
+  flex: 1;
+  /* min-width (2026-09-17, responsive-pass follow-up) — `flex:1` alone means
+     `flex-basis:0%`, so this column reserves NO width of its own; on rows
+     with more links (2022's 3 vs 1-2 elsewhere), `.links`' own width ate
+     into the row first and squeezed `.title` down toward that 0% basis
+     instead of `.links` wrapping to its own line — the actual bug behind
+     the screenshotted one-word-per-line rendering. A minimum keeps `.title`
+     readable and lets `flex-wrap` do its normal job of pushing `.links`
+     below once the row genuinely can't fit everything on one line. */
+  min-width: 200px;
+}
+
+.links {
+  display: flex;
+  gap: var(--space-14);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}

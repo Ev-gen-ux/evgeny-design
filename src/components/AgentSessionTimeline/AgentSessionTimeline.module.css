@@ -1,0 +1,184 @@
+/*
+ * "AGENT SESSION" step timeline — added 2026-08-02, originally inline in
+ * Pipeline.tsx (see that section for the "why" — replaced the old "0X/05"
+ * counter + progress bar there), extracted into a shared component the same
+ * day so the case-study pages' scroll timeline could reuse the exact element.
+ * `--pl-success-green` is a deliberate one-off, not a design-system token —
+ * the terminal/CLI "done" convention this element imitates specifically
+ * calls for green, which otherwise doesn't exist anywhere in this site's
+ * palette.
+ */
+.agentSession {
+  --pl-success-green: #4ade80;
+  margin-top: var(--space-32);
+}
+
+.agentSessionLabel {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  margin-bottom: var(--space-18);
+}
+
+.agentSteps {
+  position: relative;
+}
+
+.agentStep {
+  position: relative;
+  display: flex;
+  gap: var(--space-14);
+  padding-bottom: var(--space-24);
+}
+
+.agentStep:last-child {
+  padding-bottom: 0;
+}
+
+/*
+ * Connecting line — one continuous line behind all dots, not per-segment.
+ * `scaleY(var(--agent-line-progress, 1))` (2026-08-03) grows the line
+ * downward from the top dot as its own step assembles, and shrinks it back
+ * up if you scroll back — the driver (usePipelineScroll) sets this custom
+ * property on the row (`rowRefs`) every frame from the same reversible
+ * per-step progress value that already colors the dot/outcome. Falls back
+ * to `1` (fully drawn, the old always-static look) if no driver sets it —
+ * degrades gracefully for a hypothetical future consumer that doesn't wire
+ * up `rowRefs`.
+ */
+.agentStep:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 14px;
+  bottom: -10px;
+  width: 1px;
+  background: rgba(var(--color-slate-mist-rgb), 0.25);
+  transform-origin: top;
+  transform: scaleY(var(--agent-line-progress, 1));
+}
+
+/*
+ * `transform`/`opacity` (2026-08-03) let the driver assemble/disassemble the
+ * dot itself, reversibly with scroll — written directly via `dotRefs`
+ * (a real element, unlike the line above, so no custom property needed
+ * here). Defaults (scale 0.35, opacity 0.35) match the "not reached yet"
+ * look, in case this ever renders a frame before the driver's first tick.
+ */
+.agentStepDot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-top: 5px;
+  background: rgba(var(--color-slate-mist-rgb), 0.4);
+  transform-origin: center;
+  transform: scale(0.35);
+  opacity: 0.35;
+  transition:
+    background var(--duration-200) var(--ease-standard),
+    box-shadow var(--duration-200) var(--ease-standard);
+}
+
+.agentStepDot[data-state='done'] {
+  background: var(--pl-success-green);
+}
+
+/* `--color-redline` here, not `--color-accent` (2026-09-17, mono theme) — this
+   dot is a status indicator ("this step is active right now"), and per
+   explicit user request those stay their real red/green even under the
+   monochrome theme, unlike every other accent-colored element on the site. */
+.agentStepDot[data-state='active'] {
+  background: var(--color-redline);
+  box-shadow: 0 0 0 4px rgba(var(--color-redline-rgb), 0.2);
+}
+
+.agentStepBody {
+  min-width: 0;
+}
+
+.agentStepHead {
+  font-size: var(--fs-sm-md);
+  line-height: 1.3;
+}
+
+.agentStepVerb {
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+}
+
+.agentStepTarget {
+  font-family: var(--font-mono);
+  color: var(--color-text-secondary);
+}
+
+.agentStepOutcome {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-4);
+  transition: color var(--duration-200) var(--ease-standard);
+}
+
+/* Same status-indicator exemption as the dot above — stays red even in mono theme. */
+.agentStepOutcome[data-state='active'] {
+  color: var(--color-redline);
+}
+
+.agentStepOutcome[data-state='pending'] {
+  opacity: 0.45;
+}
+
+/*
+ * 'card' variant (2026-08-02, trial on log-service's case page only) — per
+ * user reference (a screenshot of this very tool's own tool-call transcript
+ * UI): verb as a bold header, target/outcome packaged into an IN/OUT card
+ * below — outline only, no fill, per explicit user instruction.
+ */
+.agentStepVerbHead {
+  font-size: var(--fs-sm-md);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  line-height: 1.3;
+  margin-bottom: var(--space-8);
+}
+
+.ioCard {
+  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+}
+
+.ioRow {
+  display: flex;
+  gap: var(--space-10);
+  padding: var(--space-8) var(--space-12);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.ioRow:first-child {
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+}
+
+.ioLabel {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  min-width: 2.2em;
+}
+
+.ioValue {
+  color: var(--color-text-secondary);
+  transition: color var(--duration-200) var(--ease-standard);
+}
+
+/* Same status-indicator exemption — stays red even in mono theme. */
+.ioValue[data-state='active'] {
+  color: var(--color-redline);
+}
+
+.ioValue[data-state='done'] {
+  color: var(--color-text-primary);
+}

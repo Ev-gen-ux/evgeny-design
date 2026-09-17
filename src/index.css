@@ -1,0 +1,146 @@
+/*
+ * 1:1 with the <style> block in Portfolio.dc.html's <helmet>. Keyframes are kept
+ * here even though nothing uses them yet — they belong to the three.js/canvas/
+ * assembly hooks wired up in later steps, not to this static markup pass.
+ */
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';
+@import './tokens/motion.css';
+@import './tokens/theme-mono.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Reserves the scrollbar's own width permanently (2026-09-17) — without
+     this, toggling `document.body.style.overflow:hidden` (MobileNavOverlay
+     locking background scroll while open) removes the scrollbar and the
+     whole page's available width grows by its ~15px, one-time, right as
+     the menu opens/closes. Header's `.nav` is `justify-content:space-
+     between`, so its right-aligned content (the menu trigger button)
+     visibly jumped — reported by the user as "padding jumps, the button on
+     the right sometimes hugs the edge, sometimes doesn't." Keeping the
+     gutter reserved at all times makes the available width constant
+     regardless of whether a scrollbar is actually needed. */
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg-page);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+span:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
+
+@keyframes driftGrid {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 96px 96px;
+  }
+}
+
+@keyframes blobDrift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(3%, -4%) scale(1.14);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes pulseTravel {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+@keyframes washShimmer {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    filter: hue-rotate(10deg);
+  }
+  100% {
+    filter: hue-rotate(0deg);
+  }
+}
+
+@keyframes caretBlink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  95% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes projSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes grainShift {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-4%, 3%);
+  }
+  40% {
+    transform: translate(3%, -5%);
+  }
+  60% {
+    transform: translate(-3%, -3%);
+  }
+  80% {
+    transform: translate(4%, 4%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}

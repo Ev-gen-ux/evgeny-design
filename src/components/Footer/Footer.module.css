@@ -1,0 +1,53 @@
+/*
+ * Wider than the narrower content columns above it on either page (1200px,
+ * matching the site's `wide` Container convention) — a global footer is
+ * meant to read as the same element everywhere, not adapt its width to
+ * whichever page it's on.
+ */
+.footerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-16) var(--space-32);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-container-x);
+  /* Extra room at the true bottom for the fixed ChatBar (~52px tall, see
+     components/ChatBar) — it sits over the viewport's last 52px whenever
+     visible, so this row needs that much clearance to never be covered,
+     even while scrolled all the way down. space-40 both above (the calling
+     page's own responsibility) and below this row, to match. `env()`
+     (2026-09-17) — ChatBar itself now sits `env(safe-area-inset-bottom)`
+     above the true bottom (see ChatBar.module.css), so this reserve needs
+     the same extra amount to still fully clear it. */
+  padding-bottom: calc(var(--space-40) + 52px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Phone (2026-09-17, responsive pass follow-up) — on mobile ThemeToggle sits
+   raised above ChatBar's own band (see ThemeToggle.module.css's own
+   `bottom: calc(52px + var(--space-8))` override, added to stop it
+   overlapping ChatBar) — that raise wasn't accounted for here, so its ~31px
+   footprint was landing right on top of this row's last line (the copyright
+   credit), reported by the user from a live screenshot. Reserved clearance
+   bumped to clear ThemeToggle's own height too, not just ChatBar's. */
+@media (max-width: 640px) {
+  .footerRow {
+    padding-bottom: calc(var(--space-40) + 52px + 40px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+.linksRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-32);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm-md);
+  color: var(--color-text-secondary);
+}
+
+.copyright {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-text-secondary);
+}

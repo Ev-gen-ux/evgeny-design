@@ -1,0 +1,128 @@
+/*
+ * Word-by-word "generating" headline reveal, ambient background wash/mesh
+ * blobs/grain (rendered at the page root in the source, not scoped to hero),
+ * and the canvas network-graph are still deferred to step 09. Everything else —
+ * grid backdrop, cursor-follow spotlight, the three.js lattice + its scroll-
+ * driven fixed positioning, and the page-wide crosshair — is wired as of this step.
+ */
+.section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-140) var(--space-container-x) var(--space-100);
+  overflow: hidden;
+}
+
+/* Phone (2026-09-17, responsive pass) — the fixed --space-140 top padding
+   was tuned for desktop headroom above the headline; on a short phone
+   viewport it can push content toward/below the first screen. */
+@media (max-width: 640px) {
+  .section {
+    padding-top: var(--space-100);
+    padding-bottom: var(--space-60);
+  }
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.6;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(var(--color-slate-mist-rgb), 0.1) 0px, rgba(var(--color-slate-mist-rgb), 0.1) 1px, transparent 1px, transparent 48px),
+    repeating-linear-gradient(90deg, rgba(var(--color-slate-mist-rgb), 0.1) 0px, rgba(var(--color-slate-mist-rgb), 0.1) 1px, transparent 1px, transparent 48px);
+}
+
+.gridAnimated {
+  animation: driftGrid 50s linear infinite;
+}
+
+.spot {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  transition: background var(--duration-300) var(--ease-standard);
+}
+
+/* Fixed (not scoped to the hero box) — position/size/opacity roam per useLatticeLayout, based on whole-page scroll progress, matching the source's `position:fixed` wrapper. */
+.sceneWrap {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 0;
+  will-change: top, left, width, height;
+}
+
+.sceneCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.fallbackOrb {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(var(--color-accent-rgb), 0.28), transparent 60%),
+    radial-gradient(circle at 65% 70%, rgba(var(--color-slate-mist-rgb), 0.18), transparent 65%);
+  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+}
+
+.eyebrow {
+  margin-bottom: var(--space-14);
+}
+
+.tokenCounter {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-text-secondary);
+  height: 16px;
+  margin-bottom: var(--space-4);
+  transition: opacity 0.5s ease 0.15s;
+}
+
+.headline {
+  line-height: 0.98;
+  max-width: 17ch;
+  margin-bottom: var(--space-28);
+}
+
+.sub {
+  max-width: 620px;
+  margin-bottom: var(--space-36);
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-28);
+  margin-bottom: var(--space-60);
+}
+
+.typeTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-14);
+}
+
+.typeTag {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-text-secondary);
+  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.35);
+  padding: var(--space-6) var(--space-10);
+  display: inline-flex;
+  gap: var(--space-6);
+}
+
+.typeTagKey {
+  color: var(--color-accent);
+}

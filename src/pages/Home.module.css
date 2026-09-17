@@ -1,0 +1,13 @@
+/*
+ * 1:1 with the root wrapper div's inline style in Portfolio.dc.html for
+ * min-height/position. `overflow-x: clip` was added here in step 13 for the
+ * mesh-blob/hero-lattice overflow risk, but ANY non-visible `overflow` on an
+ * ancestor breaks `position: sticky` for descendants — and #pipeline's sticky
+ * frame needs that. Removed: the mesh blobs already have their own dedicated
+ * `overflow: hidden` wrapper (PageBackdrop.tsx) independent of this root, so
+ * nothing actually relied on clipping happening here.
+ */
+.root {
+  min-height: 100vh;
+  position: relative;
+}

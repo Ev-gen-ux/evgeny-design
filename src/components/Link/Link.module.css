@@ -1,0 +1,116 @@
+.link {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm-md);
+  text-decoration: none;
+  transition:
+    color var(--duration-200) var(--ease-standard),
+    border-color var(--duration-200) var(--ease-standard),
+    transform var(--duration-250) var(--ease-signature);
+}
+
+/* Header nav item — plain CSS hover (no cursor-tracking), matches the current site 1:1. */
+.nav {
+  color: var(--color-text-primary);
+  padding-bottom: 3px;
+  border-bottom: 1px solid transparent;
+}
+
+.nav:hover,
+.nav:focus-visible {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+/* Hero CTA / project links — persistent underline, color+border shift on hover.
+   The current site also applies a small cursor-magnet displacement here via JS;
+   that's layered on top of this static variant in the cursor-interaction hook step. */
+.underline {
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-slate-mist);
+}
+
+.underline:hover,
+.underline:focus-visible {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+/* "Open case study" style link — already Redline, border solidifies on hover. */
+.accent {
+  color: var(--color-accent);
+  border-bottom: 1px solid rgba(var(--color-accent-rgb), 0.5);
+}
+
+.accent:hover,
+.accent:focus-visible {
+  border-bottom-color: var(--color-accent);
+}
+
+/* Footer/contact links — color-only hover, no border ever (matches source: borderBottom stays 'none'). */
+.plain {
+  color: var(--color-text-secondary);
+  border-bottom: none;
+}
+
+.plain:hover,
+.plain:focus-visible {
+  color: var(--color-accent);
+}
+
+/* Contact row (phone/telegram/site/github) — same resting color as .plain, but the
+   hover behavior matches .nav (border-bottom appears, lift) instead of color-only.
+   Deliberate deviation from source's contactBase (user request, 2026-08-02). */
+.contactNav {
+  color: var(--color-text-secondary);
+  padding-bottom: 3px;
+  border-bottom: 1px solid transparent;
+}
+
+.contactNav:hover,
+.contactNav:focus-visible {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+/* Same color-only hover, but Vellum by default instead of Slate Mist (other-projects links). */
+.ghost {
+  color: var(--color-text-primary);
+  border-bottom: none;
+}
+
+.ghost:hover,
+.ghost:focus-visible {
+  color: var(--color-accent);
+}
+
+/* Contact email — big display-size link, persistent thick Redline underline. */
+.email {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.4vw, 30px);
+  font-weight: var(--fw-semibold);
+  color: var(--color-text-primary);
+  border-bottom: 2px solid var(--color-accent);
+  /* Own padding-bottom (space between the text and its underline) kept —
+     `margin-bottom` removed (2026-08-03): it used to be this element's own
+     "gap before the links row" back when that row sat right after it inside
+     `.inner`. Contact.module.css's `.inner` now owns that gap on its own
+     (padding-bottom: space-40) since the links+copyright row moved into a
+     separate `.footerRow` sibling — the two stacked, doubling the visible
+     gap to ~88px instead of the intended clean 40px. Only used here, so
+     nothing else depended on this margin. */
+  padding-bottom: var(--space-8);
+}
+
+.email:hover,
+.email:focus-visible {
+  color: var(--color-accent);
+}
+
+/* Not reduced-motion-gated — the source's nav/link hovers are static template
+   attributes, not JS-conditioned effects, so they're left running either way. */

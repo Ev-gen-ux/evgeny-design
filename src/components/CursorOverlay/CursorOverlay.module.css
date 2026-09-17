@@ -1,0 +1,44 @@
+/* 1:1 with cursorRingStyle/cursorDotStyle/cursorCoordStyle in Portfolio.dc.html. */
+.ring {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--color-accent);
+  background: transparent;
+  transition:
+    transform var(--duration-200) var(--ease-standard),
+    background-color var(--duration-200) var(--ease-standard);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.ringHover {
+  background: rgba(var(--color-accent-rgb), 0.14);
+}
+
+.dot {
+  position: fixed;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.coord {
+  position: fixed;
+  font-family: var(--font-mono);
+  font-size: var(--fs-tiny);
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-text-secondary);
+  pointer-events: none;
+  z-index: 9999;
+  white-space: pre;
+  transition: color var(--duration-200) var(--ease-standard);
+}
+
+.coordHover {
+  color: var(--color-accent);
+}
