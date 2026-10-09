@@ -50,15 +50,37 @@ export function MobileNavOverlay({ name, links, onHome, reducedMotion, open, onC
 
   useEffect(() => {
     if (!open) return;
-    // `document.body.style.overflow` alone doesn't actually stop scroll on
-    // this site — Lenis (see App.tsx) intercepts wheel/touch input and
-    // drives `window.scrollY` itself, independent of native overflow.
-    // Without `lenis.stop()`, the page behind this fixed overlay could
-    // still scroll under touch input even though it looked locked.
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    // Scroll lock is `lenis?.stop()` alone (2026-09-18, same-day revision —
+    // see App.tsx's docstring for the full story of why `autoToggle` stays
+    // at its default true). Lenis's own `.stop()` sets `overflow: clip` on
+    // `document.documentElement`, which blocks scrolling robustly regardless
+    // of input method (wheel, touch, keyboard, scrollbar drag) — a second,
+    // independent `document.body.style.overflow = 'hidden'` here used to
+    // duplicate that block on a different element, which was *harmless* for
+    // actually stopping scroll but was the root of the menu trigger's edge
+    // padding coming out wrong: two separately-toggled overflow sources
+    // fighting over the same scrollbar-width layout shift. Not setting our
+    // own overflow at all removes that conflict outright.
+    //
+    // The compensating `padding-right` still has to happen here, though —
+    // Lenis's own toggle still removes the scrollbar and still shifts
+    // available page width by that amount, same as any overflow:hidden
+    // would. Measured and applied *before* `lenis.stop()` runs, so the
+    // scrollbar is still present when we measure it. On a real mobile
+    // device (overlay scrollbars, no reserved width) this measures 0 and is
+    // a complete no-op either way.
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const prevPaddingRight = document.body.style.paddingRight;
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
     lenis?.stop();
-    firstLinkRef.current?.focus();
+    // `preventScroll` (2026-10-09) — without it, focusing a link that's
+    // still mid-`translateX` (the panel's own open transition hasn't
+    // finished yet) could make the browser auto-scroll the page to bring
+    // the not-yet-fully-on-screen element into view, which reads as the
+    // whole page lurching sideways right as the menu opens.
+    firstLinkRef.current?.focus({ preventScroll: true });
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -66,7 +88,7 @@ export function MobileNavOverlay({ name, links, onHome, reducedMotion, open, onC
     window.addEventListener('keydown', onKeyDown);
 
     return () => {
-      document.body.style.overflow = prevOverflow;
+      document.body.style.paddingRight = prevPaddingRight;
       lenis?.start();
       window.removeEventListener('keydown', onKeyDown);
     };
@@ -98,18 +120,6 @@ export function MobileNavOverlay({ name, links, onHome, reducedMotion, open, onC
             <span data-menu-asm="1">{l.label}</span>
           </a>
         ))}
-      </div>
-      {/* Bottom bar, same visual language as the page's own ChatBar (arrow +
-          "you:" prompt on the left, status dot + label on the right) — fills
-          what was empty space below the links and keeps the "you/agent"
-          chat framing consistent even inside the menu overlay. */}
-      <div className={styles.bottomBar}>
-        <span className={styles.arrow}>›</span>
-        <span className={styles.bottomText}>you: куда дальше?</span>
-        <span className={styles.bottomStatus}>
-          <span className={styles.bottomDot} aria-hidden="true" />
-          {links.length} routes
-        </span>
       </div>
     </div>
   );

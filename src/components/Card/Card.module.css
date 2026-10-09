@@ -17,8 +17,12 @@
      Tuned down twice more by direct user request (2026-08-01) after seeing it
      live — not a source value anymore, a deliberate visual preference. */
   background: rgba(var(--color-graphite-rgb), 0.18);
-  backdrop-filter: blur(6px);
+  /* `-webkit-` prefix before the standard property (2026-09-18) — see
+     Skills.module.css's identical comment for the full reasoning: the
+     production build's minifier was dropping whichever declaration came
+     first as a "duplicate," silently killing the blur site-wide. */
   -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
   padding: clamp(28px, 4vw, 56px);
   color: inherit;

@@ -14,18 +14,53 @@
 }
 
 html {
-  scroll-behavior: smooth;
-  /* Reserves the scrollbar's own width permanently (2026-09-17) — without
-     this, toggling `document.body.style.overflow:hidden` (MobileNavOverlay
-     locking background scroll while open) removes the scrollbar and the
-     whole page's available width grows by its ~15px, one-time, right as
-     the menu opens/closes. Header's `.nav` is `justify-content:space-
-     between`, so its right-aligned content (the menu trigger button)
-     visibly jumped — reported by the user as "padding jumps, the button on
-     the right sometimes hugs the edge, sometimes doesn't." Keeping the
-     gutter reserved at all times makes the available width constant
-     regardless of whether a scrollbar is actually needed. */
-  scrollbar-gutter: stable;
+  scroll-behavior: auto;
+  /* `overflow-x: clip` (2026-10-09) — the assembly-text animation
+     (`useAssemblyAnimation.ts`) scatters not-yet-revealed letters with a
+     `transform: translate()` whose horizontal component can reach
+     `±innerWidth * 0.13` (~±49px on a 375px phone). Chromium's scrollable-
+     overflow computation for the document counts that post-transform
+     position even though the spans are ordinary `position: static` inline
+     elements, which inflated `documentElement.scrollWidth` past the
+     viewport and let the page actually scroll sideways on mobile.
+     `overflow-x: clip` (not `hidden`) on `html` — the real root scrolling
+     element, not a nested wrapper div — clips that without creating a new
+     scroll container, so it doesn't touch `position: sticky` on any
+     descendant (confirmed: the mobile header's own `.nav { position:
+     sticky }` still pins correctly with this applied). A previous attempt
+     at a similar fix added `overflow-x: clip` to `Home.module.css`'s
+     `.root` instead and broke Pipeline's sticky frame for exactly that
+     reason — see that file's own comment. Putting it here instead of on
+     `.root` avoids repeating that mistake.
+     Below is the pre-existing fix for an unrelated issue — several
+     `position: fixed` elements sit deliberately just off the right edge
+     when closed (MobileNavOverlay's `translateX(100%)` panel, with its own
+     `.glow` decoration inside it) rather than being unmounted, so their
+     close→open transition has something to animate from (see that
+     component's own docstring). Without this, iOS Safari's horizontal
+     rubber-band/overscroll bounce — which can trigger from a vertical
+     scroll gesture too, not just a sideways swipe — can transiently shift
+     the viewport enough to reveal a sliver of whatever sits just past the
+     real edge: reported live as a flickering strip of the closed nav
+     panel's content and its glow "orb" appearing over Hero mid-scroll,
+     then disappearing. `overscroll-behavior-x: none` stops that bounce
+     specifically (vertical scroll/Lenis untouched) without needing to
+     unmount or reposition anything that's off-screen on purpose.
+     `scrollbar-gutter: stable` (2026-09-17) and then `stable both-edges`
+     (2026-09-18) were tried here to stop the mobile menu trigger's right
+     padding from jumping when body-scroll-lock toggled the scrollbar on
+     desktop/devtools-emulation — but `both-edges` made the *wrong* value
+     the permanently-stable one: the button ended up flush against the true
+     edge, always, instead of with its intended padding. Whatever this
+     engine does internally when resolving `right:0` on a full-width
+     `position:fixed` element against a gutter-reserved viewport, it isn't
+     safe to reason about further — removed entirely. The original problem
+     (scrollbar hide/show width jump) is now fixed at its source instead,
+     in MobileNavOverlay.tsx (JS-computed body padding-right, only while
+     the menu is open, scoped to `<body>` alone — never touches `.nav`'s
+     own containing-block math at all). */
+  overflow-x: clip;
+  overscroll-behavior-x: none;
 }
 
 body {
@@ -33,6 +68,9 @@ body {
   background: var(--color-bg-page);
   color: var(--color-text-primary);
   font-family: var(--font-display);
+  /* Paired with `html`'s own `overscroll-behavior-x` above — some engines
+     only respect it reliably on whichever element actually scrolls. */
+  overscroll-behavior-x: none;
 }
 
 ::selection {
@@ -121,6 +159,60 @@ span:focus-visible {
 @keyframes projSpin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Unified inter-section gap on mobile (2026-09-18, explicit user request —
+   the per-section paddingTop/paddingBottom props on <Section> ranged from
+   60-100px with no consistent pattern, producing 140-200px gaps between
+   different section pairs). Every section listed here now gets 80px top +
+   80px bottom on phone — same target as Hero's own bottom padding
+   (Hero.module.css) and ContactCta's own top padding (ContactCta.module.css),
+   both edited directly in their own stylesheets since those already go
+   through a real CSS class. These sections don't have that option: `<Section
+   paddingTop={60} paddingBottom={100}>` (see e.g. sections/About/About.tsx)
+   converts straight to an INLINE style — inline always wins over an external
+   stylesheet rule for the same element/property, `!important` is the
+   correct, standard way to override that from a media query, not a shortcut
+   around the architecture. `#pipeline` is deliberately absent — its stacked
+   (narrow-viewport) layout already pads 80px top+bottom via its own inline
+   style (see sections/Pipeline/Pipeline.tsx's `stickyStyle`), already
+   matching this target, nothing to override. `#hero`/`#contact` are handled
+   in their own files (only one side of each needs touching, not both). */
+@media (max-width: 640px) {
+  #about,
+  #work,
+  #projects,
+  #experience,
+  #skills,
+  #education {
+    padding-top: 80px !important;
+    padding-bottom: 80px !important;
+  }
+}
+
+/* Desktop only (>= 1025px, 2026-09-26, explicit user request): exactly 200px between
+   sections, carried entirely by ONE padding so the inspector shows 200px on the
+   section itself: 200px on top of every section, 0 at the bottom. Phone and tablet
+   keep their own values above. `#about` pulls up by Hero's own 84px bottom padding
+   (it keeps the tags above the fixed ChatBar) so the visible gap Hero -> About is
+   also 200. `#work` and `#pipeline` are pinned sections: Work only gets the top,
+   the rest comes from the pin. Inline padding from <Section> needs !important. */
+@media (min-width: 1025px) {
+  #about,
+  #work,
+  #projects,
+  #experience,
+  #skills,
+  #education {
+    padding-top: 200px !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* #about: 300px = the 200px above + 100px more between Hero and About (user request). */
+  #about {
+    margin-top: -84px;
+    padding-top: 300px !important;
   }
 }
 

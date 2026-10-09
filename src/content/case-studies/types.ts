@@ -60,6 +60,8 @@ export interface CaseLink {
 
 export interface CaseStudyDetail {
   title: string;
+  /** Short label for the sibling-case nav link at the bottom of other case pages — falls back to `title` when unset. */
+  navLabel?: string;
   subtitle: string;
   tags: string[];
   meta: MetaItem[];

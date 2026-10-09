@@ -71,6 +71,17 @@
   padding: 120px var(--space-container-x) 120px;
 }
 
+/* Phone (2026-10-09): the desktop 120px top padding (tuned to clear the
+   fixed Header + leave breathing room above the content column) reads as a
+   huge dead gap between the sticky header and "← Вернуться к кейсам" on a
+   phone screen — shrunk to a fixed 24px per explicit user request, on every
+   case-study page (this file is shared across all of them). */
+@media (max-width: 640px) {
+  .main {
+    padding-top: 24px;
+  }
+}
+
 .backLink {
   display: inline-flex;
   align-items: center;
@@ -156,6 +167,13 @@
   margin: 0 0 var(--space-20);
   max-width: 66ch;
   text-wrap: pretty;
+  /* Long unbroken tokens (2026-09-19, reported: a paragraph mentioning
+     "theme.colors.button.primary.background.hover" ran off the right edge
+     on mobile) — dot/slash-joined identifiers have no space or hyphen for
+     the browser's normal line-breaking to use, so without this they're
+     treated as one unbreakable "word" and simply overflow the container
+     instead of wrapping. Same fix `.pairWas`/`.pairShould` already use. */
+  overflow-wrap: break-word;
 }
 
 .numberedList {
@@ -238,6 +256,7 @@
   line-height: var(--lh-loose);
   color: var(--color-text-secondary);
   max-width: 60ch;
+  overflow-wrap: break-word;
 }
 
 /* Desktop/tablet: no horizontal scroll wrapper needed — matches source, the
@@ -375,6 +394,7 @@
 
 .personaGridValue {
   color: var(--color-text-body);
+  overflow-wrap: break-word;
 }
 
 /* Solution (log-service) */
@@ -403,6 +423,7 @@
   font-size: var(--fs-md);
   line-height: var(--lh-loose);
   color: var(--color-text-body);
+  overflow-wrap: break-word;
 }
 
 .scenarioHeading {
@@ -477,6 +498,7 @@
   font-size: var(--fs-lg);
   line-height: var(--lh-relaxed-md);
   color: var(--color-text-body);
+  overflow-wrap: break-word;
 }
 
 .edgeCaseNote {
@@ -566,6 +588,7 @@
   font-size: var(--fs-md);
   line-height: var(--lh-loose);
   color: var(--color-text-body);
+  overflow-wrap: break-word;
 }
 
 .pairsBox {
@@ -644,6 +667,7 @@
   color: var(--color-text-body);
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.3);
   padding: var(--space-6) 11px;
+  overflow-wrap: break-word;
 }
 
 .sectionNote {
@@ -652,6 +676,10 @@
   line-height: var(--lh-loose);
   color: var(--color-text-secondary);
   max-width: 64ch;
+  /* Same fix as `.para` above — this is the exact element reported
+     overflowing (the token-naming note mentioning
+     "theme.colors.button.primary.background.hover"). */
+  overflow-wrap: break-word;
 }
 
 /* Outcome */
@@ -662,6 +690,7 @@
   margin: 0;
   max-width: 62ch;
   text-wrap: pretty;
+  overflow-wrap: break-word;
 }
 
 .ndaBox {
@@ -739,26 +768,68 @@
     grid-template-columns: 1fr;
     gap: var(--space-6);
   }
+
+  /* Number-then-text stack, not side by side (2026-09-18, user feedback —
+     the 44px number column left the description text sitting narrow and
+     wrapping hard against the right edge on phone). Description text now
+     reads full-width below its own number, same one-column pattern as the
+     other grids above. */
+  .numberedRow,
+  .metricRow {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  /* Stacked to one column, "было" and "стало" no longer sit side by side
+     under their own header cell (2026-09-18, user feedback — "если было,
+     то должно быть видно как стало, а сейчас не видно как стало"): the
+     strikethrough alone doesn't tell you the very next line is the fix for
+     it once the two-column table becomes a single vertical list. `.pairsHead`
+     collapses to one label ("БЫЛО → СТАЛО" instead of two separate cells
+     that used to line up with their own column) and every `.pairShould`
+     gets its own inline "→" marker, so the was/should relationship reads
+     per-row without needing the header above it. */
+  .pairsHeadCell:last-child {
+    display: none;
+  }
+
+  .pairsHeadCell:first-child::after {
+    content: ' → стало';
+  }
+
+  .pairShould {
+    border-left: none;
+    border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+  }
+
+  .pairShould::before {
+    content: '→ ';
+  }
 }
 
 /*
  * "you ask / agent replies" prompt for case-study sections — the dots/line
  * mechanic itself now lives in the shared `components/PromptSteps`
  * (extracted 2026-08-03 once About and six home-page sections needed the
- * exact same markup). What's left here is purely this page's own layout:
- * `.promptSection` gives each prompted section a `padding-left` gutter for
- * the dot column (heading/paragraphs/etc. sit indented at that padding,
- * normal flow); `PromptSteps`'s own root has no left-margin opinion, so
- * `.promptStepsIndent` (passed as its `className` prop at each call site)
- * pulls it back by the same amount, landing its dots at x=0 in that gutter.
+ * exact same markup).
+ *
+ * `.promptSection` used to carry a 24px `padding-left` gutter that indented
+ * every heading/paragraph/table in from the dot column (`.promptStepsIndent`
+ * pulled `PromptSteps`'s own root back by the same amount so its dots sat
+ * at x=0 in that gutter — content started at x=24, one full gutter to the
+ * right of the dot). Removed (2026-09-18, explicit user request, with a
+ * measured comparison against `SelectedWork`'s cards on the home page):
+ * the dot itself stays exactly where it was (still x=0 — only the CONTENT
+ * below it moved), but content now also starts at x=0, flush with the dot
+ * and with the page's other flush-left elements (back-link, tags, title),
+ * instead of sitting indented a little to its right.
  */
 .promptSection {
   position: relative;
-  padding-left: 24px;
 }
 
 .promptStepsIndent {
-  margin-left: -24px;
+  margin-left: 0;
 }
 
 /*

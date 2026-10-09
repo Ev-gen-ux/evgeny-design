@@ -16,8 +16,12 @@ export interface CaseStudyLink {
 export interface CaseStudySummary {
   id: string;
   tag: string;
+  /** Extra badges next to `tag`, same accent style — status/format markers. Optional, only set where it applies. */
+  extraTags?: string[];
   type: string;
   title: string;
+  /** One-sentence gist (≤2 lines on the 3D card) — shown under the stats in the cylinder variant; doesn't repeat the title or metrics. */
+  teaser: string;
   metrics: { label: string; value: string }[];
   blocks: CaseStudyBlock[];
   links: CaseStudyLink[];
@@ -25,10 +29,45 @@ export interface CaseStudySummary {
 
 export const caseStudies: CaseStudySummary[] = [
   {
+    id: 'log-service',
+    tag: 'banking back office',
+    type: 'внутренний B2B-продукт',
+    title: 'Log-service — управление уровнями логирования',
+    teaser: 'Инженеры банка меняют уровни логирования сервисов на трёх средах в реальном времени без перезапуска, а каждое изменение попадает в журнал.',
+    metrics: [
+      { label: 'target', value: '≤3 клика' },
+      { label: 'services table', value: '~120 строк' },
+      { label: 'audit log', value: '30 дней' },
+    ],
+    blocks: [
+      {
+        label: 'problem',
+        text: 'DevOps-инженеры, разработчики и тестировщики банка меняют уровни логирования (VERBOSE → DEBUG → INFO → WARN → ERROR → FATAL) на трёх независимых средах в реальном времени, без перезапуска сервиса — и не имеют для этого понятного интерфейса.',
+      },
+      {
+        label: 'role',
+        text: 'Полный цикл продуктового дизайна: сбор требований, сценарии, спецификация состояний, UI на базе банковской дизайн-системы UI-Library.',
+      },
+      {
+        label: 'solution',
+        text: 'Три экрана: настройка изменений (таблица ~120 сервисов с виртуальным скроллом, поиском, bulk-редактированием), история изменений (read-only аудит-лог за 30 дней, фильтры, экспорт в CSV), профиль по умолчанию (глобальный шаблон уровней). Проработаны edge cases: конкурентное редактирование, авто-откат к дефолту, hot-reload с индикацией на уровне строки.',
+      },
+      {
+        label: 'result',
+        text: 'Целевая метрика — смена уровня логирования одного сервиса за ≤3 клика от входа на экран; bulk-изменение 10+ сервисов без ошибок.',
+      },
+    ],
+    links: [
+      { label: 'prototype', url: 'https://log-service-ten.vercel.app/log-settings' },
+      { label: 'PRD', url: 'https://volcano-cerise-e05.notion.site/PRD-v1-0-3473555dc07781f19d32fc372a0f51d2' },
+    ],
+  },
+  {
     id: 'ai-pdp-ds',
     tag: 'design system from zero',
     type: 'дизайн-система · инструмент',
     title: 'AI-PDP-DS — дизайн-система с AI-agent контрактом',
+    teaser: 'Библиотека компонентов остаётся согласованной, даже когда код пишут AI-агенты: перед работой они проходят обязательные проверки, а каждый компонент подключён через Code Connect.',
     metrics: [
       { label: 'ai gate-checks', value: '4' },
       { label: 'components shipped', value: '8+' },
@@ -54,40 +93,11 @@ export const caseStudies: CaseStudySummary[] = [
     ],
   },
   {
-    id: 'log-service',
-    tag: 'banking back office',
-    type: 'внутренний B2B-продукт · ПАО Промсвязьбанк',
-    title: 'Log-service — управление уровнями логирования',
-    metrics: [
-      { label: 'target', value: '≤3 клика' },
-      { label: 'services table', value: '~120 строк' },
-      { label: 'audit log', value: '30 дней' },
-    ],
-    blocks: [
-      {
-        label: 'problem',
-        text: 'DevOps-инженеры, разработчики и тестировщики банка меняют уровни логирования (VERBOSE → DEBUG → INFO → WARN → ERROR → FATAL) на трёх независимых средах в реальном времени, без перезапуска сервиса — и не имеют для этого понятного интерфейса.',
-      },
-      {
-        label: 'role',
-        text: 'Полный цикл продуктового дизайна: сбор требований, сценарии, спецификация состояний, UI на базе банковской дизайн-системы UI-Library.',
-      },
-      {
-        label: 'solution',
-        text: 'Три экрана: настройка изменений (таблица ~120 сервисов с виртуальным скроллом, поиском, bulk-редактированием), история изменений (read-only аудит-лог за 30 дней, фильтры, экспорт в CSV), профиль по умолчанию (глобальный шаблон уровней). Проработаны edge cases: конкурентное редактирование, авто-откат к дефолту, hot-reload с индикацией на уровне строки.',
-      },
-      {
-        label: 'result',
-        text: 'Целевая метрика — смена уровня логирования одного сервиса за ≤3 клика от входа на экран; bulk-изменение 10+ сервисов без ошибок.',
-      },
-    ],
-    links: [],
-  },
-  {
     id: 'lindausugar',
     tag: 'live product · DE market',
     type: 'landing page · full-cycle',
     title: 'LindauSugar — лендинг салона сахарной депиляции',
+    teaser: 'Сайт салона в Германии с онлайн-записью через Treatwell на немецком языке. Контент правится через CMS, разработчик не нужен, cookie-баннер и Impressum соответствуют GDPR.',
     metrics: [
       { label: 'content update', value: '~60 сек' },
       { label: 'target bookings', value: '30+/мес' },
@@ -112,8 +122,38 @@ export const caseStudies: CaseStudySummary[] = [
       },
     ],
     links: [
-      { label: 'сайт', url: 'https://lindausugar.vercel.app' },
-      { label: 'sanity studio', url: 'https://lindausugar.sanity.studio' },
+      { label: 'visit site', url: 'https://lindausugar.vercel.app' },
+      { label: 'PRD', url: 'https://volcano-cerise-e05.notion.site/LindauSugar-PRD-v4-0-3623555dc077810db5cde235024f730f' },
+    ],
+  },
+  {
+    id: 'ui-concept-b2b-saas',
+    tag: 'concept',
+    extraTags: ['web'],
+    type: 'corporate bank',
+    title: 'UI Concept B2B SaaS — банковский кабинет, который не выглядит как шаблон',
+    teaser: 'Тёмная тема, своя палитра и переиспользуемые компоненты вместо светлых таблиц и синих акцентов. Акцентный градиент только в двух точках интерфейса.',
+    metrics: [
+      { label: 'экраны', value: '4' },
+      { label: 'компоненты', value: '20+' },
+      { label: 'токены палитры', value: '110+' },
+    ],
+    blocks: [
+      {
+        label: 'problem',
+        text: 'Корпоративные банковские кабинеты почти всегда выглядят одинаково: светлые таблицы, синие акценты, дефолтные компоненты UI-кита — функционально решено, визуально неотличимо от десятков похожих продуктов.',
+      },
+      {
+        label: 'solution',
+        text: 'Тёмная тема как основа, а не декоративный режим сверху; акцентный градиент только в двух точках интерфейса. Вся палитра — примитивы из макета, переиспользуемые компоненты вместо разовой вёрстки под каждый экран.',
+      },
+      {
+        label: 'result',
+        text: 'Работающее React-приложение на четырёх экранах: главная, таблица платежей, платёжное поручение, дашборд операций — собранное по токенам и компонентам собственной системы.',
+      },
+    ],
+    links: [
+      { label: 'prototype', url: 'https://ui-concept-b2b-saas.vercel.app' },
     ],
   },
 ];

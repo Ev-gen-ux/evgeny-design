@@ -8,8 +8,12 @@
   font-size: var(--fs-xs);
   color: var(--color-text-secondary);
   background: rgba(14, 27, 46, 0.7);
-  backdrop-filter: blur(10px);
+  /* `-webkit-` prefix before the standard property (2026-09-18) — see
+     Skills.module.css's identical comment for the full reasoning: the
+     production build's minifier was dropping whichever declaration came
+     first as a "duplicate," silently killing the blur site-wide. */
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   padding: var(--space-8) var(--space-12);
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
   display: flex;

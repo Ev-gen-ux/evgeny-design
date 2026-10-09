@@ -7,19 +7,25 @@
 .overlay {
   position: fixed;
   inset: 0;
-  /* `100vh` fallback + `100dvh` override (2026-09-17 follow-up) — on mobile
-     Safari, a `position:fixed` element with `inset:0` sizes against the
-     LARGE/static viewport (as if the address bar were already hidden), not
-     the actually-visible one — the classic cause of "have to scroll to see
-     the rest of a supposedly fullscreen fixed overlay," exactly what the
-     user reported (had to scroll to reach `.bottomBar`). `dvh` tracks the
-     real visible viewport instead. Also why `.bottomBar` below is
-     `position:fixed` but effectively anchored to *this* box, not the raw
-     viewport — `transform` on this element makes it the containing block
-     for fixed descendants (CSS spec), which is fine as long as this box's
-     own height is correct, hence fixing it here rather than there. */
+  /* `100vh`, not `100dvh`, while closed (2026-09-19, real-device report —
+     a "shadow"/dark-underlay flash caught live in a screenshot, right in
+     the same transitional zone as two other now-fixed toolbar-animation
+     glitches this session). `100dvh` recalculates continuously as
+     Chrome-on-Android's own dynamic toolbar hides/shows *during ordinary
+     page scroll* — this element sits at `inset:0` (a full-viewport box)
+     for the ~100% of the time it's actually closed too, so every one of
+     those recalculations forces a real layout pass on it regardless, on
+     top of an already-heavy `backdrop-filter: blur(16px)`. That's a
+     concrete, structural trigger for the exact class of compositor glitch
+     the header/ChatBar fixes earlier today were chasing, and unlike
+     those, a stable value here doesn't cost anything: this box's *exact*
+     height only ever mattered for the reason `dvh` was added in the first
+     place — keeping the links column clear of the toolbar while the panel
+     is actually open and visible. While closed, it's fully off-screen (`transform`) regardless
+     of being a few px short/tall, so there's nothing to protect there.
+     `[data-open='1']` below switches to `dvh` only for the window it's
+     actually needed. */
   height: 100vh;
-  height: 100dvh;
   /* Above Header's .nav (z-index:100), below CursorOverlay's 9999 — see
      process log for the full z-index survey done before picking this. */
   z-index: 200;
@@ -27,8 +33,12 @@
   flex-direction: column;
   overflow: hidden;
   background: rgba(var(--color-blueprint-rgb), 0.97);
-  backdrop-filter: blur(16px);
+  /* `-webkit-` prefix before the standard property (2026-09-18) — see
+     Skills.module.css's identical comment for the full reasoning: the
+     production build's minifier was dropping whichever declaration came
+     first as a "duplicate," silently killing the blur site-wide. */
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   /* Longhand, not the `padding` shorthand (2026-09-17 follow-up — reported
      by the user as "no left/right padding at all" when open) — kept as
      four independent declarations so a problem resolving any one custom
@@ -78,6 +88,11 @@
 }
 
 .overlay[data-open='1'] {
+  /* `dvh` only while genuinely open — see `.overlay`'s own comment above
+     for why the closed state deliberately stays on a stable `100vh`
+     instead. This is the window where the real visible-viewport height
+     (not the toolbar-inflated one) actually matters. */
+  height: 100dvh;
   transform: translateX(0);
   pointer-events: auto;
 }
@@ -98,7 +113,7 @@
      without it, `.grid`/`.glow` (position:absolute) would stack ABOVE this
      plain-flow flex child regardless of DOM order, per CSS stacking rules
      (any positioned element outranks a non-positioned one in the same
-     context). Same fix on `.links`/`.bottomBar` below. */
+     context). Same fix on `.links` below. */
   position: relative;
   z-index: 1;
 }
@@ -117,14 +132,10 @@
      user's own screenshot feedback) — links start right under the top row
      instead of floating in the middle of a mostly-empty viewport. No
      internal scroll container here (dropped the earlier `overflow-y:auto`
-     safety net, per explicit user request) — `.bottomBar` below is now
-     genuinely `position:fixed` to the true viewport bottom, not part of
-     this flex flow, so this column doesn't need to manage the leftover
-     space around it at all; `padding-bottom` just keeps its own content
-     clear of the fixed bar. */
+     safety net, per explicit user request). */
   gap: var(--space-24);
   padding-top: var(--space-32);
-  padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px) + var(--space-24));
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-24));
   position: relative;
   z-index: 1;
 }
@@ -148,59 +159,3 @@
   color: var(--color-accent);
 }
 
-/* Bottom bar — same visual language as components/ChatBar (arrow + "you:"
-   prompt, status dot on the right). Genuinely `position:fixed` to the true
-   viewport bottom (2026-09-17 follow-up, per explicit user request — it was
-   a flex child before, pinned only "within" the overlay's own flow, which
-   read as not truly docked). Safe-area padding accounts for iOS/Android's
-   bottom gesture bar — real only once `viewport-fit=cover` is set on the
-   page's viewport meta tag (see index.html); falls back to 0 everywhere
-   else. */
-.bottomBar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--space-10);
-  height: 52px;
-  padding: 0 var(--space-16);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
-  background: rgba(var(--color-graphite-rgb), 0.18);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-}
-
-.arrow {
-  flex-shrink: 0;
-  color: var(--color-accent);
-}
-
-.bottomText {
-  color: var(--color-text-primary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.bottomStatus {
-  flex-shrink: 0;
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: var(--space-8);
-  color: var(--color-text-secondary);
-  font-size: var(--fs-xs);
-  letter-spacing: var(--tracking-wider);
-}
-
-.bottomDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #4ade80;
-}

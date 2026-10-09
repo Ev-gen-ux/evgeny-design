@@ -2,10 +2,10 @@ import type { CaseStudyDetail } from './types';
 
 /** 1:1 with STUDIES['log-service'] in Case Study.dc.html. */
 export const logService: CaseStudyDetail = {
-  title: 'Управление уровнями логирования',
+  title: 'Log Service',
   subtitle:
     'Внутренний B2B-инструмент для банковской ДБО-платформы — fleet-управление уровнями логирования микросервисов в реальном времени.',
-  tags: ['Banking / Fintech B2B', 'Internal Admin Tool', 'ПАО Промсвязьбанк', '2026'],
+  tags: ['Banking / Fintech B2B', 'Internal Admin Tool', '2026'],
   meta: [
     {
       label: 'роль',
@@ -90,8 +90,11 @@ export const logService: CaseStudyDetail = {
   outcome:
     'Полностью проработанная спецификация (бриф → конкурентный анализ → персоны → PRD → UI-спецификация на дизайн-системе UI-Library), готовая к передаче в разработку: закрывает 100% нужных фич против 44% у лучшего конкурента, с двумя уникальными механиками — time-limited sessions и bulk fleet management, — которых нет ни у одного игрока рынка.',
   hasMatrix: true,
-  hasNda: true,
-  links: [],
+  hasNda: false,
+  links: [
+    { label: 'prototype', url: 'https://log-service-ten.vercel.app/log-settings' },
+    { label: 'PRD', url: 'https://volcano-cerise-e05.notion.site/PRD-v1-0-3473555dc07781f19d32fc372a0f51d2' },
+  ],
 };
 
 /** 1:1 with MATRIX/CELL_TEXT/CELL_COLOR in Case Study.dc.html — feeds the feature-coverage bars + comparison table. */

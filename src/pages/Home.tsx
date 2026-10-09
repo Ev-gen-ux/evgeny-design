@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useLenis } from 'lenis/react';
-import { CursorOverlay, PageBackdrop, ChatBar, GrainOverlay, ThemeToggle } from '../components';
+import { CursorOverlay, PageBackdrop, ChatBar, GrainOverlay } from '../components';
 import { useCursorTracker } from '../hooks/useCursorTracker';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useAssemblyAnimation } from '../hooks/useAssemblyAnimation';
@@ -76,7 +76,8 @@ export function Home() {
       </ScrollRevealProvider>
       <ChatBar barRef={chatBarRef} textRef={chatTextRef} statusDotRef={chatStatusDotRef} statusTextRef={chatStatusTextRef} />
       <GrainOverlay />
-      <ThemeToggle />
+      {/* Mono theme switcher hidden site-wide (2026-09-18, explicit user
+          request) — component + hook are untouched, just not mounted here. */}
     </div>
   );
 }

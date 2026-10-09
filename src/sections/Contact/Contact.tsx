@@ -1,4 +1,4 @@
-import { Section, Footer, ContactCta } from '../../components';
+import { Section, ContactFooter } from '../../components';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
@@ -33,8 +33,7 @@ export function Contact() {
       asmSync
       style={{ ...reveal, position: 'relative', overflow: 'hidden' }}
     >
-      <ContactCta reducedMotion={reducedMotion} />
-      <Footer />
+      <ContactFooter reducedMotion={reducedMotion} />
     </Section>
   );
 }

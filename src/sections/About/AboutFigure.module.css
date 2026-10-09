@@ -1,0 +1,72 @@
+.root {
+  position: relative;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-28);
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: fit-content;
+  max-width: 40ch;
+}
+
+.title {
+  align-self: flex-start;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2vw, 30px);
+  font-weight: var(--fw-semibold);
+  line-height: 1.2;
+  color: var(--color-text-primary);
+  transition: color var(--duration-300) var(--ease-standard);
+}
+
+.item:hover .title {
+  color: var(--color-accent);
+}
+
+.text {
+  margin: 0;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+/* Leader lines: a fixed overlay above the canvas and below the cursor, ignoring the pointer. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+}
+
+.line {
+  fill: none;
+  stroke: rgba(var(--color-slate-mist-rgb), 0.55);
+  stroke-width: 1;
+  transition: stroke var(--duration-300) var(--ease-standard);
+}
+
+.lineOn {
+  stroke: var(--color-accent);
+}
+
+.dot {
+  fill: rgba(var(--color-slate-mist-rgb), 0.8);
+  transition: fill var(--duration-300) var(--ease-standard);
+}
+
+.dotOn {
+  fill: var(--color-accent);
+}

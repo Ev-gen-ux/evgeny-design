@@ -27,14 +27,38 @@
   padding: 0 clamp(20px, 4vw, 56px);
   /* Same glass-surface values as components/Card (2026-08-03, per explicit request) — background/backdrop-filter/border color 1:1, border-top only (not all sides) since this is an edge-to-edge bar, not a boxed card. */
   background: rgba(var(--color-graphite-rgb), 0.18);
-  backdrop-filter: blur(6px);
+  /* `-webkit-` prefix before the standard property (2026-09-18) — see
+     Skills.module.css's identical comment for the full reasoning: the
+     production build's minifier was dropping whichever declaration came
+     first as a "duplicate," silently killing the blur site-wide. */
   -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--duration-350) var(--ease-standard);
+  /* `will-change` (2026-09-19, real-device report — bar's first appearance
+     showed as a plain solid strip with no blur behind it at all, then the
+     glass effect "caught up" a moment later, alongside a small positional
+     jump). A newly-promoted compositor layer's `backdrop-filter` can paint
+     one or more frames flat/unblurred on a mobile GPU before the blur
+     itself is ready — this element sits at `opacity: 0` the whole time
+     before its first reveal, giving the browser a chance to allocate that
+     layer (and start blurring) ahead of time instead of on-demand exactly
+     when it needs to already look right. Also promotes `top`/`bottom`,
+     since `useChatBar`'s own `syncBarPosition()` writes an inline `top`
+     every frame — same "layer ready before it's visible" reasoning.
+     Reported live as improved but not gone — a brief plain-color flash
+     right as the bar first appears, no text/blur, same shape of problem.
+     `will-change` is only a hint, not a guarantee of immediate layer
+     creation on every engine — exact same gap already found and fixed for
+     Header's `.nav` (`will-change: transform` alone didn't hold either;
+     a real `transform` did). `translateZ(0)` here forces that layer
+     unconditionally from first paint, same mechanism. */
+  will-change: opacity, backdrop-filter, top;
+  transform: translateZ(0);
 }
 
 .bar[data-visible='1'] {
@@ -117,7 +141,7 @@
 }
 
 .statusDot[data-state='done'] {
-  background: #4ade80;
+  background: var(--color-success);
 }
 
 @media (prefers-reduced-motion: reduce) {

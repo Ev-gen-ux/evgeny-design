@@ -65,3 +65,29 @@
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
 }
+
+/* Phone (2026-09-18, explicit user request) — the desktop/tablet layout is
+   year-left/title-beside-it/links-wrapping-into-whatever-space-is-left; on a
+   narrow viewport that's what produced the ugly "links orphaned on their own
+   short line far left" look. Mobile-only: stack year → title → links, each
+   its own row, in that DOM order (see Education.tsx — already year/title/
+   links in source order, nothing to reorder). Desktop/tablet untouched. */
+@media (max-width: 640px) {
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-8);
+  }
+
+  .title {
+    min-width: 0;
+  }
+
+  /* Extra breathing room above the links row specifically (2026-09-18,
+     explicit user request — links were touching the title text directly
+     above them). `.row`'s own `gap` already spaces year/title/links evenly;
+     this adds on top of that gap, only for the title→links transition. */
+  .links {
+    margin-top: var(--space-8);
+  }
+}

@@ -19,8 +19,30 @@
    viewport it can push content toward/below the first screen. */
 @media (max-width: 640px) {
   .section {
-    padding-top: var(--space-100);
-    padding-bottom: var(--space-60);
+    /* Reduced from `--space-100` to `--space-40` (2026-09-19) — this was
+       pure header-clearance for a `position: fixed`, out-of-flow `.nav`
+       overlaid on top of Hero's own padding. `.nav` is `position: sticky`
+       on this same breakpoint now (see Header.module.css's own comment),
+       occupying its own real ~63px in normal flow directly above Hero —
+       keeping this at 100px would stack an extra ~63px of unintended gap
+       on top of that (nav-height + this padding, instead of just this
+       padding with nav overlaid inside it). 40px keeps a little breathing
+       room below the now in-flow nav, roughly matching the original
+       total visual distance from the true top of the page to Hero's
+       content. */
+    /* Halved again to `--space-20` (2026-09-28, explicit user request: gap
+       to header felt twice as large as it should), then halved a second
+       time to `--space-10` (2026-10-09, explicit user request: still too
+       much air between the sticky nav and the eyebrow line). */
+    padding-top: var(--space-10);
+    /* 80px (2026-09-18, explicit user request) — unified inter-section gap
+       on mobile: every section boundary is 80px+80px=160px, top+bottom of
+       the two sections either side of it. Hero's own top stays untouched
+       (header-clearance, not an inter-section gap — Hero has no section
+       above it). See sections/About, SelectedWork, Projects, Experience,
+       Skills, Education (index.css's mobile override) and ContactCta for
+       the matching other halves of each boundary. */
+    padding-bottom: 80px;
   }
 }
 
@@ -126,3 +148,262 @@
 .typeTagKey {
   color: var(--color-accent);
 }
+
+/* Phone: same stacked flow as before; the goal line sits right under the headline (it used to be the tail of it). */
+.goal {
+  line-height: 1;
+  max-width: 17ch;
+  margin-bottom: var(--space-28);
+}
+
+/*
+ * Phone vertical stack (2026-09-28 v2, replaces the earlier corner-grid pass
+ * per user-supplied wireframe reference: full-width stacked blocks, not a
+ * 2-column corner layout — eyebrow on top as its own line-wrapped block, big
+ * full-width headline/sub, CTA links in a single row, centered figure, goal
+ * block right-aligned below it, type-tag row spanning full width at the very
+ * bottom). DOM order is unchanged (counter, eyebrow, headline, sub, CTAs,
+ * tags, goal) — `order` reflows tags/goal visually without touching the DOM
+ * walk the assembly animation depends on.
+ */
+@media (max-width: 640px) {
+  .inner {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - var(--space-20) - 80px);
+  }
+
+  .tokenCounter {
+    order: 1;
+  }
+
+  .eyebrow {
+    order: 2;
+    text-align: left;
+    max-width: none;
+    margin-bottom: var(--space-20);
+  }
+
+  /* Two-class selector (matches .inner .goal below, and the desktop block's
+     own .inner .headline): needed to out-specificity the Text component's
+     own `.hero` variant class, which sets --fs-fluid-hero and otherwise wins
+     the cascade regardless of source order. */
+  .inner .headline {
+    order: 3;
+    /* Shrunk (2026-10-09, explicit user request: needed to look proportionate
+       against the restored centered figure + the smaller corner blocks below). */
+    font-size: clamp(26px, 8.5vw, 36px);
+    line-height: 1.05;
+    max-width: none;
+    width: 100%;
+    margin-bottom: var(--space-16);
+  }
+
+  .sub {
+    order: 4;
+    font-size: var(--fs-sm);
+    max-width: none;
+    margin-bottom: var(--space-24);
+  }
+
+  .ctaRow {
+    order: 5;
+    flex-wrap: nowrap;
+    gap: var(--space-16);
+    margin-bottom: 0;
+  }
+
+  /* Single-row CTA links (per wireframe): the underline links' own font-size
+     (var(--fs-sm-md), set on Link.module.css's .link) is a touch too wide for
+     all three to share one line at 375px — element selector on the real <a>
+     out-specificities that single class without needing a two-class hack. */
+  .ctaRow a {
+    font-size: var(--fs-xs);
+    white-space: nowrap;
+  }
+
+  /* max-width is ch-based (2026-10-09 v4), wide enough for a 3-line wrap at
+     22px. Right edge stops at .inner's own content edge — the same
+     `--space-container-x` safe margin every other Hero element respects
+     (2026-10-09, explicit user correction after a `margin-right` hack
+     pushed it flush to the true viewport edge, past that margin — reverted). */
+  .inner .goal {
+    order: 7;
+    /* Block pinned to the bottom-right corner (align-self), but the text
+       itself keeps a left (ragged-right) rag, not right-aligned (2026-10-09,
+       explicit user correction — only the block's position is right, not its
+       own text flow). */
+    align-self: flex-end;
+    text-align: left;
+    font-size: 22px;
+    line-height: 1.15;
+    max-width: 14ch;
+    /* No margin-top of its own (2026-10-09) — the figure right above it
+       (`.sceneWrap`, order 6) now owns the whole gap via its own symmetrical
+       margin; adding one here on top would double it (flex-sibling margins
+       add, they don't collapse) and break the figure's equal top/bottom air. */
+    /* 32px (2026-10-09, explicit user request, mobile-only value — this gap
+       to the type-spec tags below is independent of the figure's own 24px
+       gap above `.goal`, no need to match it). */
+    margin-bottom: var(--space-32);
+  }
+
+  /* Wraps to a second row instead of scrolling past the viewport edge
+     (2026-10-09, explicit user correction — a tag row that runs off-screen
+     horizontally reads as broken, even hidden behind `overflow-x: auto`;
+     four tags shrunk still don't reliably fit 343px of safe width on one
+     line, so the extra ones simply flow below instead). */
+  .typeTags {
+    order: 8;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: var(--space-4);
+  }
+
+  .typeTag {
+    font-size: clamp(8px, 2.4vw, 11px);
+    padding: var(--space-4) var(--space-6);
+    gap: var(--space-4);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Mobile hero figure (2026-09-28, v2: moved in-flow — see figureNode in
+     Hero.tsx): the fixed, whole-page-roaming behavior (useLatticeLayout) is
+     desktop/tablet-only — on phone the figure is rendered as a normal flex
+     child of .inner, right after the CTA row, so it self-spaces from its
+     siblings via flex order + their margins instead of a guessed absolute
+     top:% (which fought the actual content height as copy changed). It
+     scrolls away with the section instead of following the user down the
+     page (per user request: "по центру можно оставить фигуру, но при
+     скролье она не нужна"). Its render loop is separately paused once the
+     section leaves the viewport (see Hero.tsx's `heroInView`). */
+  .section {
+    position: relative;
+  }
+
+  .sceneWrap {
+    position: relative;
+    transform: none;
+    order: 6;
+    /* Equal 24px top/bottom air around the figure itself (2026-10-09,
+       explicit user request — was visually lopsided: this block's own
+       margin was symmetrical (`--space-8` both sides), but `.goal`'s own
+       `margin-top` (`--space-32`, order 7, right after this one) stacked
+       on top of it in flex flow — flex-sibling margins don't collapse,
+       they add — making the gap below the figure (8+32=40px) much larger
+       than above it (8px). Zeroed `.goal`'s own margin-top below so this
+       block's margin alone defines both gaps, keeping them equal. */
+    margin: var(--space-24) auto;
+    width: clamp(240px, 78vw, 360px);
+    height: clamp(240px, 78vw, 360px);
+    flex-shrink: 0;
+  }
+}
+
+/*
+ * Corner layout (2026-09-26, per user request, reference: a centered-figure
+ * hero with text pinned to the corners). Desktop/tablet only — on phone the
+ * original stacked flow above is untouched. The DOM order is unchanged (eyebrow,
+ * counter, headline, sub, CTAs, tags): everything is placed with grid areas so
+ * the hero's assembly animation, which walks the DOM, behaves exactly as before.
+ * Top-left: counter + short headline + small description + links. Top-right:
+ * eyebrow. Bottom-right: the type-spec tags, above the fixed chat bar (52px).
+ * The three.js figure is centered by useLatticeLayout, not here.
+ */
+@media (min-width: 641px) {
+  .section {
+    justify-content: stretch;
+    padding-top: var(--space-100);
+    padding-bottom: calc(52px + var(--space-32));
+  }
+
+  .inner {
+    flex: 1;
+    width: 100%;
+    max-width: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto 1fr;
+    column-gap: var(--space-40);
+  }
+
+  .tokenCounter {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .eyebrow {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: start;
+    justify-self: end;
+    /* Left-aligned lines, block pinned to the right edge (same treatment as
+       .goal): the box only hugs the text if max-width matches the longest line. */
+    text-align: left;
+    max-width: 11.3em; /* longest line «SENIOR PRODUCT /» ≈ 10.9em */
+    margin-bottom: 0;
+  }
+
+  .inner .headline {
+    grid-column: 1;
+    grid-row: 2;
+    /* All-caps trial (2026-09-26, per user request): caps run ~15% wider, so the
+       size drops a step and the measure is in em (not ch — `ch` is the width of
+       a digit, which understates capitals). */
+    text-transform: uppercase;
+    font-size: clamp(24px, 3.15vw, 48px);
+    line-height: 1.08;
+    /* The Text `hero` variant's -0.02em is tuned for lowercase; capitals want to
+       breathe a little (approved by the user 2026-09-26: caps stay, slightly
+       larger, looser). */
+    letter-spacing: 0.01em;
+    max-width: 13em;
+    margin-bottom: var(--space-20);
+  }
+
+  .inner .sub {
+    grid-column: 1;
+    grid-row: 3;
+    font-size: var(--fs-sm-md);
+    max-width: 380px;
+    margin-bottom: var(--space-20);
+  }
+
+  .ctaRow {
+    grid-column: 1;
+    grid-row: 4;
+    gap: var(--space-24);
+    margin-bottom: 0;
+  }
+
+  .typeTags {
+    grid-column: 1;
+    grid-row: 5;
+    align-self: end;
+    justify-self: start;
+    justify-content: flex-start;
+    gap: var(--space-8);
+  }
+
+  .inner .goal {
+    grid-column: 2;
+    grid-row: 5;
+    align-self: end;
+    justify-self: end;
+    /* Left-aligned lines, block pinned to the right edge. Secondary thesis: ~70% of
+       the headline size so it doesn't compete with it. A wrapped block never
+       shrinks below its max-width, so the measure is tuned to the longest of the
+       three lines — otherwise the block's right edge floats inside the page
+       margin. Re-tune if the copy changes. */
+    text-align: left;
+    text-transform: uppercase;
+    font-size: clamp(18px, 2.2vw, 34px);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    font-weight: var(--fw-semibold); /* one step down from the headline's bold (user request) */
+    max-width: 9.1em;
+    margin-bottom: 0;
+  }
+}
+

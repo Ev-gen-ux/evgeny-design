@@ -12,6 +12,10 @@ export interface SectionProps {
   revealId?: string;
   /** Marks this section as one assembly-sync block — all its text converges to fully-assembled together, timed to this section's own center-crossing, instead of each element's individual position. See useAssemblyAnimation's `syncEl`. */
   asmSync?: boolean;
+  /** Desktop only: this section's text assembles by each element's OWN position instead of the section's (see `data-asm-own` in useAssemblyAnimation) — for a section with a large top padding, where the section top is far above the text. */
+  asmOwn?: boolean;
+  /** Desktop only: multiplies the scroll distance over which text assembles (1 = the site default). */
+  asmSpan?: number;
   className?: string;
   style?: CSSProperties;
   innerRef?: Ref<HTMLElement>;
@@ -27,6 +31,8 @@ export function Section({
   stageAnchor,
   revealId,
   asmSync,
+  asmOwn,
+  asmSpan,
   className,
   style,
   innerRef,
@@ -41,6 +47,8 @@ export function Section({
       data-stage-anchor={stageAnchor}
       data-reveal-id={revealId}
       data-asm-sync={asmSync ? '1' : undefined}
+      data-asm-own={asmOwn ? '1' : undefined}
+      data-asm-span={asmSpan}
       className={[styles.section, className].filter(Boolean).join(' ')}
       style={{
         paddingTop: paddingTop !== undefined ? space[paddingTop] : undefined,

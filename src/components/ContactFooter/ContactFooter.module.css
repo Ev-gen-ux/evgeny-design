@@ -1,0 +1,148 @@
+/*
+ * `container-type: inline-size` so the giant word can size itself as
+ * `100cqw / K` — the container's CONTENT width (the page padding is already
+ * excluded), not `100vw`, which would include a desktop scrollbar and
+ * overshoot the right margin.
+ */
+.root {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  container-type: inline-size;
+  padding: var(--space-100) var(--space-container-x);
+  /* Same reservation as the old Footer: the fixed ThemeToggle (bottom-left) and
+     ChatBar (52px) must never sit on top of the giant word. */
+  padding-bottom: calc(var(--space-32) + 52px + env(safe-area-inset-bottom, 0px));
+}
+
+.top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 2fr);
+  column-gap: var(--space-40);
+  align-items: start;
+}
+
+.prompt {
+  margin-bottom: var(--space-32);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  margin-bottom: var(--space-12);
+}
+
+.title {
+  max-width: 14ch;
+}
+
+.cols {
+  display: grid;
+  /* Columns hug their content (the email is the widest link and must never wrap its arrow) and spread to the margins. */
+  grid-template-columns: max-content max-content;
+  justify-content: space-between;
+  column-gap: var(--space-40);
+}
+
+/* Desktop only (>= 1025px, 2026-09-26, per user request): the "смотреть" column sits next to "написать" instead of at the far right edge. */
+@media (min-width: 1025px) {
+  .cols {
+    justify-content: start;
+    column-gap: clamp(64px, 8.4vw, 140px);
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm-md);
+}
+
+.colHead {
+  margin-bottom: var(--space-4);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+/* Resting color primary (headers are the dim ones); the hover color still comes from Link's own `.contactNav:hover`, which outranks this. */
+.col a {
+  color: var(--color-text-primary);
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-8) var(--space-32);
+  margin-top: clamp(48px, 10vw, 140px);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-text-secondary);
+}
+
+.giant {
+  display: block;
+  margin-top: var(--space-24);
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 0.78;
+  /* Kerning off so the width is identical whether the letter-scatter engine has
+     split the word into per-letter spans (which loses kerning) or not. */
+  font-kerning: none;
+  font-size: 22vw;
+  /* 4.38 = the visible ink width of «CONTACT» in em (measured, kerning off);
+     the negative margin pulls the C's left side-bearing back so the INK, not
+     the glyph boxes, runs exactly margin to margin. Re-measure if the word or
+     the font changes. */
+  font-size: calc(100cqw / 4.38);
+  margin-left: -0.043em;
+  transition: color var(--duration-300) var(--ease-standard);
+}
+
+.giant:hover,
+.giant:focus-visible {
+  color: var(--color-accent);
+}
+
+/* Desktop only (2026-09-26): the 200px gap to the previous section lives in this padding. */
+@media (min-width: 1025px) {
+  .root {
+    padding-top: 200px;
+  }
+}
+
+@media (max-width: 640px) {
+  .root {
+    padding-top: 80px;
+    /* ThemeToggle is raised above ChatBar's band on phone (see its own CSS). */
+    padding-bottom: calc(var(--space-32) + 52px + 40px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .top {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-40);
+  }
+
+  .cols {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-32);
+  }
+
+  /* Phone (2026-09-18, explicit user request, carried over from the old footer): no github link, no "how the site was built" credit. */
+  .col a[href*='github.com'],
+  .metaExtra {
+    display: none;
+  }
+
+  .meta {
+    margin-top: var(--space-60);
+  }
+}

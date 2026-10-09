@@ -37,6 +37,8 @@ interface AsmUnit {
   intro: boolean;
   /** Nearest `[data-asm-sync]` ancestor, if any — see the docstring above. */
   syncEl: HTMLElement | null;
+  /** Inside `[data-asm-own]` (the ContactFooter): on desktop it opts out of `syncEl` and uses the per-element position formula, so the giant word assembles on screen instead of being already assembled when it appears (same rule as useAssemblyAnimation). */
+  own: boolean;
   t: number;
   top: number;
   cur?: number;
@@ -70,6 +72,15 @@ export function useCaseStudyAssembly(
     const main = root.querySelector('main');
     if (!main) return;
     const extraRoot = extraRootRef?.current ?? null;
+    // Site header (2026-09-18, global-audit fix — "не все тексты
+    // заанимированы"): `<nav>` sits outside `<main>` (a sibling, rendered
+    // right before it — see CaseStudy.tsx), so it was never scanned here at
+    // all. Included the same way as `main`/`extraRoot`; flagged `intro`
+    // below (the same load-clock, assemble-once-on-mount reveal this page's
+    // own `<header>` title block already gets) rather than the scroll
+    // formula — the site nav is `position: fixed` and permanently on
+    // screen, so there's no scroll-into-view moment for it.
+    const navEl = root.querySelector('nav');
 
     const buildUnits = () => {
       const vw0 = window.innerWidth;
@@ -77,6 +88,7 @@ export function useCaseStudyAssembly(
       const cands = [
         ...Array.from(main.querySelectorAll('h1,h2,h3,p,dt,dd,li,th,td,caption,span,div,a')),
         ...(extraRoot ? Array.from(extraRoot.querySelectorAll('h1,h2,h3,p,dt,dd,li,th,td,caption,span,div,a')) : []),
+        ...(navEl ? Array.from(navEl.querySelectorAll('h1,h2,h3,p,dt,dd,li,th,td,caption,span,div,a')) : []),
       ];
       cands.forEach((node) => {
         const el = node as HTMLElement;
@@ -91,7 +103,19 @@ export function useCaseStudyAssembly(
         if (!kids.length) return;
         if (!kids.every((n) => n.nodeType === 3)) return;
         const text = el.textContent || '';
-        if (!text || !text.trim() || text.length > 460) return;
+        // Cap raised from 460 to 900 (2026-09-18, global-audit fix — "не все
+        // тексты заанимированы"): a real content paragraph (LindauSugar's
+        // booking-widget note, 513 chars) was silently exceeding the old
+        // cap and left permanently unsplit/static, with no visual sign
+        // anything was wrong — it just never scattered or animated at all.
+        // 900 comfortably covers this site's longest real paragraphs with
+        // headroom, while still guarding against a pathological wall of text.
+        if (!text || !text.trim() || text.length > 900) return;
+        // A mobile-only per-word override was tried here (2026-09-18) as a
+        // performance fix for a reported stutter, then reverted the same
+        // day per explicit user feedback — it made the mobile experience
+        // worse, not better. Back to the original length-based rule on
+        // every viewport; the stutter needs a different real fix.
         const byWord = text.replace(/\s+/g, ' ').trim().length > 64;
         const parts = text.split(/(\s+)/).filter((x) => x.length);
         if (parts.length > 280) return;
@@ -124,13 +148,55 @@ export function useCaseStudyAssembly(
             return;
           }
           if (byWord) {
-            frag.appendChild(mk(part));
+            // Split further on hyphens/dots/slashes (2026-09-19) — a plain
+            // `mk(part)` treated the WHOLE space-delimited "word" as one
+            // `white-space: pre` span, which is exactly as unbreakable as
+            // `nowrap` (there's no line-break character inside it to break
+            // at) — fine for a real word, but a code-style compound token
+            // like "theme.colors.button.primary.background.hover" or
+            // "button/primary/background/hover" is *also* just one
+            // "word" by this split (`text.split(/(\s+)/)` only tokenizes
+            // on whitespace), so it rendered as a single unbreakable run
+            // that quietly overflowed the container on mobile instead of
+            // wrapping — reported live, confirmed on a real device even
+            // after a CSS-only `overflow-wrap` fix had zero effect (that
+            // property can't override an element's own `white-space`).
+            // Splitting at `-`/`.`/`/` — the same separators this kind of
+            // token actually uses — gives the browser real break points
+            // between the resulting spans (adjacent inline-level boxes can
+            // always break between each other), while a real word with
+            // none of these characters passes through as a single
+            // untouched span, unchanged from before.
+            part.split(/([-./])/).forEach((sub) => {
+              if (!sub.length) return;
+              frag.appendChild(mk(sub));
+            });
             return;
           }
-          const wrap = document.createElement('span');
-          wrap.style.display = 'inline-block';
-          part.split('').forEach((ch) => wrap.appendChild(mk(ch)));
-          frag.appendChild(wrap);
+          // Split further on hyphens, same fix as useAssemblyAnimation's
+          // identical wrapper (2026-09-18): each hyphen-delimited fragment
+          // gets its own `white-space: nowrap` wrapper so its letters can't
+          // line-wrap *inside* it (a long/hyphenated word split into
+          // per-letter inline-block spans could otherwise break between
+          // those letters wherever it overflowed, unrelated to the actual
+          // word or hyphen boundary — CSS always allows a break between two
+          // adjacent inline-level boxes, regardless of word-break/hyphens,
+          // which only govern real text runs). The hyphen character itself
+          // stays a plain, un-wrapped letter span so a line break right
+          // after it — the one place a real hyphenated word is allowed to
+          // wrap — still works.
+          part.split(/(-)/).forEach((sub) => {
+            if (!sub.length) return;
+            if (sub === '-') {
+              frag.appendChild(mk(sub));
+              return;
+            }
+            const wrap = document.createElement('span');
+            wrap.style.display = 'inline-block';
+            wrap.style.whiteSpace = 'nowrap';
+            sub.split('').forEach((ch) => wrap.appendChild(mk(ch)));
+            frag.appendChild(wrap);
+          });
         });
         if (!spans.length) return;
         el.textContent = '';
@@ -138,7 +204,9 @@ export function useCaseStudyAssembly(
         el.dataset.asmSplit = '1';
         const blk = el.closest('section, header, article') || (extraRoot && extraRoot.contains(el) ? extraRoot : main);
         const syncEl = el.closest('[data-asm-sync]') as HTMLElement | null;
-        unitsRef.current.push({ el, blk, spans, intro: !!el.closest('header'), syncEl, t: -1, top: 0 });
+        const intro = !!el.closest('header') || (navEl ? navEl.contains(el) : false);
+        const own = !!el.closest('[data-asm-own]');
+        unitsRef.current.push({ el, blk, spans, intro, syncEl, own, t: -1, top: 0 });
       });
       measureUnits();
     };
@@ -168,22 +236,52 @@ export function useCaseStudyAssembly(
       const vh = window.innerHeight;
       const sy = window.scrollY;
       const vw = window.innerWidth;
-      const atBottom = sy + vh >= document.documentElement.scrollHeight - 4;
-      const ease = 1 - Math.pow(0.05, Math.min(0.05, (dt || 16) / 1000));
+      // Tolerance widened from 4px to 60px (2026-09-18) — see
+      // useAssemblyAnimation.ts's identical change for the full reasoning:
+      // Lenis's own cached max-scroll `limit` can drift a little short of
+      // the real document height after any layout change, refreshed only
+      // asynchronously via its own ResizeObserver. Measured live: ~16px
+      // short even seconds after scrolling settled, past the old 4px
+      // slack, so `atBottom` never fired.
+      const atBottom = sy + vh >= document.documentElement.scrollHeight - 60;
+      // Ease base 0.08, not 0.05 (2026-09-18, explicit user request — "ещё
+      // чуть-чуть сделать её плавнее" — and the same value as
+      // useAssemblyAnimation.ts's own ease, raised from 0.02: the user
+      // wants one consistent feel between the home page and case-study
+      // pages, not two separately-tuned animations).
+      const ease = 1 - Math.pow(0.08, Math.min(0.05, (dt || 16) / 1000));
 
       const live: AsmUnit[] = [];
       const targets: number[] = [];
       for (const u of unitsRef.current) {
         if (!u.el.isConnected) continue;
         let t: number;
-        if (u.syncEl) {
+        if (u.syncEl && !(u.own && vw > 768)) {
+          // `atBottom` failsafe (2026-09-18) — see useAssemblyAnimation's
+          // identical branch for the full reasoning: the centering formula
+          // below is unreachable for a sync block shorter than the viewport
+          // that's also pinned to the bottom of the page (this page's own
+          // ContactCta+Footer wrapper), since `r.top` stops decreasing once
+          // scroll hits its max and never gets low enough to satisfy the
+          // centering condition. Reported stuck: the email's tail characters
+          // never settling even scrolled all the way down.
           const r = u.syncEl.getBoundingClientRect();
           const raw = (vh - r.top) / (vh / 2 + r.height / 2);
           t = Math.max(0, Math.min(1, raw));
+          if (atBottom) t = 1;
         } else if (u.intro) {
           t = loadT * loadT * (3 - 2 * loadT);
         } else {
-          const raw = (sy + vh * 0.9 - u.top) / (vh * 0.55);
+          // Window shortened from `vh * 0.55` to `vh * 0.3`, completion
+          // point moved from ~35% down from the viewport top to ~65%
+          // (2026-09-18, explicit user request — "уже проскроллил, а текст
+          // ещё не собрался"): text used to stay visibly unsettled for most
+          // of its time on screen, only fully reassembling once its own top
+          // had scrolled almost up to the header — well after a reader had
+          // already reached it lower on the screen. Now it locks in shortly
+          // after entering view. Same window as useAssemblyAnimation.ts's
+          // own fallback branch, on purpose — one shared pace site-wide.
+          const raw = (sy + vh * 0.95 - u.top) / (vh * 0.3);
           t = Math.max(0, Math.min(1, raw));
           if (atBottom) t = 1;
         }
@@ -195,8 +293,21 @@ export function useCaseStudyAssembly(
         const u = live[i];
         const t = targets[i];
         if (u.cur == null) u.cur = t;
-        u.cur += (t - u.cur) * ease;
-        if (Math.abs(t - u.cur) < 0.0015) u.cur = t;
+        if (atBottom) {
+          // Fast eased catch-up at the true page bottom (2026-09-18,
+          // replaces an instant `u.cur = t` snap from the same day) — see
+          // useAssemblyAnimation's identical fix for the full reasoning: an
+          // outright teleport was reported as a visible jerk (letters
+          // sitting still, then popping into place all at once). This
+          // closes most of the remaining distance within a handful of
+          // frames instead of one — fast, but still an animated motion.
+          const bottomEase = 0.35;
+          u.cur += (t - u.cur) * bottomEase;
+          if (Math.abs(t - u.cur) < 0.0015) u.cur = t;
+        } else {
+          u.cur += (t - u.cur) * ease;
+          if (Math.abs(t - u.cur) < 0.0015) u.cur = t;
+        }
         const q = Math.round(u.cur * 240) / 240;
         if (q === u.t) continue;
         u.t = q;

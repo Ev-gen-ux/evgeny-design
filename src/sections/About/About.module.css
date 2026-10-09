@@ -1,7 +1,10 @@
+/* About (2026-09-26): compact headline (kept below hero scale so it doesn't compete
+   with the header/section heading), the carousel. */
 .inner {
   display: grid;
-  grid-template-columns: minmax(160px, 220px) 1fr;
-  gap: var(--space-32) var(--space-48);
+  grid-template-columns: minmax(200px, 300px) minmax(0, 1fr);
+  gap: var(--space-32) var(--space-60);
+  align-items: start;
 }
 
 .label {
@@ -10,21 +13,64 @@
   gap: var(--space-8);
 }
 
-/* The dots/line mechanic itself now lives in the shared `components/PromptSteps` — this is just the heading's own spacing right after it. */
 .promptAnswer {
   margin: 0;
 }
 
-.text {
-  font-size: var(--fs-fluid-sm);
-  line-height: var(--lh-relaxed-sm);
-  color: var(--color-text-primary);
+.poster {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-48);
+}
+
+.headline {
+  display: flex;
+  flex-direction: column;
+}
+
+.line {
   margin: 0;
-  max-width: 56ch;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.9vw, 42px);
+  line-height: 1;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.accent {
+  color: var(--color-accent);
+}
+
+/* Desktop only (>= 1025px, 2026-09-26, per user request): the left column (prompt + heading) is only as wide as its content and the gap to the right block is proportional, instead of a 200-300px column that left a large empty gap. */
+@media (min-width: 1025px) {
+  .inner {
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: clamp(48px, 5.5vw, 88px);
+  }
 }
 
 @media (max-width: 640px) {
   .inner {
     grid-template-columns: 1fr;
+    /* Row gap bumped from 32 to 36px (2026-10-09, explicit user request) —
+       the headline below "О себе" read as too close/conflicting with it at
+       the shared desktop gap. */
+    row-gap: var(--space-36);
+  }
+
+  .line {
+    /* Fixed 28px (2026-10-09, explicit user request) — was a fluid
+       `clamp(24px, 8vw, 34px)`, sized to fit on one line at any phone width.
+       `white-space: nowrap` (set above, for desktop's single-line poster
+       look) is what sent the second line past the right edge of the
+       viewport when that line didn't fit — overridden to `normal` here so
+       long lines wrap inside the safe content width (`.inner`'s own
+       `--space-container-x` padding, from <Container>) instead of running
+       off past it. */
+    font-size: 28px;
+    white-space: normal;
   }
 }

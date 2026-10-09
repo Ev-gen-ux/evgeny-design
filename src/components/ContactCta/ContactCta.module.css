@@ -10,6 +10,18 @@
   z-index: 1;
 }
 
+/* Phone (2026-09-18, explicit user request) — top padding only, unified to
+   the same 80px inter-section gap as every other section boundary (see
+   Hero.module.css's own comment for the full rationale). Bottom padding
+   (space-40, the gap to Footer right below, within the SAME Contact
+   section) is a different kind of spacing, not a section-to-section
+   boundary — left untouched. */
+@media (max-width: 640px) {
+  .inner {
+    padding-top: 80px;
+  }
+}
+
 /* PromptSteps' own root has no width opinion (a plain block stretches to `.inner`'s full centered width) — `width: fit-content` shrinks it to its actual content so `margin: 0 auto` can center it as a block, same effect AgentExchange got from its own `max-width`. */
 .prompt {
   width: fit-content;

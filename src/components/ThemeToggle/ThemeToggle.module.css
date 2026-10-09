@@ -1,4 +1,13 @@
 .toggle {
+  /* Deliberate true black/white (2026-09-23, design-anti-slop audit) — not
+     a site-palette color (the 5-color brief has no pure black/white), so
+     kept as its own named local tokens rather than borrowing e.g.
+     `--color-blueprint`/`--color-vellum` (which would actually shift the
+     look, off-black/off-white). Named instead of two more raw hex
+     literals — same hygiene as `--color-success`, without changing this
+     button's own intentional high-contrast "terminal switch" look. */
+  --toggle-bg: #000;
+  --toggle-fg: #fff;
   position: fixed;
   left: var(--space-16);
   /* + safe-area inset (2026-09-17, see ChatBar.module.css's own comment on
@@ -7,9 +16,9 @@
   bottom: calc(var(--space-16) + env(safe-area-inset-bottom, 0px));
   z-index: 50;
   padding: var(--space-8) var(--space-12);
-  background: #000;
-  color: #fff;
-  border: 1px solid #fff;
+  background: var(--toggle-bg);
+  color: var(--toggle-fg);
+  border: 1px solid var(--toggle-fg);
   border-radius: 3px;
   font-family: var(--font-mono);
   font-size: var(--fs-xs);

@@ -1,0 +1,104 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.window {
+  position: relative;
+  flex: none;
+  min-width: 0;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.6vw, 38px);
+  font-weight: var(--fw-semibold);
+  height: calc(1.35em * 3);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
+}
+
+.item {
+  position: absolute;
+  left: 0;
+  top: 1.35em;
+  height: 1.35em;
+  line-height: 1.35em;
+  white-space: nowrap;
+  color: var(--color-text-primary);
+  transition:
+    transform 700ms var(--ease-signature),
+    opacity 500ms var(--ease-standard);
+  will-change: transform, opacity;
+}
+
+.itemActive {
+  color: var(--color-accent);
+}
+
+.letter {
+  display: inline-block;
+  white-space: pre;
+  opacity: 0;
+  animation: reelIn 700ms var(--ease-signature) forwards;
+}
+
+@keyframes reelIn {
+  from {
+    opacity: 0;
+    transform: translate(calc(var(--dx) * 1em), calc(var(--dy) * 1em)) rotate(calc(var(--r) * 1deg));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The explanation of the slide in focus: fixed height for 2 lines so the block below never jumps. */
+.text {
+  margin: 0;
+  max-width: 44ch;
+  min-height: calc(1.45em * 2);
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+.word {
+  display: inline-block;
+  white-space: pre;
+  opacity: 0;
+  animation: wordIn 600ms var(--ease-signature) forwards;
+}
+
+@keyframes wordIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.5em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.staticList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.staticItem {
+  margin: 0;
+  font-size: var(--fs-fluid-sm);
+  line-height: 1.5;
+  color: var(--color-text-primary);
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

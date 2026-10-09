@@ -59,8 +59,35 @@ export function useThreeScene(
       try {
         const THREE = await import('three');
         if (cancelled) return;
-        renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+        // Mobile-only (2026-09-19, real-device jank still reported after the
+        // first pixel-ratio cut) — no antialiasing and a lower pixel-ratio
+        // ceiling on narrow viewports specifically. MSAA on WebGL costs real
+        // fill-rate/bandwidth per frame, and this canvas renders continuously
+        // for the entire page's scroll range (see the pixel-ratio comment
+        // below) — a real phone's weaker GPU pays that cost on every single
+        // frame, every scroll, for the whole time someone's on the home
+        // page, which desktop-CPU devtools emulation can't reveal at all
+        // (it resizes the viewport, it doesn't throttle the GPU). Desktop/
+        // tablet keep antialiasing and the 1.5× cap from the previous pass.
+        const isMobile = window.innerWidth <= 768;
+        renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !isMobile });
+        // Pixel ratio cap lowered from 2 to 1.5 (2026-09-18) — this scene's
+        // canvas is `position: fixed` and renders continuously for the
+        // entire page's scroll range (see useLatticeLayout's own docstring:
+        // it roams and stays partially visible from Hero all the way to the
+        // very bottom, by design, not just while Hero itself is on screen),
+        // so its render loop runs alongside the letter-assembly animation's
+        // own rAF loop for the whole time someone's on the home page —
+        // reported live as noticeably janky scrolling on Home specifically,
+        // vs smooth on case-study pages, which mount no three.js scene at
+        // all. 2× device pixel ratio means shading 4× the pixels; 1.5×
+        // means ~2.25×, a meaningful GPU cost cut with only a subtle,
+        // likely-unnoticeable softness change on an ambient, mostly-dark
+        // background shape — cheaper insurance against contention with the
+        // DOM animation than reworking either loop's own logic. Mobile-only
+        // (2026-09-19) cuts further, to 1× (native resolution, no
+        // supersampling) — still reported janky at 1.5× on a real phone.
+        renderer.setPixelRatio(isMobile ? 1 : Math.min(1.5, window.devicePixelRatio || 1));
 
         const handle = setupRef.current({ THREE, canvas, mouseRef });
         disposeHandle = handle.dispose;
@@ -78,12 +105,22 @@ export function useThreeScene(
         resizeHandler();
         window.addEventListener('resize', resizeHandler);
 
-        const animate = () => {
-          handle.onFrame(performance.now());
+        // A ~30fps throttle was tried here on mobile (2026-09-19), on the
+        // assumption that this scene's motion (rotation/drift) was slow
+        // and ambient enough that skipping every other frame wouldn't be
+        // noticeable — reverted the same day, reported live as visibly
+        // worse: the motion is fast enough that redrawing every other
+        // frame reads as a stepped, doubled-up jump rather than smooth
+        // ambient drift. Back to every frame, on every device — the
+        // pixel-ratio cap and disabled antialiasing above (same date) stay,
+        // since neither affects motion smoothness, only rendering
+        // resolution/quality.
+        const animate = (now: number) => {
+          handle.onFrame(now);
           renderer!.render(handle.scene, handle.camera);
           raf = requestAnimationFrame(animate);
         };
-        animate();
+        raf = requestAnimationFrame(animate);
       } catch {
         if (!cancelled) setFailed(true);
       }

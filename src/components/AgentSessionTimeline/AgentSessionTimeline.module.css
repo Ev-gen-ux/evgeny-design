@@ -3,13 +3,14 @@
  * Pipeline.tsx (see that section for the "why" — replaced the old "0X/05"
  * counter + progress bar there), extracted into a shared component the same
  * day so the case-study pages' scroll timeline could reuse the exact element.
- * `--pl-success-green` is a deliberate one-off, not a design-system token —
- * the terminal/CLI "done" convention this element imitates specifically
- * calls for green, which otherwise doesn't exist anywhere in this site's
- * palette.
+ * Uses `--color-success` (tokens/colors.css) for its "done" dot — the
+ * terminal/CLI "done" convention this element imitates specifically calls
+ * for green, which otherwise doesn't exist anywhere in this site's 5-color
+ * palette; unified into one shared token (2026-09-23, design-anti-slop
+ * audit) after this file's own local `--pl-success-green` turned out to be
+ * the same raw hex duplicated in three other components too.
  */
 .agentSession {
-  --pl-success-green: #4ade80;
   margin-top: var(--space-32);
 }
 
@@ -83,7 +84,7 @@
 }
 
 .agentStepDot[data-state='done'] {
-  background: var(--pl-success-green);
+  background: var(--color-success);
 }
 
 /* `--color-redline` here, not `--color-accent` (2026-09-17, mono theme) — this
@@ -120,6 +121,18 @@
   color: var(--color-text-secondary);
   margin-top: var(--space-4);
   transition: color var(--duration-200) var(--ease-standard);
+}
+
+/* Phone (2026-09-19, explicit user request) — `--fs-xs` (11px, fixed, not
+   viewport-scaled) reads fine on standard ~390-412px phones but too small
+   on some real devices (reported on an Asus Zenfone) — bumped to match
+   `.agentStepHead`'s own `--fs-sm-md` (13px) so the verb/target line and
+   the outcome line underneath it read as one consistent weight instead of
+   "large label, tiny detail." Desktop/tablet untouched. */
+@media (max-width: 640px) {
+  .agentStepOutcome {
+    font-size: var(--fs-sm-md);
+  }
 }
 
 /* Same status-indicator exemption as the dot above — stays red even in mono theme. */

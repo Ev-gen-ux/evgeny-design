@@ -47,6 +47,13 @@
   margin-bottom: var(--space-20);
 }
 
+.tagGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+}
+
 .cardType {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
@@ -184,4 +191,90 @@
     grid-template-columns: 1fr;
     gap: var(--space-6);
   }
+
+  /* Phone (2026-10-09): .header is rendered above every variant (cylinder/
+     list/phone), so its desktop-flat margin-bottom (60px) still needs
+     tightening here regardless of which card variant renders below it. */
+  .header {
+    margin-bottom: var(--space-40);
+  }
+}
+
+/* Phone-only card (≤640px, PHONE_BREAKPOINT in SelectedWork.tsx) — static
+   replica of WorkCylinder's face anatomy, scaled for a ~330px card instead
+   of the desktop's fixed 440×300 (see PhoneCaseStudyCard). Reuses `.tagGroup`
+   (shared with the list variant) for the tag row's flex/gap; the rest is
+   named distinctly so it doesn't collide with the list variant's classes. */
+.phoneList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+}
+
+.phoneTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin-bottom: var(--space-16);
+}
+
+.phoneTag {
+  font-size: var(--fs-xs);
+}
+
+.phoneType {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-text-secondary);
+}
+
+.phoneName {
+  margin: 0 0 var(--space-16);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text-primary);
+}
+
+.phoneMetrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-20);
+  margin-bottom: var(--space-16);
+  padding-bottom: var(--space-16);
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+}
+
+.phoneMetricLabel {
+  font-family: var(--font-mono);
+  font-size: var(--fs-tiny);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  margin-bottom: var(--space-4);
+}
+
+.phoneMetricValue {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+}
+
+.phoneTeaser {
+  margin: 0 0 var(--space-20);
+  font-size: var(--fs-sm-md);
+  line-height: var(--lh-relaxed-sm);
+  color: var(--color-text-body);
+}
+
+.phoneFooter {
+  display: flex;
+  gap: var(--space-20);
+  align-items: center;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: var(--fs-tiny);
+  position: relative;
+  z-index: 3;
 }

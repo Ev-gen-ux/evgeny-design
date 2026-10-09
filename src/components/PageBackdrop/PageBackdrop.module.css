@@ -23,6 +23,23 @@
   filter: blur(90px);
 }
 
+/* Mobile-only (2026-09-19, real-device report — the top-right accent blob,
+   which sits closest to Hero's own headline, read as a hard-edged "orb"
+   sitting on top of the text instead of a soft ambient glow behind it,
+   even though the same 90px blur radius is requested regardless of
+   viewport). Mobile GPUs commonly clamp how large a `filter: blur()`
+   radius actually renders, for performance — the blur *request* doesn't
+   change here, but its real effect is weaker on a phone than on desktop,
+   leaving a visibly harder edge on what's supposed to be a diffuse
+   background element. Halving opacity is a size/position-safe way to make
+   that harder edge read as a subtle wash instead of a distinct shape,
+   without touching the blur/size/position values shared with desktop. */
+@media (max-width: 768px) {
+  .blobInner {
+    opacity: 0.5;
+  }
+}
+
 .blobAnimated {
   animation: blobDrift 20s ease-in-out infinite;
 }

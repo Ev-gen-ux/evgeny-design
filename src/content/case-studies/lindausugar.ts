@@ -118,6 +118,6 @@ export const lindausugar: CaseStudyDetail = {
   hasNda: false,
   links: [
     { label: 'live site', url: 'https://lindausugar.vercel.app' },
-    { label: 'cms admin', url: 'https://lindausugar.sanity.studio' },
+    { label: 'PRD', url: 'https://volcano-cerise-e05.notion.site/LindauSugar-PRD-v4-0-3623555dc077810db5cde235024f730f' },
   ],
 };

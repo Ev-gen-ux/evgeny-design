@@ -23,12 +23,25 @@ export function Footer() {
     <div className={styles.footerRow}>
       <div className={styles.linksRow}>
         {contactLinks.map((l) => (
-          <Link key={l.id} href={l.url} variant="contactNav" external={l.external}>
+          <Link
+            key={l.id}
+            href={l.url}
+            variant="contactNav"
+            external={l.external}
+            className={l.id === 'contact-gh' ? styles.githubLink : undefined}
+          >
             {l.label}
           </Link>
         ))}
       </div>
-      <span className={styles.copyright}>{contact.footer}</span>
+      <span className={styles.copyright}>
+        {contact.footer}
+        {/* Hidden on mobile (2026-09-18, explicit user request) — this
+            "how the site was built" credit reads as clutter next to the
+            other footer items once everything is stacked in one narrow
+            column; the copyright line itself (name + year) stays. */}
+        <span className={styles.copyrightExtra}>{contact.footerExtra}</span>
+      </span>
     </div>
   );
 }

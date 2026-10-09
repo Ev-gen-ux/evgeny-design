@@ -1,0 +1,279 @@
+.section {
+  position: relative;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  /* Clips the sides and the bottom (cards outside the pin) but NOT the top: the card now sits only 40px below the pin's top edge, so its tilted upper edge would otherwise be cut off flat. */
+  clip-path: inset(-300px 0 0 0);
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  perspective: 1350px;
+  pointer-events: none;
+  /* Heading -> card gap is exactly 100px (2026-09-26, per user request), measured on the card as the viewer sees it. The pin starts 60px below the heading (SelectedWork .header margin-bottom). The resting card is pushed toward the viewer (translateZ 400 at perspective 1350 = 1.42x), so its visible top is 213px above its centre, not 150px: padding-top P puts the centre at P+150 from the pin's top, and the visible top edge at P+150-213 = P-63. The resting card is also turned -3deg, which lifts its highest corner another 17px, so the corner sits at P-80 = 40 (100px under the heading) => P = 120px. The perspective origin must sit on the card's centre, otherwise the projection pushes the card further up. */
+  padding-top: 120px;
+  perspective-origin: 50% calc(120px + 150px);
+}
+
+.rig {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.card {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Structural slice between the two faces — only an outline: a filled one sat directly behind the front face and the face's backdrop-filter blurred it into a grey wash, lighter than the prod card. */
+.slab {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.35);
+}
+
+/* Same surface as the prod Card (Card.module.css): faint graphite glass + 6px blur + 1px slate-mist border. The back face is denser so the stack of backs peeking above/below stays legible. */
+.face {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  backface-visibility: hidden;
+  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
+  background: rgba(var(--color-graphite-rgb), 0.18);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.front {
+  transform: translateZ(1.5px);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-28);
+  pointer-events: none;
+}
+
+.back {
+  background: rgba(var(--color-graphite-rgb), 0.75);
+  transform: translateZ(-1.5px) rotateX(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-28);
+  pointer-events: none;
+}
+
+/* Only the card sitting at the center is interactive — the rest are tilted / backfacing. */
+.card[data-live='true'] .front {
+  pointer-events: auto;
+  border-color: var(--color-accent);
+  box-shadow: 0 30px 70px -30px rgba(var(--color-accent-rgb), 0.35);
+}
+
+.card[data-live='true'] .corner {
+  border-top-color: var(--color-accent);
+  border-right-color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+  border-left-color: var(--color-accent);
+}
+
+.overlayLink {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-8) var(--space-12);
+  pointer-events: none;
+}
+
+.tagGroup {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+/* Prod `Tag` accent badge, one step down — the card is drawn in perspective, so it reads larger than its CSS size. */
+.tag {
+  font-size: var(--fs-micro);
+  padding: var(--space-3) var(--space-8);
+}
+
+.type {
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  color: var(--color-text-secondary);
+}
+
+.name {
+  position: relative;
+  z-index: 2;
+  margin: var(--space-16) 0 0;
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--lh-tight);
+  color: var(--color-text-primary);
+  /* Titles are short and fit by design. No overflow:hidden / ellipsis: the
+     letter-assembly flies letters outside the box and a clip would cut them. */
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.facts {
+  position: relative;
+  z-index: 2;
+  margin-top: var(--space-16);
+  pointer-events: none;
+}
+
+.teaser {
+  position: relative;
+  z-index: 2;
+  margin: var(--space-14) 0 0;
+  /* Smaller than the default card body text (2026-09-28, per user request, desktop only — the card sits scaled up
+     in the 3D perspective, so its old --fs-sm-md/13px read visually larger than the Pipeline stage description,
+     the size the user wants it to match): the default already carries through on phone/tablet fallback list. */
+  font-size: var(--fs-xs);
+  line-height: var(--lh-relaxed);
+  color: var(--color-text-body);
+  /* No line-clamp/overflow:hidden for the same reason as .name — the teasers are
+     written to fit three lines; longer copy has to be shortened, not clipped. */
+  pointer-events: none;
+}
+
+/* Metrics — same anatomy as the prod card's, scaled down for the card. */
+.metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6) var(--space-20);
+}
+
+.metricLabel {
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.metricValue {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+/* Taken out of flow (2026-09-28, per user request, three rounds): a `margin-top: auto` pinned it flush to the
+   card's fixed 300px bottom edge, which left a growing gap above the divider once the teaser got shorter; a plain
+   fixed margin-top fixed that but exposed unclaimed leftover space below the footer instead (the flex column's
+   content doesn't fill the fixed-height card); absolute positioning fixed THAT, but with `left: 0; right: 0` —
+   which turned out to align with `.front`'s BORDER edge, not its padding edge as assumed (the "padding box" that a
+   `transform` establishes as containing block still starts counting from the border-inner edge, padding is INSIDE
+   it, not excluded) — so the divider stretched almost the card's full width, nearly touching its corners, instead
+   of matching the text column beside it. Now explicit `left/right: var(--space-28)`, the same padding `.front`
+   itself uses, so the footer's horizontal bounds are pixel-identical to `.name`/`.teaser`'s (verified flat, with
+   the card's 3D transform disabled, not just eyeballed under perspective). `bottom` raised (16px -> 28px) to pull
+   the divider closer to the teaser text, per the same request — the card's fixed height means this necessarily
+   also narrows the "links -> card edge" gap from the round right before this one; still comfortably clear of it. */
+.footer {
+  position: absolute;
+  left: var(--space-28);
+  right: var(--space-28);
+  bottom: var(--space-24);
+  z-index: 3;
+  padding-top: var(--space-14);
+  border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8) var(--space-16);
+}
+
+/* `.link` (Link.module.css) sets its own font-size on the anchor, so the row's size has to be set on the anchors themselves. */
+.footer a {
+  font-size: var(--fs-tiny);
+  letter-spacing: 0.03em;
+  padding-bottom: var(--space-2);
+}
+
+.backIndex,
+.backTag {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wider);
+  color: var(--color-text-secondary);
+}
+
+.backTag {
+  align-self: flex-end;
+  color: var(--color-accent);
+}
+
+/* Corner brackets — same "inspector selection box" as Card.module.css, drawn just inside the face. */
+.corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  z-index: 4;
+  pointer-events: none;
+  border-top-color: var(--color-slate-mist);
+  border-right-color: var(--color-slate-mist);
+  border-bottom-color: var(--color-slate-mist);
+  border-left-color: var(--color-slate-mist);
+}
+
+.cornerTopLeft {
+  top: -1px;
+  left: -1px;
+  border-top-width: 2px;
+  border-top-style: solid;
+  border-left-width: 2px;
+  border-left-style: solid;
+}
+
+.cornerTopRight {
+  top: -1px;
+  right: -1px;
+  border-top-width: 2px;
+  border-top-style: solid;
+  border-right-width: 2px;
+  border-right-style: solid;
+}
+
+.cornerBottomLeft {
+  bottom: -1px;
+  left: -1px;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-left-width: 2px;
+  border-left-style: solid;
+}
+
+.cornerBottomRight {
+  bottom: -1px;
+  right: -1px;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-right-width: 2px;
+  border-right-style: solid;
+}

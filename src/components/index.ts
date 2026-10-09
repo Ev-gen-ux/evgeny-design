@@ -12,6 +12,7 @@ export * from './PromptSteps';
 export * from './ChatBar';
 export * from './Footer';
 export * from './ContactCta';
+export * from './ContactFooter';
 export * from './CursorOverlay';
 export * from './PageBackdrop';
 export * from './StageBadge';

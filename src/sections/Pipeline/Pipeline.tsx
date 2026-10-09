@@ -149,7 +149,17 @@ export function Pipeline() {
               style={{ ...panelBaseStyle, ...(stackedLayout ? {} : initialPanelStyle) }}
             >
               <div className={styles.outcomeTag}>
-                input → process → <strong>resolved</strong>
+                {/* Two sibling elements, not one div with a bare text node
+                    next to <strong> (2026-09-18) — the assembly-animation
+                    candidate check requires an element's children to be
+                    ALL text nodes; a mix of a bare text node + an element
+                    child disqualifies the whole thing, so the leading
+                    "input → process → " text was silently never split or
+                    animated at all (only the word inside <strong> was),
+                    reported as this tag "never animating" on mobile. Each
+                    span now qualifies as its own valid candidate. */}
+                <span>input → process → </span>
+                <strong>resolved</strong>
               </div>
               <div className={styles.claims}>
                 {outcomeClaims.map((c) => (

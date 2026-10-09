@@ -12,6 +12,15 @@
   --color-vellum-muted: #c8cdd6;
   --color-slate-mist-dim: #5c6675;
 
+  /* "Done"/success status green (2026-09-23, design-anti-slop audit) — was
+     hardcoded as the raw hex `#4ade80` in four separate files (ChatBar,
+     PromptSteps, AgentSessionTimeline, MobileNavOverlay), no single source
+     of truth. One token now. Deliberately un-themed by theme-mono.css, same
+     as `--color-redline` above — the "you/agent" status indicators (done
+     dot, active-turn dot) stay their real green even under the mono theme,
+     per that file's own docstring. */
+  --color-success: #4ade80;
+
   --color-bg-page: var(--color-blueprint);
   --color-text-primary: var(--color-vellum);
   --color-text-secondary: var(--color-slate-mist);

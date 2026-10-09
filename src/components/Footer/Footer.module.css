@@ -34,6 +34,16 @@
 @media (max-width: 640px) {
   .footerRow {
     padding-bottom: calc(var(--space-40) + 52px + 40px + env(safe-area-inset-bottom, 0px));
+    /* Stacked, not `justify-content: space-between` in a wrapped row
+       (2026-09-18, explicit user request/bug report — on some phones the
+       copyright line landed beside the contact links instead of below
+       them: `.footerRow` is itself `flex-wrap: wrap`, so once `.linksRow`
+       became a multi-line column (see below), the wrap could still place
+       `.copyright` in whatever horizontal room was left next to it rather
+       than under the whole column). `column` forces copyright below the
+       full links block on every phone, not just some. */
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
@@ -50,4 +60,23 @@
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--color-text-secondary);
+}
+
+/* Phone (2026-09-18, explicit user request) — github link and the "index
+   построен через AI Design Pipeline" explainer are dropped on mobile only;
+   both stay on desktop/tablet. Only name + copyright year remain. */
+@media (max-width: 640px) {
+  .githubLink,
+  .copyrightExtra {
+    display: none;
+  }
+
+  /* Contact links (phone/telegram/резюме-сайт) stacked one per line, not
+     side by side (2026-09-18, explicit user request, mobile only) — desktop/
+     tablet keep the flex-wrap row untouched. */
+  .linksRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-16);
+  }
 }

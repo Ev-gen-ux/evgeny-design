@@ -45,6 +45,28 @@ const routes = (
  * much below this starts trading "smooth" for "sluggish/unresponsive" — if
  * that's the complaint after testing, the fix is to raise this back up a
  * little, not to keep lowering it.
+ *
+ * `autoToggle` — left at its default (`true`) after a same-day round trip.
+ * Tried `false` first: Lenis's `.stop()`/`.start()` (MobileNavOverlay calls
+ * these to freeze the page behind the mobile menu) has a hidden default
+ * behavior — with `autoToggle` on, `.stop()` itself sets `overflow: clip`
+ * directly on `document.documentElement`, and `.start()` removes it — a
+ * SECOND, independent scrollbar toggle on top of MobileNavOverlay's own
+ * `<body>` one, which looked like the cause of the menu trigger's right
+ * padding sometimes vanishing. Setting `autoToggle: false` removed that
+ * CSS-level block, but it turned out `overflow: clip` wasn't just a visual
+ * side effect — it's what made the scroll-lock robust against EVERY input
+ * method (keyboard, native scrollbar drag) at once. Without it, Lenis only
+ * blocks scroll via `preventDefault()` inside its own wheel/touch handlers
+ * (confirmed by reading node_modules/lenis/dist/lenis.mjs) — keyboard/
+ * scrollbar-drag scrolling went completely unblocked, letting the page
+ * behind the "locked" menu actually move; since useScrollReveal/
+ * useAssemblyAnimation read `window.scrollY` directly (not through Lenis),
+ * that desync between "what Lenis thinks is stopped" and "what actually
+ * scrolled" is what produced the section-content-overlapping-itself bug
+ * reported right after. Back to the default — see MobileNavOverlay.tsx for
+ * how the original padding-jump problem is now solved without fighting
+ * this CSS toggle at all.
  */
 export default function App() {
   const reducedMotion = useReducedMotion();

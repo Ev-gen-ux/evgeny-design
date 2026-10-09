@@ -40,8 +40,15 @@
 .card {
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
   background: rgba(var(--color-graphite-rgb), 0.45);
-  backdrop-filter: blur(14px);
+  /* `-webkit-` prefix BEFORE the standard property (2026-09-18) — the
+     production build's CSS minifier was collapsing these as "duplicates"
+     and keeping only whichever came last, silently dropping the standard
+     `backdrop-filter` and leaving only the (in this exact Chrome build,
+     non-functional) vendor-prefixed one — reported live as the header/
+     footer/ChatBar glass blur simply not rendering on the deployed site.
+     Standard property last = it wins the collapse, in every browser. */
   -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   padding: var(--space-28);
   height: 100%;
 }

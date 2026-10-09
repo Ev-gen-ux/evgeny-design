@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useLenis } from 'lenis/react';
-import { Tag, MagnetLink, CodeBlock, CursorOverlay, PromptSteps, Footer, ContactCta, ChatBar, GrainOverlay, ThemeToggle } from '../components';
+import { Tag, MagnetLink, CodeBlock, CursorOverlay, PromptSteps, ContactFooter, ChatBar, GrainOverlay } from '../components';
 import { Header } from '../sections/Header';
 import type { CursorTracker } from '../hooks/useCursorTracker';
 import { useCursorTracker } from '../hooks/useCursorTracker';
@@ -242,7 +242,24 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
                             }}
                           />
                         </span>
+                        {/* data-noasm (2026-09-19) — this text is genuinely
+                            dynamic: `shown` changes on every scroll-driven
+                            re-render as the bar fills in, unlike everything
+                            else on the page (static after mount, which is
+                            the one assumption the whole assembly-animation
+                            system relies on — see useCaseStudyAssembly's own
+                            docstring). Without this, the animation engine
+                            split the *initial* "0%" text (rendered before
+                            any scroll progress) into its own permanent
+                            letter-spans at mount, and every later React
+                            re-render updating `shown` silently patched a
+                            text node that was no longer attached to the
+                            visible DOM — the bar width kept animating
+                            correctly (a plain style attribute, untouched by
+                            the split), but the "N%" readout stayed frozen
+                            at "0%" forever. */}
                         <span
+                          data-noasm="1"
                           style={{
                             fontFamily: 'var(--font-mono)',
                             fontSize: isUs ? 18 : 13,
@@ -438,12 +455,12 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
           leaving this block's text permanently stuck mid-scatter. useCaseStudyAssembly
           supports the same `[data-asm-sync]` marker useAssemblyAnimation does. */}
       <div ref={footerAreaRef} data-asm-sync="1">
-        <ContactCta reducedMotion={reducedMotion} />
-        <Footer />
+        <ContactFooter reducedMotion={reducedMotion} />
       </div>
       <ChatBar barRef={chatBarRef} textRef={chatTextRef} statusDotRef={chatStatusDotRef} statusTextRef={chatStatusTextRef} />
       <GrainOverlay />
-      <ThemeToggle />
+      {/* Mono theme switcher hidden site-wide (2026-09-18, explicit user
+          request) — component + hook are untouched, just not mounted here. */}
     </div>
   );
 }
@@ -544,7 +561,21 @@ function GenericSectionBlock({ sec, hid }: { sec: GenericSection; hid: string })
           </div>
           {sec.pairs.map((pr, i) => (
             <div key={i} className={styles.pairRow}>
-              <div className={styles.pairWas}>{pr.was}</div>
+              {/* data-noasm (2026-09-18) — this cell's `text-decoration:
+                  line-through` renders as literal dashes in the gaps
+                  between words once the assembly animation splits the text
+                  into per-word `inline-block` spans (confirmed live: the
+                  strikethrough paints across each word's own box but not
+                  across the plain-text space between boxes, leaving a
+                  dash-like line sitting in every word gap — reported by the
+                  user as "Нет-специалиста-по-сахарной-депиляции..."
+                  instead of spaced-out words). Skipping the animation for
+                  this cell only keeps the struck-through text as plain,
+                  unsplit DOM text, where the native line-through renders
+                  correctly. */}
+              <div className={styles.pairWas} data-noasm="1">
+                {pr.was}
+              </div>
               <div className={styles.pairShould}>{pr.should}</div>
             </div>
           ))}

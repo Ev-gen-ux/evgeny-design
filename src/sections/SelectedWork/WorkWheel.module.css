@@ -1,0 +1,104 @@
+.section {
+  position: relative;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.frame {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 64px);
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: clamp(40px, 6vw, 96px);
+  align-items: center;
+}
+
+.imagePanel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 320px;
+  height: 420px;
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.3);
+  padding: var(--space-24);
+  text-decoration: none;
+}
+
+.imageGradient {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(var(--color-accent-rgb), 0.35), transparent 60%),
+    radial-gradient(circle at 80% 90%, rgba(var(--color-accent-rgb), 0.18), transparent 55%),
+    #0a0a0c;
+  transition: opacity var(--duration-300) var(--ease-standard);
+}
+
+.imageIndex {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-8);
+}
+
+.imageTitle {
+  position: relative;
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-primary);
+  line-height: var(--lh-snug, 1.2);
+}
+
+.wheel {
+  position: relative;
+  height: 100%;
+}
+
+.hub {
+  /* left must equal -RADIUS from WorkWheel.tsx (620px) — off-screen circle
+     center that the arc items rotate/translate out from. */
+  position: absolute;
+  left: -620px;
+  top: 50%;
+}
+
+.item {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-12);
+  white-space: nowrap;
+  font-size: var(--fs-xxl);
+  font-weight: var(--fw-bold);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+
+.item[data-active='true'] {
+  color: var(--color-text-primary);
+}
+
+.itemDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  flex-shrink: 0;
+}

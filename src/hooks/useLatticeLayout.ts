@@ -46,8 +46,16 @@ function compute(): LatticeLayout {
   const foot = Math.max(0, Math.min(1, (p - 0.82) / 0.18));
   const fe = foot * foot * (3 - 2 * foot);
   const wander = Math.sin(p * Math.PI * 2.2);
-  const baseX = 76 - fe * 26 + wander * (1 - fe) * 18;
-  const baseY = 50 + Math.sin(p * Math.PI * 3.1) * (1 - fe) * 16;
+  const roamX = 76 - fe * 26 + wander * (1 - fe) * 18;
+  const roamY = 50 + Math.sin(p * Math.PI * 3.1) * (1 - fe) * 16;
+  // Hero (2026-09-26, per user request): the figure sits dead-center while the
+  // hero text lives in the corners, then eases onto the same roaming path as
+  // before over the first ~90% of a viewport of scroll — the roaming itself is
+  // untouched, only its starting position changed.
+  const he = Math.max(0, Math.min(1, sy / (vh * 0.9)));
+  const heroEase = he * he * (3 - 2 * he);
+  const baseX = 50 + (roamX - 50) * heroEase;
+  const baseY = 50 + (roamY - 50) * heroEase;
   const baseSize = 30;
   const size = baseSize + fe * 22;
   return {

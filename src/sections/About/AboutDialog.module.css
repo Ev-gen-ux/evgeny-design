@@ -1,0 +1,231 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-44);
+}
+
+/* Before the block is scrolled to (and after it has left the screen) nothing of it is shown; it assembles on entry. */
+.hidden .exchange,
+.hidden .tabs {
+  opacity: 0;
+}
+
+.exchange {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.line {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 4.6em 1fr;
+  gap: var(--space-8);
+  align-items: baseline;
+}
+
+.who {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+}
+
+.agent {
+  color: var(--color-accent);
+}
+
+.question {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--color-text-primary);
+}
+
+/* Answer + its small grey explanation. The column keeps room for the longest pair (3 lines of each) as ONE block, so a short answer never leaves a gap before its note and the tabs below never jump. */
+.answerCol {
+  --ans-fs: clamp(17px, 1.5vw, 24px);
+  --note-fs: clamp(14px, 1.1vw, 16px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  min-height: calc(var(--ans-fs) * 4.2 + var(--note-fs) * 4.5 + var(--space-12));
+}
+
+.answer {
+  font-size: var(--ans-fs);
+  line-height: 1.4;
+  color: var(--color-text-primary);
+  max-width: 42ch;
+  display: block;
+}
+
+.note {
+  display: block;
+  font-size: var(--note-fs);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  max-width: 46ch;
+}
+
+.wordBox {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Letters fly in from scattered positions (the site's own assembly look). */
+.letter {
+  display: inline-block;
+  white-space: pre;
+  opacity: 0;
+  animation: letterIn 500ms var(--ease-signature) forwards;
+}
+
+@keyframes letterIn {
+  from {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.tabs {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8) var(--space-32);
+  padding-bottom: var(--space-8);
+}
+
+/* Phone (2026-10-09, explicit user request): tabs never wrap to a second
+   row — they run off the right edge instead and scroll horizontally
+   (native scroll + snap, no extra state/UI). `.indicator`'s translateX/width
+   math (AboutDialog.tsx) is unaffected: `offsetLeft`/`offsetWidth` are
+   measured against this container, not the viewport, so they stay correct
+   whether or not the container itself is scrolled. The active tab is kept
+   in view by `scrollIntoView` (see AboutDialog.tsx), on every switch —
+   auto-advance included, not just a manual click. `scrollbar-width`/
+   `::-webkit-scrollbar` hide the native scrollbar (site aesthetic, same
+   reasoning as the horizontal lists elsewhere); the gradient mask hints
+   there's more to scroll past the right edge without extra decor. Safe
+   side margins come from the padding below, equal to the same
+   `--space-container-x` every other mobile block respects, so the first/
+   last tab never sits flush against the true screen edge. */
+@media (max-width: 640px) {
+  .tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-inline: var(--space-container-x);
+    padding-inline: var(--space-container-x);
+    margin-inline: calc(-1 * var(--space-container-x));
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+/* Text tabs, like the site's other controls (mono text, no border or fill); only the active one gets the accent and the sliding underline. */
+.tab {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--color-text-secondary);
+  background: none;
+  border: 0;
+  padding: 0 0 var(--space-6);
+  cursor: pointer;
+  transition: color var(--duration-300) var(--ease-standard);
+}
+
+.tab:hover,
+.tab:focus-visible {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--color-slate-mist-rgb), 0.6);
+  text-underline-offset: 6px;
+}
+
+.tab:focus-visible {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+.tabOn,
+.tabOn:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.indicator {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  transition:
+    transform 450ms var(--ease-signature),
+    width 450ms var(--ease-signature);
+}
+
+/* The underline is a progress bar: a faint track under the active tab and an accent fill that grows over the time the question stays (the end of this animation starts the next question). Hidden until the tab text has assembled. */
+.track {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: rgba(var(--color-slate-mist-rgb), 0.3);
+  opacity: 0;
+  animation: trackIn 500ms var(--ease-standard) forwards;
+}
+
+@keyframes trackIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.fill,
+.fillStatic {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--color-accent);
+  transform-origin: left;
+}
+
+.fill {
+  transform: scaleX(0);
+  animation: progress linear forwards;
+}
+
+@keyframes progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Pause the bar (and with it the dialog) while the visitor hovers the TABS (aiming to pick one), has keyboard focus
+   in the block, or it's off screen — hovering the exchange text (question/answer, where the cursor usually rests
+   while reading) must NOT pause it, or the progress looks stuck right after scrolling in. (:focus-visible, not
+   :focus-within: a tab that was just clicked keeps focus and must not freeze the bar.) */
+.tabs:hover .fill,
+.root:has(:focus-visible) .fill,
+.hidden .fill {
+  animation-play-state: paused;
+}

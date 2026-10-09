@@ -1,8 +1,16 @@
+/* `width` comes from Header.tsx's inline style (useStableViewportWidth), not
+   `right: 0` (2026-09-18) — see that hook's own docstring for why: on
+   macOS's default "overlay scrollbar, visible only while scrolling"
+   setting, what `right: 0` resolves against for a `position: fixed`
+   element can shift mid-scroll, which is what made the mobile menu
+   trigger's edge padding drift. `width: 100%` here is the fallback for the
+   one frame before the JS measurement lands (SSR/first paint) — harmless
+   either way, since the two should already agree at rest. */
 .nav {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
+  width: 100%;
   z-index: 100;
   display: flex;
   align-items: center;
@@ -12,6 +20,41 @@
   gap: var(--space-12);
   font-family: var(--font-display);
   isolation: isolate;
+}
+
+/* Mobile-only `position: sticky` override (2026-09-19, third attempt at
+   the same Android bug, scoped this time — two `fixed`-side mitigations,
+   `will-change: transform` then a real `transform: translateZ(0)` +
+   `backface-visibility: hidden`, both confirmed live on a real phone to
+   NOT fix it; desktop was never reported broken, so `.nav` stays `fixed`
+   there, untouched). Reported: the bar visibly detaches from the top and
+   scrolls away WITH the page during an active downward scroll, then snaps
+   back once scrolling stops or reverses — a known Chromium bug class
+   where `position: fixed` is re-evaluated against the layout viewport
+   during Chrome-on-Android's own dynamic toolbar (address bar) hide/show
+   animation, and no compositor-layer hint fully prevents the visible lag.
+   `position: sticky` uses a completely different positioning algorithm
+   (resolved during layout, against its own containing block, not the
+   separate fixed-viewport math the toolbar animation specifically
+   disrupts) — not documented to share this bug; Pipeline's own sticky-pin
+   frame already relies on this exact mechanism elsewhere on this same
+   page with no reports of the same issue (see Home.module.css's `.root`
+   comment — its own `overflow` history is kept clean specifically so
+   sticky descendants work).
+   A zero-height wrapper around `.nav` was tried first, same day, so it
+   wouldn't consume its own real height in flow — reverted immediately:
+   `position: sticky`'s "room to stick" is bounded by its own containing
+   block's box, so a 0-height parent leaves no room at all and the element
+   just scrolls away like ordinary static content (confirmed broken in
+   emulation before it ever reached a real device or a deploy). `.nav` now
+   occupies its own natural height directly in flow on mobile instead —
+   see Hero.module.css's own mobile `padding-top` for the corresponding
+   spacing adjustment (scoped to the same breakpoint, so desktop's own
+   spacing is untouched too). */
+@media (max-width: 640px) {
+  .nav {
+    position: sticky;
+  }
 }
 
 /* Phone (2026-09-17, follow-up) — `--space-nav-x` is `clamp(20px, 5vw, 64px)`,
@@ -27,30 +70,48 @@
   .nav {
     padding-left: var(--space-20);
     padding-right: var(--space-20);
+    /* Vertical padding tightened (2026-09-18, explicit user request — the
+       header read as too tall) — `--space-18` top+bottom was sized for the
+       single-line desktop wordmark; on phone `.wordmark` is a two-line
+       stack (name + status tag, see its own ≤640px rule below), so the
+       SAME padding on a taller content box pushed total nav height well
+       past what a compact mobile header needs. */
+    /* Top bumped to 16px (2026-10-09, explicit user request — the wordmark
+       text read as flush against the true top edge of the screen at 12px,
+       `.nav` being `position: sticky; top: 0` with no page content above it
+       to lend any extra visual clearance). Bottom stays at 12px — only the
+       top edge was reported as cramped. */
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-12);
   }
 }
 
-/* Was a hardcoded blueprint-blue gradient (2026-09-17: `rgba(14,27,46,…)`,
-   the one literal this whole file's mono-theme sweep missed, since it never
-   matched the `232,67,43`/`138,150,166`/`27,42,63` greps that pass used) —
-   read by the user as a stray "blue glow," not a glass effect. Replaced
-   with the same neutral glass tint as ChatBar's `.bar` (rgba(graphite),
-   backdrop-blur, no saturate boost — that boost was amplifying the blue
-   further). Deliberately no border, unlike ChatBar — per explicit user
-   request, this one shouldn't have the dividing line. */
+/* Glass values now 1:1 with ChatBar's `.bar` (2026-09-18, explicit user
+   request — "переиспользуй стиль из футера" [ChatBar, the bottom bar the
+   user calls the "footer" bar]): `rgba(graphite, 0.18)` + `blur(6px)`,
+   nothing else. Every earlier tuning attempt on this file's own bespoke
+   gradient/mask (opacity, blur radius, fade position — see git history) is
+   gone; deliberately no border (ChatBar has one, this one explicitly
+   shouldn't, per the same request) and no box-shadow. */
 .scrim {
   position: absolute;
-  inset: -24px 0 -24px 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(var(--color-graphite-rgb), 0.72) 0%,
-    rgba(var(--color-graphite-rgb), 0.62) 55%,
-    rgba(var(--color-graphite-rgb), 0) 100%
-  );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 52%, rgba(0, 0, 0, 0.45) 78%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 52%, rgba(0, 0, 0, 0.45) 78%, transparent 100%);
+  /* inset: 0, not -24px top/bottom (2026-09-18) — the -24px extension
+     was left over from this file's old bespoke gradient+mask, where it
+     gave the fade-to-transparent room to happen smoothly past .nav's own
+     box. Copying ChatBar's flat, unmasked glass style (see the comment
+     block above) but keeping that extension meant the blur/tint now ran
+     24px past the header with nothing fading it out — an abrupt, oversized
+     band below the actual content, reported by the user as "the bottom
+     padding is huge and asymmetric." Matches .nav's own box exactly now,
+     same as ChatBar's own `.bar` (no extension trick there either). */
+  inset: 0;
+  background: rgba(var(--color-graphite-rgb), 0.18);
+  /* `-webkit-` prefix before the standard property (2026-09-18) — see
+     Skills.module.css's identical comment for the full reasoning: the
+     production build's minifier was dropping whichever declaration came
+     first as a "duplicate," silently killing the blur site-wide. */
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   pointer-events: none;
 }
 
