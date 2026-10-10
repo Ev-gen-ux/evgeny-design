@@ -81,6 +81,7 @@ export function AboutDialog({ items, reducedMotion }: AboutDialogProps) {
   const [ind, setInd] = useState({ x: 0, w: 0 });
   const rootRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const tabsMounted = useRef(false);
   const startedRef = useRef(reducedMotion);
   // True from the block's entry until the first switch: the first bar starts after the tabs have assembled.
   const [fresh, setFresh] = useState(true);
@@ -120,7 +121,20 @@ export function AboutDialog({ items, reducedMotion }: AboutDialogProps) {
   // Phone (2026-10-09): `.tabs` scrolls horizontally there (see .module.css) —
   // keep the active tab in view on every switch, auto-advance included, not
   // just a manual click. No-op on desktop, where all tabs already fit.
+  //
+  // Skip the very first run (2026-10-10, site loading scrolled straight to
+  // "О себе" instead of the hero, on every device): `block: 'nearest'` only
+  // cares whether the tab is vertically in the viewport, not just whether the
+  // tabs row itself needs horizontal scrolling — on initial mount, before the
+  // page has scrolled anywhere, this section is still below the fold, so it
+  // counted as "not visible" and pulled the whole page down to it. There's
+  // nothing to keep in view yet on mount; this effect only matters once the
+  // user has actually switched tabs.
   useEffect(() => {
+    if (!tabsMounted.current) {
+      tabsMounted.current = true;
+      return;
+    }
     tabRefs.current[active]?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
   }, [active]);
 
