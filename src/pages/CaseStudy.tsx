@@ -76,7 +76,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
   const sectionsBefore = showPersonas ? sections.slice(0, 1) : [];
   const sectionsAfter = showPersonas ? sections.slice(1) : sections;
   const outcomeTag = study.hasMatrix
-    ? '06 · outcome'
+    ? `${String(6 + sections.length).padStart(2, '0')} · outcome`
     : sections.length
       ? `${String(sections.length + (showPersonas ? 3 : 2)).padStart(2, '0')} · outcome`
       : '03 · outcome';

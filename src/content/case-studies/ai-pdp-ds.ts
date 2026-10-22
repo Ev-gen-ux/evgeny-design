@@ -20,7 +20,17 @@ export const aiPdpDs: CaseStudyDetail = {
   ],
   sections: [
     {
-      tag: '02 · insight',
+      tag: '01 · market',
+      promptQuestion: 'это уже где-то решено?',
+      title: 'Разрыв между дизайном и кодом — рыночный, не частный',
+      paras: [
+        'Перед тем как закладывать протокол, я проверил рынок: ищутся ли готовые дизайн-системы, где Figma Code Connect используется не как витрина сниппета, а как инструмент сверки — где состояние/вариант компонента в Figma гарантированно совпадает с тем, что реально есть в коде. Готовых решений с таким явным сопоставлением я не нашёл — Code Connect почти везде используется только для вставки примера кода в Dev Mode, а не для проверки соответствия.',
+        'Боль за этим — известная и воспроизводимая: архитектура компонента живёт в дизайне своей жизнью (слой называется «норма», «вкл»), а в коде — своей (enabled, default, как буквально записано в CSS-классах). Для разработчика это означает двойной перевод на каждый компонент и источник расхождений, которые всплывают только в проде.',
+      ],
+      note: 'Подтверждено собственными логами проекта: в сессии Modal (dx-friction-2026-05-02, находка U3) код использовал слоты beforeTitle/afterTitle, а Figma — contentBefore/contentAfter — разработчику казалось, что нужных слотов в компоненте просто нет. Это тот самый разрыв «два разных мира», не абстрактный пример, а зафиксированный инцидент.',
+    },
+    {
+      tag: '03 · insight',
       promptQuestion: 'как это решить системно?',
       title: 'Контракт, который блокирует код до фиксации данных',
       paras: [
@@ -46,7 +56,7 @@ export const aiPdpDs: CaseStudyDetail = {
       note: 'Всё фиксируется в едином артефакте Component Spec Document на компонент.',
     },
     {
-      tag: '03 · proven effect',
+      tag: '04 · proven effect',
       promptQuestion: 'что реально ловит система?',
       title: 'Реальные ошибки, которые ловит система',
       pairHead: ['было в figma', 'должно быть'],
@@ -61,7 +71,7 @@ export const aiPdpDs: CaseStudyDetail = {
       note: 'Правило: ошибка сначала исправляется в Figma и только потом токены пересобираются в код — никаких временных алиасов для неверных имён.',
     },
     {
-      tag: '04 · what’s built',
+      tag: '05 · what’s built',
       promptQuestion: 'что уже собрано?',
       title: 'Что собрано',
       paras: [
@@ -78,7 +88,7 @@ export const aiPdpDs: CaseStudyDetail = {
       note: 'Toggle переименован из Switcher — управляемое breaking-изменение через Changesets. Каждый компонент — это 4 файла: Component.tsx · Component.stories.tsx · Component.figma.tsx · index.ts.',
     },
     {
-      tag: '05 · architecture',
+      tag: '06 · architecture',
       promptQuestion: 'как это устроено?',
       title: 'Как это устроено под капотом',
       paras: [
@@ -91,7 +101,7 @@ export const aiPdpDs: CaseStudyDetail = {
       note: 'Жёсткое правило: компоненты никогда не обращаются к сырой палитре напрямую (palette.blue.500) — только к семантическим токенам. Литералов нет нигде: меняешь theme.colors.button.primary.background.hover в одном месте — кнопка обновляется во всём приложении.',
     },
     {
-      tag: '06 · reuse',
+      tag: '07 · reuse',
       promptQuestion: 'как переиспользуется css?',
       title: 'Как CSS переиспользуется и пересобирается',
       defs: [
@@ -111,14 +121,14 @@ export const aiPdpDs: CaseStudyDetail = {
       note: 'Итог: один компонент, один файл стилей — тема, брейкпоинт и переданные пропы вместе решают, как он выглядит в конкретном месте, без дублирования кода.',
     },
     {
-      tag: '07 · figma ↔ code',
+      tag: '08 · figma ↔ code',
       promptQuestion: 'как связаны figma и код?',
       title: 'Связь через Code Connect',
       code: "figma.connect(Button, 'https://www.figma.com/design/.../?node-id=3001-15051', {\n  props: {\n    appearance: figma.enum('Appearance', { Primary: 'primary', Outline: 'outline', Flat: 'flat' }),\n    size: figma.enum('Size', { Large: 'large', Medium: 'medium' }),\n    text: figma.string('Label'),\n    disabled: figma.boolean('Disabled'),\n  },\n  example: ({ appearance, size, text, disabled }) => (\n    <Button appearance={appearance} size={size} text={text} disabled={disabled} />\n  ),\n});",
       note: 'Имена вариантов в figma.enum точно совпадают с именами вариантов Figma-компонента — расхождение здесь физически невозможно без явного изменения обеих сторон.',
     },
     {
-      tag: '08 · governance',
+      tag: '09 · governance',
       promptQuestion: 'как система живёт дальше?',
       title: 'Как система остаётся надёжной со временем',
       defs: [

@@ -1,0 +1,54 @@
+/*
+ * Light theme (2026-10-22, experimental — opt-in via `[data-theme='light']`
+ * on <html>, toggled by useThemeToggle, same mechanism as theme-mono.css).
+ * Purely additive, same pattern as that file: only adds a higher-specificity
+ * override block, never edits colors.css's own `:root` defaults.
+ *
+ * Method: flip the 5 *named* brand colors instead of inventing new ones.
+ * Vellum (the current off-white text color) becomes the page background;
+ * Blueprint (the current dark navy background) becomes the primary text
+ * color; Graphite becomes the light surface color. Redline — the one accent
+ * — is untouched, same as under mono: it's the site's only accent color and
+ * stays itself in every theme. No indigo/lavender/purple introduced anywhere.
+ *
+ * Known gap, same shape as theme-mono.css's own documented gap: the roaming
+ * icosahedron background (useHeroThreeScene.ts) reads its colors from TS
+ * token constants once at WebGL scene setup, not from these CSS custom
+ * properties — it keeps its current red/slate coloring under light theme
+ * until that hook is taught to branch on the active theme too.
+ */
+:root[data-theme='light'] {
+  --color-blueprint: #f2f0eb;
+  --color-vellum: #0e1b2e;
+  --color-slate-mist: #5c6675;
+  --color-graphite: #e4e0d6;
+  --color-vellum-muted: #2a3650;
+  --color-slate-mist-dim: #9aa2af;
+  --color-accent: var(--color-redline);
+
+  /* Links/CTAs rest at the accent red instead of the ink color — explicit
+     user request (2026-10-22): under light theme every link/button should
+     read red by default, not only on hover. See colors.css's docstring for
+     --color-link/--color-link-secondary — default/mono keep resting at the
+     text color, only light redirects both to the accent. */
+  --color-link: var(--color-accent);
+  --color-link-secondary: var(--color-accent);
+
+  --color-blueprint-rgb: 242, 240, 235;
+  --color-vellum-rgb: 14, 27, 46;
+  --color-slate-mist-rgb: 92, 102, 117;
+  --color-graphite-rgb: 228, 224, 214;
+  --color-accent-rgb: var(--color-redline-rgb);
+
+  /*
+   * The ambient wash (PageBackdrop) is tuned dark (L 0.16–0.22) because it
+   * sits under a dark base page at 55% opacity — on a light page the same
+   * values read as a muddy grey smear rather than an ambient glow. Raised
+   * close to the new background's own lightness and pulled down in opacity,
+   * so it stays a faint tint instead of a visible layer.
+   */
+  --wash-l1: 0.93;
+  --wash-l2: 0.9;
+  --wash-l3: 0.88;
+  --wash-opacity: 0.4;
+}

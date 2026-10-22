@@ -150,7 +150,7 @@
   font-weight: var(--fw-bold);
   font-size: var(--fs-fluid-xl);
   letter-spacing: var(--tracking-tight);
-  color: var(--color-text-primary);
+  color: var(--color-link);
   text-decoration: none;
 }
 

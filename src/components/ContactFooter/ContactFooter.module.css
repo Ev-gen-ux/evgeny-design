@@ -70,7 +70,7 @@
 
 /* Resting color primary (headers are the dim ones); the hover color still comes from Link's own `.contactNav:hover`, which outranks this. */
 .col a {
-  color: var(--color-text-primary);
+  color: var(--color-link);
 }
 
 .meta {
@@ -90,7 +90,7 @@
   font-family: var(--font-display);
   font-weight: var(--fw-bold);
   text-transform: uppercase;
-  color: var(--color-text-primary);
+  color: var(--color-link);
   text-decoration: none;
   white-space: nowrap;
   line-height: 0.78;

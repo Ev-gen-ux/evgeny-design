@@ -52,7 +52,7 @@ export function PageBackdrop() {
         ref={washRef}
         className={[styles.wash, !reducedMotion && styles.washAnimated].filter(Boolean).join(' ')}
         style={{
-          background: `conic-gradient(from 120deg at 30% 20%, oklch(0.22 0.05 ${INITIAL_HUE}) 0deg, oklch(0.18 0.045 ${INITIAL_HUE + 55}) 130deg, oklch(0.16 0.035 ${INITIAL_HUE - 65}) 250deg, oklch(0.22 0.05 ${INITIAL_HUE}) 360deg)`,
+          background: `conic-gradient(from 120deg at 30% 20%, oklch(var(--wash-l1) 0.05 ${INITIAL_HUE}) 0deg, oklch(var(--wash-l2) 0.045 ${INITIAL_HUE + 55}) 130deg, oklch(var(--wash-l3) 0.035 ${INITIAL_HUE - 65}) 250deg, oklch(var(--wash-l1) 0.05 ${INITIAL_HUE}) 360deg)`,
         }}
         aria-hidden="true"
       />

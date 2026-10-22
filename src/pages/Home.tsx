@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useLenis } from 'lenis/react';
 import { CursorOverlay, PageBackdrop, ChatBar, GrainOverlay } from '../components';
+import { ThemeToggle } from '../components/ThemeToggle/ThemeToggle';
 import { useCursorTracker } from '../hooks/useCursorTracker';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useAssemblyAnimation } from '../hooks/useAssemblyAnimation';
@@ -76,8 +77,10 @@ export function Home() {
       </ScrollRevealProvider>
       <ChatBar barRef={chatBarRef} textRef={chatTextRef} statusDotRef={chatStatusDotRef} statusTextRef={chatStatusTextRef} />
       <GrainOverlay />
-      {/* Mono theme switcher hidden site-wide (2026-09-18, explicit user
-          request) — component + hook are untouched, just not mounted here. */}
+      {/* Mounted temporarily (2026-10-22) only to test the new light theme
+          locally — remove before any production push, per standing rule
+          that mono/light stay hidden site-wide (2026-09-18 decision). */}
+      <ThemeToggle />
     </div>
   );
 }

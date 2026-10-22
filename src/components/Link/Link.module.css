@@ -11,7 +11,7 @@
 
 /* Header nav item — plain CSS hover (no cursor-tracking), matches the current site 1:1. */
 .nav {
-  color: var(--color-text-primary);
+  color: var(--color-link);
   padding-bottom: 3px;
   border-bottom: 1px solid transparent;
 }
@@ -27,7 +27,7 @@
    The current site also applies a small cursor-magnet displacement here via JS;
    that's layered on top of this static variant in the cursor-interaction hook step. */
 .underline {
-  color: var(--color-text-primary);
+  color: var(--color-link);
   border-bottom: 1px solid var(--color-slate-mist);
 }
 
@@ -50,7 +50,7 @@
 
 /* Footer/contact links — color-only hover, no border ever (matches source: borderBottom stays 'none'). */
 .plain {
-  color: var(--color-text-secondary);
+  color: var(--color-link-secondary);
   border-bottom: none;
 }
 
@@ -63,7 +63,7 @@
    hover behavior matches .nav (border-bottom appears, lift) instead of color-only.
    Deliberate deviation from source's contactBase (user request, 2026-08-02). */
 .contactNav {
-  color: var(--color-text-secondary);
+  color: var(--color-link-secondary);
   padding-bottom: 3px;
   border-bottom: 1px solid transparent;
 }
@@ -77,7 +77,7 @@
 
 /* Same color-only hover, but Vellum by default instead of Slate Mist (other-projects links). */
 .ghost {
-  color: var(--color-text-primary);
+  color: var(--color-link);
   border-bottom: none;
 }
 
@@ -94,7 +94,7 @@
   font-family: var(--font-display);
   font-size: clamp(18px, 2.4vw, 30px);
   font-weight: var(--fw-semibold);
-  color: var(--color-text-primary);
+  color: var(--color-link);
   border-bottom: 2px solid var(--color-accent);
   /* Own padding-bottom (space between the text and its underline) kept —
      `margin-bottom` removed (2026-08-03): it used to be this element's own

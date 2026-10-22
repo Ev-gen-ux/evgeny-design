@@ -4,8 +4,8 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.55;
-  transition: background var(--duration-700) var(--ease-standard);
+  opacity: var(--wash-opacity, 0.55);
+  transition: background var(--duration-700) var(--ease-standard), opacity var(--duration-700) var(--ease-standard);
 }
 
 .washAnimated {

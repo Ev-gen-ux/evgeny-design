@@ -8,6 +8,7 @@
 @import './tokens/spacing.css';
 @import './tokens/motion.css';
 @import './tokens/theme-mono.css';
+@import './tokens/theme-light.css';
 
 * {
   box-sizing: border-box;

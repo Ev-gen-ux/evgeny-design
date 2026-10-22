@@ -30,6 +30,17 @@
   --color-surface: var(--color-graphite);
 
   /*
+   * Link resting-color tokens (2026-10-22, for the light theme) — every
+   * link/CTA (Link.module.css) rests at --color-text-primary/-secondary and
+   * only switches to --color-accent on hover. Split out so a theme can make
+   * links rest at the accent color without recoloring body text along with
+   * them — default/mono keep the current look (alias straight to the text
+   * tokens), light overrides both to the accent red.
+   */
+  --color-link: var(--color-text-primary);
+  --color-link-secondary: var(--color-text-secondary);
+
+  /*
    * RGB triplets (2026-09-17, for the mono theme) — a handful of glows/
    * gradients across the site are built as `rgba(R, G, B, alpha)` literals,
    * in plain CSS *and* in JS-computed inline styles (PageBackdrop's mesh
@@ -49,4 +60,18 @@
   --color-vellum-rgb: 242, 240, 235;
   --color-slate-mist-rgb: 138, 150, 166;
   --color-graphite-rgb: 27, 42, 63;
+
+  /*
+   * Wash-layer OKLCH lightness (2026-10-22, for the light theme) — the full-bleed
+   * conic-gradient wash behind the whole page (PageBackdrop.tsx, re-painted every
+   * frame by useStageProgress.ts) used to hardcode these three lightness values
+   * (0.22/0.18/0.16) directly in both files' template strings, tuned dark because
+   * the wash sits under a dark base page. Pulled out as tokens so a theme can
+   * raise them without touching either file again. `--wash-opacity` likewise
+   * replaces .wash's hardcoded 0.55 in PageBackdrop.module.css.
+   */
+  --wash-l1: 0.22;
+  --wash-l2: 0.18;
+  --wash-l3: 0.16;
+  --wash-opacity: 0.55;
 }

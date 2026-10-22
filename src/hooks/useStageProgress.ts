@@ -114,7 +114,7 @@ export function useStageProgress(refs: StageBackdropRefs, enabled: boolean) {
         document.documentElement.style.setProperty('--stage-hue', hueStr);
 
         if (washRef.current) {
-          washRef.current.style.background = `conic-gradient(from 120deg at 30% 20%, oklch(0.22 ${c1} ${hueStr}) 0deg, oklch(0.18 ${c2} ${(hue + 55).toFixed(1)}) 130deg, oklch(0.16 ${c3} ${(hue - 65).toFixed(1)}) 250deg, oklch(0.22 ${c1} ${hueStr}) 360deg)`;
+          washRef.current.style.background = `conic-gradient(from 120deg at 30% 20%, oklch(var(--wash-l1) ${c1} ${hueStr}) 0deg, oklch(var(--wash-l2) ${c2} ${(hue + 55).toFixed(1)}) 130deg, oklch(var(--wash-l3) ${c3} ${(hue - 65).toFixed(1)}) 250deg, oklch(var(--wash-l1) ${c1} ${hueStr}) 360deg)`;
         }
         const inners = blobInnerRefs.current;
         for (let i = 0; i < inners.length; i++) {
