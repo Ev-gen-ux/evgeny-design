@@ -230,6 +230,16 @@
 @media (max-width: 640px) {
   .topRow {
     flex-wrap: nowrap;
+    /* Live report 2026-10-25, 2nd pass (S24, 360px): `nowrap` above stopped
+       the trigger from wrapping, but the tag line itself ("session #2026 ·
+       agent-built", ~178px at this font) then wrapped onto two lines
+       instead — measured ~2px short of the space left after the trigger at
+       this exact width, a margin thin enough that the full 12px gap here
+       was the difference. Tightened to 4px, freeing enough room for the
+       tag to stay on one line here with headroom for narrower devices too,
+       without touching `.nav`'s own 24px edge padding (explicit user spec
+       elsewhere, see that rule's own comment). */
+    gap: var(--space-4);
   }
 }
 
