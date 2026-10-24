@@ -101,6 +101,17 @@ export function useThreeScene(
           handle.camera.aspect = w / h;
           handle.camera.updateProjectionMatrix();
           handle.onResize?.(w, h);
+          // `setSize` clears the canvas's backing buffer synchronously; the
+          // next real frame only paints on the following rAF tick (2026-10-25,
+          // live report — a brief black flash at the bottom of the page
+          // during scroll). On mobile, a `resize` event fires on every
+          // toolbar show/hide the scroll gesture triggers, and the browser
+          // can paint that just-cleared, not-yet-redrawn canvas in between —
+          // an `alpha:true` canvas's cleared state isn't guaranteed to
+          // composite as "see-through to whatever's behind it" for that one
+          // paint. Rendering immediately here closes the gap: there's never
+          // a committed paint of the cleared-but-unrendered buffer.
+          renderer.render(handle.scene, handle.camera);
         };
         resizeHandler();
         window.addEventListener('resize', resizeHandler);

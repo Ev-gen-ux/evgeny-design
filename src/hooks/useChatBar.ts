@@ -157,7 +157,18 @@ export function useChatBar(
 
     const update = (now: number) => {
       syncBarPosition();
-      const vh = window.innerHeight;
+      // `window.innerHeight` here (pre-2026-10-25) was the one place in this
+      // file still comparing against the large/layout viewport instead of
+      // `visualViewport` — same root-cause class documented above for `top`
+      // and `left`/`width`: during a mobile browser's toolbar show/hide
+      // transition the two heights disagree, so `idx`'s "which chat line is
+      // active" threshold and `atBottom` could both briefly read a stale
+      // viewport height and flip, reading as the bar jumping/skipping mid-
+      // scroll. `vv` is already guarded non-null by `syncBarPosition`'s own
+      // early return above, but isn't itself gated here, so fall back to
+      // `window.innerHeight` only in the (very old browser) case `vv` is
+      // absent.
+      const vh = vv ? vv.height : window.innerHeight;
       const sy = window.scrollY;
       const atBottom = sy + vh >= document.documentElement.scrollHeight - 4;
 
