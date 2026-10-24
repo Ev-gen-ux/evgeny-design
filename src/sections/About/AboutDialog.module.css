@@ -18,20 +18,6 @@
 
 .line {
   margin: 0;
-  display: grid;
-  grid-template-columns: 4.6em 1fr;
-  gap: var(--space-8);
-  align-items: baseline;
-}
-
-.who {
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  color: var(--color-text-secondary);
-}
-
-.agent {
-  color: var(--color-accent);
 }
 
 .question {
@@ -150,17 +136,23 @@
   color: var(--color-text-secondary);
   background: none;
   border: 0;
-  padding: 0 0 var(--space-6);
+  border-bottom: 1px solid transparent;
+  padding: 0 0 calc(var(--space-6) - 1px);
   cursor: pointer;
-  transition: color var(--duration-300) var(--ease-standard);
+  transition:
+    color var(--duration-300) var(--ease-standard),
+    border-bottom-color var(--duration-300) var(--ease-standard);
 }
 
+/* 2026-10-24 bugfix: was `text-decoration: underline` — the tab's letters render as individual
+   `display:inline-block` spans (`.letter`, via `Scatter`), and text-decoration breaks into
+   disjoint fragments across inline-block children instead of drawing one continuous line (seen
+   live as stray little dashes under only some letters on hover). A border on the button's own
+   box draws as a single unbroken line regardless of how the text inside is split. */
 .tab:hover,
 .tab:focus-visible {
   color: var(--color-text-primary);
-  text-decoration: underline;
-  text-decoration-color: rgba(var(--color-slate-mist-rgb), 0.6);
-  text-underline-offset: 6px;
+  border-bottom-color: rgba(var(--color-slate-mist-rgb), 0.6);
 }
 
 .tab:focus-visible {
@@ -171,7 +163,7 @@
 .tabOn,
 .tabOn:hover {
   color: var(--color-accent);
-  text-decoration: none;
+  border-bottom-color: transparent;
 }
 
 .indicator {
@@ -184,9 +176,13 @@
     width 450ms var(--ease-signature);
 }
 
-/* The underline is a progress bar: a faint track under the active tab and an accent fill that grows over the time the question stays (the end of this animation starts the next question). Hidden until the tab text has assembled. */
+/* The underline is a progress bar: a faint track under the active tab and an accent fill that grows over the time the
+   question stays (the end of this animation starts the next question), stacked exactly on top of each other via
+   position:absolute — plain `display:block` siblings would lay out one below the other as two separate 1px lines
+   (seen live as "two little dashes" under the tab, 2026-10-24 bugfix). Hidden until the tab text has assembled. */
 .track {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 1px;
   background: rgba(var(--color-slate-mist-rgb), 0.3);
@@ -202,7 +198,8 @@
 
 .fill,
 .fillStatic {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 1px;
   background: var(--color-accent);

@@ -172,9 +172,6 @@ export function AboutDialog({ items, reducedMotion }: AboutDialogProps) {
     >
       <div className={styles.exchange} data-noasm="1" aria-live="polite">
         <p className={styles.line}>
-          <span className={styles.who}>
-            {reducedMotion ? 'you' : <Scatter text="you" start={0} step={40} seed={`you-${enter}`} />}
-          </span>
           <span className={styles.question}>
             {reducedMotion ? (
               current.question
@@ -189,9 +186,6 @@ export function AboutDialog({ items, reducedMotion }: AboutDialogProps) {
           </span>
         </p>
         <p className={styles.line}>
-          <span className={`${styles.who} ${styles.agent}`}>
-            {reducedMotion ? 'agent' : <Scatter text="agent" start={questionEnd} step={40} seed={`agent-${key}`} />}
-          </span>
           <span className={styles.answerCol}>
             <span className={styles.answer}>
               {reducedMotion ? (

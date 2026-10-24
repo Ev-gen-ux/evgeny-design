@@ -1,14 +1,32 @@
 import { ReactLenis } from 'lenis/react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { CaseStudyRoute } from './pages/CaseStudyRoute';
 import { useReducedMotion } from './hooks/useReducedMotion';
+import { GrainGradient } from './components';
+
+/**
+ * One GrainGradient instance for the whole SPA lifetime (2026-10-24 redesign),
+ * mounted above the router so it never remounts/flickers on Home ↔ CaseStudy
+ * navigation — `intense`/`flip` just toggle CSS variants on route change. `/`
+ * gets the bolder reference-matching streak on the right; case-study pages
+ * (`/work/:id`) get the calmer default, mirrored to glow from the left
+ * (2026-10-24 follow-up, explicit user request).
+ */
+function Background() {
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+  return <GrainGradient intense={isHome} flip={!isHome} />;
+}
 
 const routes = (
-  <Routes>
-    <Route path="/" element={<Home />} />
-    <Route path="/work/:id" element={<CaseStudyRoute />} />
-  </Routes>
+  <>
+    <Background />
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/work/:id" element={<CaseStudyRoute />} />
+    </Routes>
+  </>
 );
 
 /**

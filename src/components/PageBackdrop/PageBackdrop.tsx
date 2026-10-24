@@ -19,10 +19,9 @@ const INITIAL_STAGE_COLOR = `oklch(0.65 0.18 ${INITIAL_HUE.toFixed(1)})`;
  * hero) — 1:1 with the wash/meshBlobs/grain backgrounds and the scroll-stage
  * progress bar. Not gated by prefers-reduced-motion as a whole — each layer
  * disables its own animation individually. The bottom-right STAGE badge this
- * used to also render was removed 2026-08-03 (kept as a component, just no
- * longer rendered on any page — see `components/StageBadge`); `badgeDotRef`/
- * `badgeTextRef` below are still threaded through `useStageProgress` even
- * though nothing reads them now, rather than reworking that hook's signature.
+ * used to also render was removed 2026-08-03; the `StageBadge` component and
+ * the `badgeDotRef`/`badgeTextRef` plumbing it used were deleted outright
+ * 2026-10-24 (dead code — never rendered on any page since that removal).
  *
  * Self-contained since the smoothness pass (2026-08-02): used to receive a
  * `stage` prop computed once in Home via useStageProgress's React state, which
@@ -41,10 +40,8 @@ export function PageBackdrop() {
   const blobOuterRefs = useRef<(HTMLDivElement | null)[]>([]);
   const blobInnerRefs = useRef<(HTMLDivElement | null)[]>([]);
   const progressFillRef = useRef<HTMLDivElement>(null);
-  const badgeDotRef = useRef<HTMLSpanElement>(null);
-  const badgeTextRef = useRef<HTMLDivElement>(null);
 
-  useStageProgress({ washRef, blobOuterRefs, blobInnerRefs, progressFillRef, badgeDotRef, badgeTextRef }, !reducedMotion);
+  useStageProgress({ washRef, blobOuterRefs, blobInnerRefs, progressFillRef }, !reducedMotion);
 
   return (
     <>

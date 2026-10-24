@@ -11,28 +11,11 @@ export const pipelineSync = {
   /** Left-column (`data-pl-fixed`) reveal progress — fast early-scroll trigger, distinct from panelT. */
   leftT: 0,
   /**
-   * Whether the user is currently inside Pipeline's pinned scroll zone at all
-   * (added 2026-08-02) — `panelT` alone can't distinguish "stage 0 genuinely
-   * active" from "haven't scrolled to Pipeline yet," both read as all-zeros.
-   * Read by useHeroThreeScene to know when to dim/highlight the icosahedron
-   * per-stage instead of showing its normal uniform color everywhere else.
-   */
-  active: false,
-  /**
-   * Index of the stage currently being scrolled through (added 2026-08-02) —
-   * distinct from panelT itself: per usePipelineScroll's semantics, a *past*
-   * stage's panelT sits at 1 permanently, so multiple entries can read 1 at
-   * once. This is specifically the one still ramping 0→1 right now, used to
-   * target the icosahedron's ring-highlight overlay at the right group.
-   */
-  activeIndex: 0,
-  /**
    * Whether the pinned sequence has ever been scrolled through to completion
    * (added 2026-08-02, for the "AGENT SESSION" step list) — one-way, never
    * reset back to false. `panelT` itself resets to all-zero the moment you
    * scroll past the section (see the `!started` branch in usePipelineScroll),
-   * which is correct for the icosahedron highlight (should turn off once you
-   * leave) but wrong for the agent-session steps: those should stay showing
+   * which is wrong for the agent-session steps: those should stay showing
    * "done" after you've left, not snap back to "not started."
    */
   completed: false,

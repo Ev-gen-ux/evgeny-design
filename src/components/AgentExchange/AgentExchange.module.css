@@ -62,6 +62,7 @@
   max-width: 420px;
   padding: var(--space-18) var(--space-20);
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+  border-radius: var(--radius-9);
   gap: var(--space-10);
   margin-bottom: var(--space-40);
 }

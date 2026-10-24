@@ -22,7 +22,7 @@ export interface ThreeSceneHandle {
  * initFooterThree() in Portfolio.dc.html: dynamic `import('three')`, a
  * WebGLRenderer sized to the canvas's parent, a rAF render loop, resize
  * handling, and disposal on unmount/disable. Scene-specific geometry/materials/
- * per-frame logic are supplied by `setup` (see useHeroThreeScene/useFooterThreeScene).
+ * per-frame logic are supplied by `setup` (see useSaturnThreeScene).
  */
 export function useThreeScene(
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
@@ -71,16 +71,16 @@ export function useThreeScene(
         // tablet keep antialiasing and the 1.5× cap from the previous pass.
         const isMobile = window.innerWidth <= 768;
         renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !isMobile });
-        // Pixel ratio cap lowered from 2 to 1.5 (2026-09-18) — this scene's
-        // canvas is `position: fixed` and renders continuously for the
-        // entire page's scroll range (see useLatticeLayout's own docstring:
-        // it roams and stays partially visible from Hero all the way to the
-        // very bottom, by design, not just while Hero itself is on screen),
-        // so its render loop runs alongside the letter-assembly animation's
-        // own rAF loop for the whole time someone's on the home page —
-        // reported live as noticeably janky scrolling on Home specifically,
-        // vs smooth on case-study pages, which mount no three.js scene at
-        // all. 2× device pixel ratio means shading 4× the pixels; 1.5×
+        // Pixel ratio cap lowered from 2 to 1.5 (2026-09-18) — originally
+        // tuned for the icosahedron hero figure, which used to roam the
+        // whole page on a `position: fixed` canvas (removed 2026-10-24); its
+        // render loop ran alongside the letter-assembly animation's own rAF
+        // loop for the whole time someone was on the home page — reported
+        // live as noticeably janky scrolling on Home specifically, vs smooth
+        // on case-study pages, which mount no three.js scene at all. Kept as
+        // the shared default for any scene built on this hook (currently
+        // Saturn, scoped to Hero only). 2× device pixel ratio means shading
+        // 4× the pixels; 1.5×
         // means ~2.25×, a meaningful GPU cost cut with only a subtle,
         // likely-unnoticeable softness change on an ambient, mostly-dark
         // background shape — cheaper insurance against contention with the

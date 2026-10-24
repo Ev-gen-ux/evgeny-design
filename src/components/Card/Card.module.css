@@ -9,7 +9,7 @@
   position: relative;
   display: block;
   overflow: hidden;
-  border-radius: 2px;
+  border-radius: var(--radius-9);
   /* Deliberately more transparent than the source's 0.55, and much less blurred
      than the source's blur(20px) — a 20px blur smears the network-graph
      canvas's thin, faint lines into a near-uniform wash regardless of opacity,
@@ -33,10 +33,16 @@
     transform var(--duration-150) var(--ease-out);
 }
 
-.card:hover,
 .card:focus-within {
   border-color: var(--color-accent);
   box-shadow: 0 30px 70px -30px rgba(var(--color-accent-rgb), 0.35);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 30px 70px -30px rgba(var(--color-accent-rgb), 0.35);
+  }
 }
 
 .content {
@@ -59,12 +65,23 @@
   transition: border-color var(--duration-300) var(--ease-standard);
 }
 
-.card:hover .corner,
 .card:focus-within .corner {
-  border-top-color: var(--color-accent);
-  border-right-color: var(--color-accent);
-  border-bottom-color: var(--color-accent);
-  border-left-color: var(--color-accent);
+  border-top-color: var(--color-vellum);
+  border-right-color: var(--color-vellum);
+  border-bottom-color: var(--color-vellum);
+  border-left-color: var(--color-vellum);
+}
+
+/* Hover/focus split site-wide (2026-10-24, review-animations audit): touch
+   taps set :hover and it sticks until another tap elsewhere — :hover gated
+   behind `(hover: hover) and (pointer: fine)`, :focus-within stays ungated. */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .corner {
+    border-top-color: var(--color-vellum);
+    border-right-color: var(--color-vellum);
+    border-bottom-color: var(--color-vellum);
+    border-left-color: var(--color-vellum);
+  }
 }
 
 .cornerTopLeft {
@@ -74,6 +91,11 @@
   border-top-style: solid;
   border-left-width: 2px;
   border-left-style: solid;
+  /* Matches `.card`'s own `--radius-9` (2026-10-24, radius-scale rollout) —
+     `.card` clips to `overflow: hidden` on that curve, so a square-cornered
+     bracket here would get its tip clipped off, leaving a gap between the
+     visible line and the card's actual rounded edge. */
+  border-top-left-radius: var(--radius-9);
 }
 
 .cornerTopRight {
@@ -83,6 +105,7 @@
   border-top-style: solid;
   border-right-width: 2px;
   border-right-style: solid;
+  border-top-right-radius: var(--radius-9);
 }
 
 .cornerBottomLeft {
@@ -92,6 +115,7 @@
   border-bottom-style: solid;
   border-left-width: 2px;
   border-left-style: solid;
+  border-bottom-left-radius: var(--radius-9);
 }
 
 .cornerBottomRight {
@@ -101,4 +125,5 @@
   border-bottom-style: solid;
   border-right-width: 2px;
   border-right-style: solid;
+  border-bottom-right-radius: var(--radius-9);
 }

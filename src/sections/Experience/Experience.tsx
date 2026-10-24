@@ -19,10 +19,12 @@ export function Experience() {
           {experience.map((e, i) => (
             <div key={i} data-asm-sync="1" className={styles.item}>
               <span className={styles.dot} />
-              <div className={styles.dates}>{e.dates}</div>
-              <div className={styles.role}>{e.role}</div>
-              <div className={styles.company}>{e.company}</div>
-              <p className={styles.text}>{e.text}</p>
+              <div className={styles.content}>
+                <div className={styles.dates}>{e.dates}</div>
+                <div className={styles.role}>{e.role}</div>
+                <div className={styles.company}>{e.company}</div>
+                <p className={styles.text}>{e.text}</p>
+              </div>
             </div>
           ))}
         </div>

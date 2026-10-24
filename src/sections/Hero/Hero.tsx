@@ -4,8 +4,7 @@ import type { CursorTracker } from '../../hooks/useCursorTracker';
 import { useSpotGlow } from '../../hooks/useSpotGlow';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useIsTouchDevice } from '../../hooks/useIsTouchDevice';
-import { useHeroThreeScene } from '../../hooks/useHeroThreeScene';
-import { useLatticeLayout } from '../../hooks/useLatticeLayout';
+import { useSaturnThreeScene } from '../../hooks/useSaturnThreeScene';
 import { useWindowWidth } from '../../hooks/useWindowWidth';
 import { useTokenCounter } from '../../hooks/useTokenCounter';
 import { hero, heroCtas, typeTags } from '../../content/hero';
@@ -34,58 +33,71 @@ export function Hero({ cursor }: HeroProps) {
   // hard line break under `white-space: normal` — desktop only; on phone/tablet the two halves are joined by a plain
   // space and wrap naturally.
   const subText = windowWidth >= 1025 ? hero.sub[0] + '\u2028' + hero.sub[1] : hero.sub[0] + ' ' + hero.sub[1];
-  const lattice = useLatticeLayout();
   const sectionRef = useRef<HTMLElement>(null);
-  // Phone-only (2026-09-28): the WebGL figure is paused whenever the hero section
-  // itself isn't on screen \u2014 on phone it's a normal in-flow element (see the
-  // \u2264640px .sceneWrap rule in Hero.module.css), not the whole-page-roaming fixed
-  // canvas desktop/tablet get, so keeping its render loop alive past the section
-  // would just burn GPU for something the user can't see (per user request: the
-  // figure is not needed while scrolling).
+  // Phone (2026-10-24, per user-supplied reference of the old mobile layout):
+  // Saturn now takes the in-flow slot the removed icosahedron used to occupy
+  // (CSS `order: 6` between the CTA row and the goal line, see Hero.module.css),
+  // instead of staying off on every touch device — `isTouch` alone no longer
+  // gates phones, only tablets (where `isNarrow` is false) keep the old
+  // touch-disables-Saturn rule.
+  //
+  // `saturnMounted` is the STABLE condition that decides whether the layer's
+  // <div>/<canvas> exist in the DOM at all — it must never flip rapidly, or
+  // every flip inserts/removes a whole flex item and shoves every element
+  // below it up/down (a real bug, found live 2026-10-24: a layout shift this
+  // size mid-scroll was enough to re-trigger the page's own scroll-reveal/
+  // letter-assembly system on the goal text below, catching it re-scattering
+  // mid-animation with the sticky nav overlapping it in a stale frame).
+  // `heroInView` — whether the section is actually on screen — DOES flip
+  // rapidly near the scroll threshold, so it only ever feeds `saturnRunning`,
+  // which just pauses/resumes the WebGL render loop (useThreeScene tears down
+  // the renderer+rAF on `enabled: false`, not any DOM node) — same performance
+  // guard as before, with no layout consequence.
+  const saturnMounted = !reducedMotion && (isNarrow || !isTouch);
   const [heroInView, setHeroInView] = useState(true);
   useEffect(() => {
     if (!isNarrow) return;
     const el = sectionRef.current;
     if (!el) return;
-    const observer = new IntersectionObserver(([entry]) => setHeroInView(entry.isIntersecting), { threshold: 0.1 });
+    const observer = new IntersectionObserver(([entry]) => setHeroInView(entry.isIntersecting), { threshold: 0.05 });
     observer.observe(el);
     return () => observer.disconnect();
   }, [isNarrow]);
-  const { canvasRef, failed: showThreeFallback } = useHeroThreeScene(!reducedMotion && (!isTouch || (isNarrow && heroInView)));
+  const saturnRunning = saturnMounted && (isNarrow ? heroInView : true);
+  const { canvasRef: saturnCanvasRef } = useSaturnThreeScene(saturnRunning);
+  const saturnLayerRef = useRef<HTMLDivElement>(null);
+  // Scroll-driven crossfade (plan: "Saturn-слой гаснет по мере выхода Hero из
+  // вьюпорта") — opacity set directly via ref, not React state, to avoid a
+  // re-render on every scroll tick. Desktop/tablet only: on phone the layer is
+  // an ordinary in-flow block (see Hero.module.css), not a fixed full-bleed
+  // backdrop, so there's nothing to crossfade against scroll.
+  useEffect(() => {
+    if (!saturnMounted || isNarrow) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      const rect = el.getBoundingClientRect();
+      const progress = Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height)));
+      if (saturnLayerRef.current) saturnLayerRef.current.style.opacity = String(1 - progress);
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [saturnMounted, isNarrow]);
   const tokenCounter = useTokenCounter(hero.headline, reducedMotion);
 
   const spotBackground =
     spot.active && !reducedMotion
       ? `radial-gradient(320px circle at ${spot.x}px ${spot.y}px, rgba(var(--color-accent-rgb),0.14), transparent 60%)`
       : 'transparent';
-
-  // Extracted so it can be rendered in two different DOM slots depending on
-  // breakpoint (see below): desktop/tablet keep it as a section-level sibling
-  // of .inner (position: fixed, roams via useLatticeLayout's inline styles);
-  // phone renders it INSIDE .inner's flex flow instead (see the .sceneWrap
-  // media rule in Hero.module.css) so it self-spaces from the CTA row/goal
-  // via normal flex order + margins, rather than guessing a fixed top:%
-  // against content whose height varies with copy length.
-  const figureNode = (
-    <div
-      className={styles.sceneWrap}
-      aria-hidden="true"
-      style={
-        isNarrow
-          ? undefined
-          : {
-              left: lattice.left,
-              top: lattice.top,
-              width: lattice.size,
-              height: lattice.size,
-              opacity: Number(lattice.opacity),
-            }
-      }
-    >
-      <canvas ref={canvasRef} className={styles.sceneCanvas} />
-      {showThreeFallback && <div className={styles.fallbackOrb} />}
-    </div>
-  );
 
   return (
     <Section
@@ -98,8 +110,24 @@ export function Hero({ cursor }: HeroProps) {
     >
       <div className={[styles.grid, !reducedMotion && styles.gridAnimated].filter(Boolean).join(' ')} aria-hidden="true" />
       <div className={styles.spot} style={{ background: spotBackground }} aria-hidden="true" />
-      {!isNarrow && figureNode}
       <div className={styles.inner}>
+        {/* Lives inside `.inner` (2026-10-24 bugfix), not as a sibling of it — on
+            phone `.inner` is the `display:flex` container whose children carry
+            the `order` values that build the vertical stack (tokenCounter 1 …
+            typeTags 8). `order` only reorders siblings within the SAME flex
+            formatting context: as a sibling of `.inner` (one level up, under a
+            plain `position:relative` `.section` with no flex at all), this
+            block's `order:6` had no flex context to act in — it just rendered
+            in DOM position, before `.inner` entirely, well above the CTA row
+            it was supposed to sit below (caught live via user screenshot: no
+            gap between the CTA row and the goal line, Saturn nowhere in that
+            gap). Desktop/tablet are unaffected — there `.saturnLayer` is
+            `position:fixed; inset:0`, so its DOM position never mattered. */}
+        {saturnMounted && (
+          <div ref={saturnLayerRef} className={styles.saturnLayer} aria-hidden="true">
+            <canvas ref={saturnCanvasRef} className={styles.saturnCanvas} />
+          </div>
+        )}
         <Text variant="eyebrow" className={styles.eyebrow}>
           {hero.eyebrow}
         </Text>
@@ -113,7 +141,7 @@ export function Hero({ cursor }: HeroProps) {
         <Text variant="hero" as="h1" className={styles.headline}>
           {hero.headline}
         </Text>
-        <Text variant="bodyMd" color="secondary" className={styles.sub}>
+        <Text variant="bodyMd" color="body" className={styles.sub}>
           {subText}
         </Text>
         <div className={styles.ctaRow}>
@@ -130,7 +158,6 @@ export function Hero({ cursor }: HeroProps) {
             </Link>
           ))}
         </div>
-        {isNarrow && figureNode}
         <div className={styles.typeTags}>
           {typeTags.map((t) => (
             <span key={t.k} className={styles.typeTag}>

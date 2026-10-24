@@ -8,8 +8,6 @@ export interface StageBackdropRefs {
   blobOuterRefs: RefObject<(HTMLElement | null)[]>;
   blobInnerRefs: RefObject<(HTMLElement | null)[]>;
   progressFillRef: RefObject<HTMLElement | null>;
-  badgeDotRef: RefObject<HTMLElement | null>;
-  badgeTextRef: RefObject<HTMLElement | null>;
 }
 
 function computeStageOffsets(): number[] {
@@ -44,25 +42,39 @@ function computeStageOffsets(): number[] {
  * Hue gets a light lerp (jitter smoothing); scroll-driven parallax transforms
  * intentionally stay unsmoothed — parallax is expected to track scroll input
  * tightly, unlike a color sweep.
+ *
+ * Scroll-jank fix (2026-10-24): this used to run `step()` in a perpetual,
+ * ungated `requestAnimationFrame` loop for the entire page lifetime, calling
+ * `computeStageOffsets()` — a `querySelectorAll` + `getBoundingClientRect()`
+ * forced-synchronous-layout read — on every single frame forever, whether or
+ * not the page was scrolling. That's the same anti-pattern `useScrollReveal`
+ * already avoids: now the expensive layout read only happens once up front
+ * and again on resize (section positions don't change on their own), and the
+ * animation loop itself only runs while there's live scroll input or the hue
+ * easing hasn't settled yet — it stops itself once `curHue` reaches its
+ * target and restarts on the next scroll/resize event, mirroring
+ * `useScrollReveal`'s passive-listener + rAF-throttle pattern instead of
+ * polling layout forever.
  */
 export function useStageProgress(refs: StageBackdropRefs, enabled: boolean) {
   useEffect(() => {
     if (!enabled) return;
-    const { washRef, blobOuterRefs, blobInnerRefs, progressFillRef, badgeDotRef, badgeTextRef } = refs;
+    const { washRef, blobOuterRefs, blobInnerRefs, progressFillRef } = refs;
+
+    let offsets = computeStageOffsets();
 
     let curHue = STAGE_HUES[0];
     let curHueSet = false;
     let lastStageColor = '';
     let lastMono = document.documentElement.dataset.theme === 'mono';
-    let lastBadgeText = '';
     let lastProgressPercent = -1;
     const lastBlobTransform: string[] = [];
     const lastBlobColor: string[] = [];
 
-    const step = (dt: number) => {
+    /** Returns true once the hue easing has fully settled on its target — the loop can stop until the next scroll/resize. */
+    const step = (dt: number): boolean => {
       const vh = window.innerHeight;
       const sy = window.scrollY;
-      const offsets = computeStageOffsets();
 
       let stageIndex = 0;
       for (let i = 0; i < offsets.length; i++) {
@@ -129,7 +141,6 @@ export function useStageProgress(refs: StageBackdropRefs, enabled: boolean) {
           }
         }
         if (progressFillRef.current) progressFillRef.current.style.background = stageColor;
-        if (badgeDotRef.current) badgeDotRef.current.style.background = stageColor;
       }
 
       const outers = blobOuterRefs.current;
@@ -147,26 +158,55 @@ export function useStageProgress(refs: StageBackdropRefs, enabled: boolean) {
       if (progressPercent !== lastProgressPercent) {
         lastProgressPercent = progressPercent;
         if (progressFillRef.current) progressFillRef.current.style.width = `${progressPercent}%`;
-        const badgeText = `STAGE 0${stageIndex + 1}/05 · ${progressPercent}%`;
-        if (badgeTextRef.current && badgeText !== lastBadgeText) {
-          lastBadgeText = badgeText;
-          badgeTextRef.current.textContent = badgeText;
-        }
       }
+
+      return curHue === hueTarget;
     };
 
     let raf = 0;
+    let running = false;
     let last = performance.now();
+
+    const stop = () => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+      running = false;
+    };
+
     const loop = (now: number) => {
       const dt = now - last;
       last = now;
-      step(dt);
+      const settled = step(dt);
+      if (settled) {
+        stop();
+        return;
+      }
       raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
+
+    const ensureRunning = () => {
+      if (running) return;
+      running = true;
+      last = performance.now();
+      raf = requestAnimationFrame(loop);
+    };
+
+    // Settle the initial scroll position once on mount (e.g. a reload mid-page).
+    ensureRunning();
+
+    const onScroll = () => ensureRunning();
+    const onResize = () => {
+      offsets = computeStageOffsets();
+      ensureRunning();
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
 
     return () => {
-      if (raf) cancelAnimationFrame(raf);
+      stop();
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
     };
     // `refs` intentionally omitted: its individual ref objects (from useRef)
     // are stable across renders even if the wrapping object literal isn't —

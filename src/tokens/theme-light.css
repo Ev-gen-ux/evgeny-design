@@ -11,11 +11,11 @@
  * — is untouched, same as under mono: it's the site's only accent color and
  * stays itself in every theme. No indigo/lavender/purple introduced anywhere.
  *
- * Known gap, same shape as theme-mono.css's own documented gap: the roaming
- * icosahedron background (useHeroThreeScene.ts) reads its colors from TS
- * token constants once at WebGL scene setup, not from these CSS custom
- * properties — it keeps its current red/slate coloring under light theme
- * until that hook is taught to branch on the active theme too.
+ * Known gap, same shape as theme-mono.css's own documented gap: the Saturn
+ * hero background (useSaturnThreeScene.ts) reads its colors from TS token
+ * constants once at WebGL scene setup, not from these CSS custom properties
+ * — it branches on `mono` but not on `light`, so it keeps its current
+ * coloring under light theme until that hook is taught to branch on it too.
  */
 :root[data-theme='light'] {
   --color-blueprint: #f2f0eb;

@@ -9,31 +9,49 @@
  */
 .bar {
   position: fixed;
-  left: 0;
-  right: 0;
-  /* Not a bare `0` (2026-09-17, `viewport-fit=cover` added to index.html for
-     MobileNavOverlay's own safe-area padding) — that meta change lets the
-     page draw under iOS/Android's bottom gesture bar everywhere, not just
-     the overlay, so every other bottom-fixed element needs its own inset
-     now too or it ends up sitting behind/under that system bar. Falls back
-     to `0` wherever `env()` isn't supported or `viewport-fit=cover` isn't
-     honored (Android, most desktop browsers). */
-  bottom: env(safe-area-inset-bottom, 0px);
+  /* Floating container, not edge-to-edge (2026-10-24, same treatment as
+     Header's `.nav`, explicit user request: "те же самые свойства... и
+     вёрстку" — radius/background/border/margins mirrored 1:1). 40px side
+     margins matching the header's own desktop value. */
+  left: var(--space-40);
+  right: var(--space-40);
+  /* 16px gap from the viewport bottom (2026-10-24, explicit user value,
+     uniform across breakpoints — unlike Header's `.nav`, which differs
+     20px desktop / 16px mobile, this bar used one number for both).
+     `env(safe-area-inset-bottom)` stacked on top, not replaced — see the
+     original 2026-09-17 comment this carried: `viewport-fit=cover` still
+     means a bare bottom offset can sit behind iOS/Android's gesture bar. */
+  bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-16));
+  border-radius: var(--radius-11);
   z-index: 40;
   display: flex;
   align-items: center;
   gap: var(--space-10);
-  height: 52px;
-  padding: 0 clamp(20px, 4vw, 56px);
-  /* Same glass-surface values as components/Card (2026-08-03, per explicit request) — background/backdrop-filter/border color 1:1, border-top only (not all sides) since this is an edge-to-edge bar, not a boxed card. */
-  background: rgba(var(--color-graphite-rgb), 0.18);
+  /* Height dropped in favor of Header's own padding-driven box model
+     (2026-10-24, explicit user request: "по высоте такой же, как и
+     хедер... чтобы было симметрично") — `.nav`'s height is content +
+     `var(--space-18)` top/bottom padding, not a fixed number, so this bar
+     copies that exact padding (18px vertical / 24px horizontal, same
+     tokens as `.nav`'s own desktop rule) instead of a hardcoded height
+     that would drift out of sync with it. `useChatBar.ts`'s positioning
+     math reads this bar's real rendered height via
+     `getBoundingClientRect()` each frame rather than a hardcoded
+     constant, so this stays correct even if either box's padding changes
+     later. */
+  padding: var(--space-18) var(--space-24);
+  /* Same glass-surface values as Header's `.scrim` (2026-10-24) — tint/blur
+     bumped from the old edge-to-edge bar's 0.18/6px to match. */
+  background: rgba(var(--color-graphite-rgb), 0.22);
   /* `-webkit-` prefix before the standard property (2026-09-18) — see
      Skills.module.css's identical comment for the full reasoning: the
      production build's minifier was dropping whichever declaration came
      first as a "duplicate," silently killing the blur site-wide. */
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  /* All four sides now (2026-10-24) — was `border-top` only when this was
+     an edge-to-edge bar; now a boxed floating container like `.nav`, same
+     border token on every side. */
+  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   opacity: 0;
@@ -152,7 +170,20 @@
 
 @media (max-width: 640px) {
   .bar {
-    padding: 0 var(--space-16);
+    /* 20px side margins on phone (2026-10-24) — matches Header's `.nav`
+       own mobile value; bottom gap stays the same 16px as desktop, see
+       the base rule above (this bar only had one value given, unlike
+       `.nav`'s two). */
+    left: var(--space-20);
+    right: var(--space-20);
+    /* Same vertical padding as Header's own mobile `.nav` override
+       (2026-10-24, height-symmetry request) — 16px top / 12px bottom,
+       not the desktop 18px both sides. Header's version exists because
+       its wordmark stacks to two lines on phone; this bar's content
+       stays single-line at every width, but using the identical padding
+       values (not just the same scheme) is what keeps the two boxes the
+       same height on phone too, not just on desktop. */
+    padding: var(--space-16) var(--space-24) var(--space-12);
   }
 
   .status {

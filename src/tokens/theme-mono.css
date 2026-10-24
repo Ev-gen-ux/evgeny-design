@@ -23,11 +23,12 @@
  * accent color (CTAs, hovers, tag borders, card glow, cursor ring, chat-bar
  * cursor) goes monochrome through that one line.
  *
- * Known gap, not covered by this CSS-only pass: the roaming icosahedron
- * background (useHeroThreeScene.ts) reads its colors from the TS token
+ * The Saturn hero background (useSaturnThreeScene.ts) is the one piece not
+ * covered by this CSS-only pass — it reads its colors from TS token
  * constants once at WebGL scene setup, not from these CSS custom
- * properties — it will keep its current red/slate coloring under mono
- * theme until that hook is taught to branch on the active theme too.
+ * properties. It does branch on `document.documentElement.dataset.theme
+ * === 'mono'` explicitly (see that file), so mono theme is covered; only
+ * the light theme (theme-light.css) still has the gap.
  */
 :root[data-theme='mono'] {
   /* Darkened a step (2026-09-17, user feedback: "слишком светлый") —

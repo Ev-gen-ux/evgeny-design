@@ -30,11 +30,15 @@
        room below the now in-flow nav, roughly matching the original
        total visual distance from the true top of the page to Hero's
        content. */
-    /* Halved again to `--space-20` (2026-09-28, explicit user request: gap
-       to header felt twice as large as it should), then halved a second
-       time to `--space-10` (2026-10-09, explicit user request: still too
-       much air between the sticky nav and the eyebrow line). */
-    padding-top: var(--space-10);
+    /* Zeroed out (2026-10-24, explicit user request) — this value went
+       through several rounds (`--space-20` → `--space-10` → `--space-20`
+       again) trying to be the single source of the header-to-eyebrow gap
+       together with `.tokenCounter`'s collapse below, but the combination
+       proved unreliable/hard to verify live. The gap now lives entirely on
+       `.eyebrow`'s own `padding-top` (see that rule below) — one value, on
+       the element that actually needs the space above it, not split across
+       two interacting rules. */
+    padding-top: 0;
     /* 80px (2026-09-18, explicit user request) — unified inter-section gap
        on mobile: every section boundary is 80px+80px=160px, top+bottom of
        the two sections either side of it. Hero's own top stays untouched
@@ -47,6 +51,8 @@
 }
 
 .grid {
+  /* 2026-10-24 — redesign exploration: hidden, not deleted, per user request. Remove this line to restore. */
+  display: none;
   position: absolute;
   inset: 0;
   opacity: 0.6;
@@ -60,6 +66,8 @@
 }
 
 .spot {
+  /* 2026-10-24 — redesign exploration: hidden, not deleted, per user request. Remove this line to restore. */
+  display: none;
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -67,29 +75,37 @@
   transition: background var(--duration-300) var(--ease-standard);
 }
 
-/* Fixed (not scoped to the hero box) — position/size/opacity roam per useLatticeLayout, based on whole-page scroll progress, matching the source's `position:fixed` wrapper. */
-.sceneWrap {
+/* 2026-10-24 — full-bleed Saturn hero-figure (see _process_log.md's Saturn
+   entry / the plan's "Saturn — полноэкранная hero-фигура" section). The
+   icosahedron figure that used to roam this section was removed the same
+   day — Saturn's layer is now the only figure in Hero. z-index below
+   everything else in the section so it sits behind the grid/spot/text.
+   Opacity is driven by scroll progress via a ref in Hero.tsx (crossfades
+   out as Hero scrolls out of view), not by CSS.
+   Contrast pass: a radial vignette (::after) darkens the corners, where the
+   desktop corner-layout text sits, while leaving the center — mostly empty
+   of text — bright; this is the shader-side-adjacent first attempt the plan
+   calls for, to be swapped for a backdrop-filter card if a real-render visual
+   pass finds it insufficient. */
+.saturnLayer {
   position: fixed;
-  transform: translate(-50%, -50%);
+  inset: 0;
+  z-index: -1;
   pointer-events: none;
-  z-index: 0;
-  will-change: top, left, width, height;
 }
 
-.sceneCanvas {
+.saturnCanvas {
   width: 100%;
   height: 100%;
   display: block;
 }
 
-.fallbackOrb {
+.saturnLayer::after {
+  content: '';
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 30%, rgba(var(--color-accent-rgb), 0.28), transparent 60%),
-    radial-gradient(circle at 65% 70%, rgba(var(--color-slate-mist-rgb), 0.18), transparent 65%);
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+  background: radial-gradient(circle at 50% 50%, transparent 32%, rgba(var(--color-graphite-rgb), 0.6) 100%);
+  pointer-events: none;
 }
 
 .inner {
@@ -140,6 +156,7 @@
   font-size: var(--fs-xs);
   color: var(--color-text-secondary);
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.35);
+  border-radius: var(--radius-3);
   padding: var(--space-6) var(--space-10);
   display: inline-flex;
   gap: var(--space-6);
@@ -175,12 +192,46 @@
 
   .tokenCounter {
     order: 1;
+    /* 2026-10-24, explicit user request against a live screenshot: the
+       header-to-eyebrow gap read as ~30px, not the intended 20px — this
+       element's own reserved space (16px height + `--space-4` margin from
+       the base rule above, 20px total) was sitting invisibly between them,
+       since `useTokenCounter` fades its text to opacity 0 once the
+       "generating..." count finishes and stays there (see that hook's own
+       comment) — only the brief count-up animation on load was ever
+       visible here, the rest of the time it was dead space. Collapsed out
+       of layout on phone only; desktop/tablet keep the reserved height
+       (unreported there, left as-is). */
+    height: 0;
+    margin-bottom: 0;
+    overflow: hidden;
   }
 
   .eyebrow {
     order: 2;
     text-align: left;
     max-width: none;
+    /* Single source of the header-to-eyebrow gap (2026-10-24) — moved here
+       from `.section`'s `padding-top` (see that rule's own comment), since
+       this is the element the gap is actually measured against; no longer
+       depends on `.tokenCounter` collapsing correctly above it.
+       `var(--space-16) +` (2026-10-24, found via Playwright-measured
+       bounding rects, not DevTools — a prior pass left this at bare
+       `--space-20` and the user kept reporting the visual gap as too
+       small despite DevTools' box model showing the full 20px of padding
+       growth) — `.nav` is `position: sticky; top: var(--space-16)` on this
+       breakpoint (Header.module.css). At the top of the page it's already
+       stuck, since its natural flow position (y=0) is above its own
+       `top` offset — but sticky's offset only affects where the element
+       RENDERS, not the flow space it reserves, which stays based on its
+       un-offset natural position. The result: `.nav` visually sits 16px
+       lower on screen than the flow space it reserves for siblings after
+       it, so `.eyebrow`'s own box starts 16px "early" — a bare
+       `--space-20` padding-top only closed 4px of the real visual gap to
+       `.nav`'s rendered bottom edge. Adding `.nav`'s own sticky offset
+       here compensates for exactly that, leaving the intended 20px
+       visible. */
+    padding-top: calc(var(--space-16) + var(--space-20));
     margin-bottom: var(--space-20);
   }
 
@@ -238,13 +289,7 @@
     font-size: 22px;
     line-height: 1.15;
     max-width: 14ch;
-    /* No margin-top of its own (2026-10-09) — the figure right above it
-       (`.sceneWrap`, order 6) now owns the whole gap via its own symmetrical
-       margin; adding one here on top would double it (flex-sibling margins
-       add, they don't collapse) and break the figure's equal top/bottom air. */
-    /* 32px (2026-10-09, explicit user request, mobile-only value — this gap
-       to the type-spec tags below is independent of the figure's own 24px
-       gap above `.goal`, no need to match it). */
+    /* 32px (2026-10-09, explicit user request, mobile-only value). */
     margin-bottom: var(--space-32);
   }
 
@@ -268,36 +313,47 @@
     flex-shrink: 0;
   }
 
-  /* Mobile hero figure (2026-09-28, v2: moved in-flow — see figureNode in
-     Hero.tsx): the fixed, whole-page-roaming behavior (useLatticeLayout) is
-     desktop/tablet-only — on phone the figure is rendered as a normal flex
-     child of .inner, right after the CTA row, so it self-spaces from its
-     siblings via flex order + their margins instead of a guessed absolute
-     top:% (which fought the actual content height as copy changed). It
-     scrolls away with the section instead of following the user down the
-     page (per user request: "по центру можно оставить фигуру, но при
-     скролье она не нужна"). Its render loop is separately paused once the
-     section leaves the viewport (see Hero.tsx's `heroInView`). */
-  .section {
+  /* Saturn hero figure on phone (2026-10-24, per user-supplied reference
+     screenshot of the old mobile layout): the icosahedron that used to sit
+     here was centered, in-flow, between the CTA row and the goal line — the
+     gap left between ctaRow's order:5 and goal's order:7 above is order:6,
+     reserved for it. Desktop's `.saturnLayer` is `position:fixed; inset:0`,
+     a full-bleed backdrop behind corner-pinned text — wrong model here, where
+     there's no corner text to sit behind. On phone it's an ordinary in-flow
+     block like every other phone section, not a fixed backdrop.
+     Width (2026-10-24 bugfix round 2, explicit user correction with screenshot):
+     the rings must never stop at a visible straight edge mid-screen — that
+     reads as "clipped by a container", which is wrong. They're only allowed
+     to end at the true screen edge. `width: 100%` (scoped to `.inner`'s own
+     padded content box, narrower than the viewport) put a hard box edge well
+     inside the screen, which is exactly the look the user flagged. Sized past
+     100vw instead (`left: 50%` + `translateX(-50%)`, the standard full-bleed
+     break-out) and centered on the viewport itself, so the rings' natural
+     render edge lands beyond both screen edges — `html`'s own
+     `overflow-x: clip` (index.css) trims whatever pokes out there, with no
+     inner box visible doing the cropping. The vignette (::after) existed only
+     to darken the corners under desktop's corner text — nothing to darken
+     here, so it's turned off. */
+  .saturnLayer {
     position: relative;
+    order: 6;
+    left: 50%;
+    width: 130vw;
+    /* Height stays tied to the SAFE content width (viewport minus the
+       container's own side margins), not to the bled 130vw — `aspect-ratio`
+       against the bled width would make the block ~30% taller than before
+       and shove the goal line down. Only the horizontal bleed is new. */
+    height: calc(100vw - var(--space-container-x) * 2);
+    transform: translateX(-50%);
+    margin-bottom: var(--space-16);
   }
 
-  .sceneWrap {
+  .saturnLayer::after {
+    display: none;
+  }
+
+  .section {
     position: relative;
-    transform: none;
-    order: 6;
-    /* Equal 24px top/bottom air around the figure itself (2026-10-09,
-       explicit user request — was visually lopsided: this block's own
-       margin was symmetrical (`--space-8` both sides), but `.goal`'s own
-       `margin-top` (`--space-32`, order 7, right after this one) stacked
-       on top of it in flex flow — flex-sibling margins don't collapse,
-       they add — making the gap below the figure (8+32=40px) much larger
-       than above it (8px). Zeroed `.goal`'s own margin-top below so this
-       block's margin alone defines both gaps, keeping them equal. */
-    margin: var(--space-24) auto;
-    width: clamp(240px, 78vw, 360px);
-    height: clamp(240px, 78vw, 360px);
-    flex-shrink: 0;
   }
 }
 
@@ -309,12 +365,16 @@
  * the hero's assembly animation, which walks the DOM, behaves exactly as before.
  * Top-left: counter + short headline + small description + links. Top-right:
  * eyebrow. Bottom-right: the type-spec tags, above the fixed chat bar (52px).
- * The three.js figure is centered by useLatticeLayout, not here.
  */
 @media (min-width: 641px) {
   .section {
     justify-content: stretch;
-    padding-top: var(--space-100);
+    /* --space-120, not --space-100 (2026-10-24, header redesign) — desktop
+       `.nav` moved from `top: 0` to `top: var(--space-20)` (floating
+       container), so its bottom edge sits 20px lower than before; this
+       padding (fixed `.nav`'s own clearance) grows by the same 20px to
+       keep the gap above Hero's content unchanged. */
+    padding-top: var(--space-120);
     padding-bottom: calc(52px + var(--space-32));
   }
 

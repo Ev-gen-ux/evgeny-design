@@ -1,16 +1,76 @@
-/* 1:1 with the palette locked in uploads/PORTFOLIO-README.md — 5 colors, no substitutions. */
+/*
+ * 2026-10-24 — global redesign, replaces the earlier ad-hoc blue remap:
+ * full Portfolio Design Kit palette (user-provided brief), three 11-step
+ * OKLCH-lightness-matched ramps — blue (primary), green (accent), mauve
+ * (decorative/gradients/glows). Roles per the kit: page bg = blue-950/900,
+ * cards/surfaces = blue-800, primary text = blue-50-100, secondary text =
+ * blue-300-400, accent (buttons/links/active) = green-400-500, decorative
+ * gradients/glows = mauve-200-400. Original pre-redesign hex values are in
+ * git history (see PORTFOLIO-README.md for the old locked 5-color set).
+ */
 :root {
-  --color-blueprint: #0e1b2e;
-  --color-redline: #e8432b;
-  --color-vellum: #f2f0eb;
-  --color-slate-mist: #8a96a6;
-  --color-graphite: #1b2a3f;
+  /* === Design Kit ramp — source of truth, everything below derives from this. === */
+  --blue-50: #f4f7f7;
+  --blue-100: #e7eaea;
+  --blue-200: #d3d7d7;
+  --blue-300: #b4bcbe;
+  --blue-400: #94a1a5;
+  --blue-500: #72838b;
+  --blue-600: #536672;
+  --blue-700: #394d5a;
+  --blue-800: #243845;
+  --blue-900: #132530;
+  /* Darkened ~20% from the kit's original #08161c (2026-10-24, explicit
+     user request: "основной цвет фона... чуть темнее") — only consumer is
+     `--color-blueprint` (page bg), confirmed via grep, so this doesn't
+     shift any other role on the ramp. */
+  --blue-950: #061216;
 
-  /* Functional greys found in the shipped site (Case Study body copy / table states),
-     not part of the 5-color brief but present 1:1 in the current output — kept as
-     named derivatives of Vellum/Slate Mist rather than new accent colors. */
-  --color-vellum-muted: #c8cdd6;
-  --color-slate-mist-dim: #5c6675;
+  --green-50: #e8fdf0;
+  --green-100: #dbf0e3;
+  --green-200: #bfdfcc;
+  --green-300: #9ec5b0;
+  --green-400: #7eaa94;
+  --green-500: #5e8c79;
+  --green-600: #406e5f;
+  --green-700: #255448;
+  --green-800: #193d35;
+  --green-900: #0a2924;
+  --green-950: #031817;
+
+  --mauve-50: #fdf5f0;
+  --mauve-100: #f2e7e0;
+  --mauve-200: #e8d0c4;
+  --mauve-300: #d0b3ac;
+  --mauve-400: #b49696;
+  --mauve-500: #94787f;
+  --mauve-600: #735b65;
+  --mauve-700: #56444c;
+  --mauve-800: #3e3137;
+  --mauve-900: #2b1f25;
+  --mauve-950: #1a1015;
+
+  /* === Semantic tokens — derived from the ramp per the kit's role mapping. === */
+  --color-blueprint: var(--blue-950); /* page background */
+  --color-graphite: var(--blue-800); /* cards, surfaces */
+  --color-vellum: var(--blue-50); /* primary text */
+  --color-vellum-muted: var(--blue-200); /* body text */
+  --color-slate-mist: var(--blue-400); /* secondary text */
+  --color-slate-mist-dim: var(--blue-600); /* disabled text */
+
+  /*
+   * `--color-redline` is kept, but it is no longer the accent (removed from
+   * the UI by explicit user request, 2026-10-24) — it now exists only as the
+   * dedicated "you/agent" status-indicator hue (ChatBar's active-turn dot,
+   * AgentSessionTimeline's active dot), the same split the mono theme already
+   * made (see theme-mono.css). The accent is Green 400, per the kit.
+   */
+  --color-redline: #e8432b;
+  --color-accent: var(--green-400);
+  /* Decorative/gradient/glow color — Mauve 200-400 per the kit, used by the
+     grain-gradient background (GrainGradient) and any other ambient glow. */
+  --color-glow: var(--mauve-300);
+  --color-glow-light: var(--mauve-200);
 
   /* "Done"/success status green (2026-09-23, design-anti-slop audit) — was
      hardcoded as the raw hex `#4ade80` in four separate files (ChatBar,
@@ -18,7 +78,10 @@
      of truth. One token now. Deliberately un-themed by theme-mono.css, same
      as `--color-redline` above — the "you/agent" status indicators (done
      dot, active-turn dot) stay their real green even under the mono theme,
-     per that file's own docstring. */
+     per that file's own docstring. Distinct from `--color-accent`, which is
+     now also green (Green 400) — kept as two separate tokens even though
+     the hues are now close, since they mean different things (status vs.
+     decorative accent) and could diverge again later. */
   --color-success: #4ade80;
 
   --color-bg-page: var(--color-blueprint);
@@ -26,7 +89,6 @@
   --color-text-secondary: var(--color-slate-mist);
   --color-text-body: var(--color-vellum-muted);
   --color-text-disabled: var(--color-slate-mist-dim);
-  --color-accent: var(--color-redline);
   --color-surface: var(--color-graphite);
 
   /*
@@ -35,7 +97,7 @@
    * only switches to --color-accent on hover. Split out so a theme can make
    * links rest at the accent color without recoloring body text along with
    * them — default/mono keep the current look (alias straight to the text
-   * tokens), light overrides both to the accent red.
+   * tokens), light overrides both to the accent color.
    */
   --color-link: var(--color-text-primary);
   --color-link-secondary: var(--color-text-secondary);
@@ -54,12 +116,14 @@
    * status-indicator glows (AgentSessionTimeline's active dot) stay true red,
    * everything else reading `--color-accent-rgb` goes neutral under mono.
    */
-  --color-blueprint-rgb: 14, 27, 46;
+  --color-blueprint-rgb: 6, 18, 22; /* matches --blue-950 #061216 */
   --color-redline-rgb: 232, 67, 43;
-  --color-accent-rgb: var(--color-redline-rgb);
-  --color-vellum-rgb: 242, 240, 235;
-  --color-slate-mist-rgb: 138, 150, 166;
-  --color-graphite-rgb: 27, 42, 63;
+  --color-accent-rgb: 126, 170, 148; /* green-400 */
+  --color-glow-rgb: 208, 179, 172; /* mauve-300 */
+  --color-glow-light-rgb: 232, 208, 196; /* mauve-200 */
+  --color-vellum-rgb: 244, 247, 247;
+  --color-slate-mist-rgb: 148, 161, 165;
+  --color-graphite-rgb: 36, 56, 69;
 
   /*
    * Wash-layer OKLCH lightness (2026-10-22, for the light theme) — the full-bleed
@@ -68,7 +132,11 @@
    * (0.22/0.18/0.16) directly in both files' template strings, tuned dark because
    * the wash sits under a dark base page. Pulled out as tokens so a theme can
    * raise them without touching either file again. `--wash-opacity` likewise
-   * replaces .wash's hardcoded 0.55 in PageBackdrop.module.css.
+   * replaces .wash's hardcoded 0.55 in PageBackdrop.module.css. This whole
+   * wash/blob layer is currently hidden (display:none, 2026-10-24 redesign) —
+   * superseded by GrainGradient for the new ambient background — left in
+   * place since it's a separate, reversible system (the scroll-stage hue
+   * sweep), not deleted.
    */
   --wash-l1: 0.22;
   --wash-l2: 0.18;

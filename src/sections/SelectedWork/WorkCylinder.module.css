@@ -39,18 +39,23 @@
 .slab {
   position: absolute;
   inset: 0;
-  border-radius: 2px;
+  border-radius: var(--radius-9);
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.35);
 }
 
-/* Same surface as the prod Card (Card.module.css): faint graphite glass + 6px blur + 1px slate-mist border. The back face is denser so the stack of backs peeking above/below stays legible. */
+/* Background copied 1:1 from Skills.module.css's .card (2026-10-24). Glass
+   (backdrop-filter) re-added same day, same blur(6px) as WorkStack's .card
+   (the flat/mobile variant of this same case card) and Card.module.css —
+   matches the rest of the site's glass vocabulary, not a new value. .slab
+   above is already an outline-only structural layer (see its own comment)
+   specifically so it doesn't wash out under this blur. */
 .face {
   position: absolute;
   inset: 0;
-  border-radius: 2px;
+  border-radius: var(--radius-9);
   backface-visibility: hidden;
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
-  background: rgba(var(--color-graphite-rgb), 0.18);
+  background: rgba(var(--color-graphite-rgb), 0.45);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
 }
@@ -64,7 +69,9 @@
 }
 
 .back {
-  background: rgba(var(--color-graphite-rgb), 0.75);
+  background: rgba(var(--color-graphite-rgb), 0.45);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   transform: translateZ(-1.5px) rotateX(180deg);
   display: flex;
   flex-direction: column;
@@ -81,10 +88,10 @@
 }
 
 .card[data-live='true'] .corner {
-  border-top-color: var(--color-accent);
-  border-right-color: var(--color-accent);
-  border-bottom-color: var(--color-accent);
-  border-left-color: var(--color-accent);
+  border-top-color: var(--color-vellum);
+  border-right-color: var(--color-vellum);
+  border-bottom-color: var(--color-vellum);
+  border-left-color: var(--color-vellum);
 }
 
 .overlayLink {
@@ -249,6 +256,10 @@
   border-top-style: solid;
   border-left-width: 2px;
   border-left-style: solid;
+  /* Matches `.face`/`.slab`'s own `--radius-9` (2026-10-24, radius-scale
+     rollout) — see Card.module.css's identical fix for why a square corner
+     here would mismatch the now-rounded edge underneath. */
+  border-top-left-radius: var(--radius-9);
 }
 
 .cornerTopRight {
@@ -258,6 +269,7 @@
   border-top-style: solid;
   border-right-width: 2px;
   border-right-style: solid;
+  border-top-right-radius: var(--radius-9);
 }
 
 .cornerBottomLeft {
@@ -267,6 +279,7 @@
   border-bottom-style: solid;
   border-left-width: 2px;
   border-left-style: solid;
+  border-bottom-left-radius: var(--radius-9);
 }
 
 .cornerBottomRight {
@@ -276,4 +289,5 @@
   border-bottom-style: solid;
   border-right-width: 2px;
   border-right-style: solid;
+  border-bottom-right-radius: var(--radius-9);
 }

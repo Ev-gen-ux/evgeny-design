@@ -67,7 +67,7 @@ export function Pipeline() {
         maxWidth: 1240,
         height: 'min(78vh, 720px)',
         border: '1px solid rgba(var(--color-slate-mist-rgb), 0.3)',
-        background: 'transparent',
+        borderRadius: 'var(--radius-11)',
         display: 'grid',
         gridTemplateColumns: 'minmax(240px, 32%) 1fr',
       };
@@ -75,6 +75,8 @@ export function Pipeline() {
   const leftStyle: CSSProperties = stackedLayout
     ? { marginBottom: 48 }
     : {
+        position: 'relative',
+        zIndex: 1,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -82,7 +84,7 @@ export function Pipeline() {
         borderRight: '1px solid rgba(var(--color-slate-mist-rgb), 0.25)',
       };
 
-  const rightStyle: CSSProperties = stackedLayout ? {} : { position: 'relative', overflow: 'hidden' };
+  const rightStyle: CSSProperties = stackedLayout ? {} : { position: 'relative', zIndex: 1, overflow: 'hidden' };
 
   const panelBaseStyle: CSSProperties = stackedLayout
     ? { padding: '0 0 44px 0', marginBottom: 32, borderBottom: '1px solid rgba(var(--color-slate-mist-rgb), 0.18)' }
@@ -100,7 +102,10 @@ export function Pipeline() {
   return (
     <Section id="pipeline" innerRef={sectionRef} style={sectionStyle}>
       <div style={stickyStyle}>
-        <div style={frameStyle}>
+        <div style={frameStyle} className={stackedLayout ? undefined : styles.frame}>
+          {!stackedLayout && (
+            <div className={reducedMotion ? styles.glow : `${styles.glow} ${styles.glowAnimated}`} aria-hidden="true" />
+          )}
           <div data-pl-fixed="1" style={leftStyle}>
             <div>
               <Text variant="eyebrow">{pipelineHeader.eyebrow}</Text>

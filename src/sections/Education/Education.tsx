@@ -21,14 +21,16 @@ export function Education() {
         <div className={styles.list}>
           {education.map((ed) => (
             <div key={ed.year + ed.title} className={styles.row}>
-              <span className={styles.year}>{ed.year}</span>
-              <span className={styles.title}>{ed.title}</span>
-              <div className={styles.links}>
-                {ed.links.map((l) => (
-                  <Link key={l.url} href={l.url} variant="ghost" external>
-                    {l.label} ↗
-                  </Link>
-                ))}
+              <div className={styles.content}>
+                <span className={styles.year}>{ed.year}</span>
+                <span className={styles.title}>{ed.title}</span>
+                <div className={styles.links}>
+                  {ed.links.map((l) => (
+                    <Link key={l.url} href={l.url} variant="ghost" external>
+                      {l.label} ↗
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
           ))}

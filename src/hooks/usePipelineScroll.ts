@@ -62,7 +62,6 @@ export function usePipelineScroll(
       // the assembled state on its own, no rAF loop needed on this side.
       const N = panelCount;
       pipelineSync.leftT = 1;
-      pipelineSync.active = false;
       for (let i = 0; i < N; i++) {
         pipelineSync.panelT[i] = 1;
         pipelineSync.stepT[i] = 1;
@@ -122,15 +121,11 @@ export function usePipelineScroll(
       // `rawRatio < 1` (unclamped), not just `p` — `p`/pRaw are both clamped to
       // [0,1], so once you've scrolled genuinely past the section's bottom,
       // they just sit at 1 forever, indistinguishable from "still right at the
-      // pinned boundary." Without the unclamped check, `started` (and
-      // pipelineSync.active, downstream) never turns false again after the
-      // section is scrolled past — the bug reported 2026-08-02: the icosahedron's
-      // Pipeline-stage highlight stayed lit permanently once you'd scrolled by.
+      // pinned boundary." Without the unclamped check, `started` never turns
+      // false again after the section is scrolled past.
       const started = p > LEAD * 0.55 && rawRatio < 1;
 
       pipelineSync.leftT = leftT;
-      pipelineSync.active = started;
-      pipelineSync.activeIndex = active;
       const panelT = pipelineSync.panelT;
 
       // Moved above the panel loop (2026-08-03) — used to be set *after* it,

@@ -1,8 +1,5 @@
-import { useRef } from 'react';
 import { Section, Container, Text, Tag, PromptSteps } from '../../components';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
-import { useReducedMotion } from '../../hooks/useReducedMotion';
-import { useNetworkCanvas } from '../../hooks/useNetworkCanvas';
 import { skills } from '../../content/skills';
 import styles from './Skills.module.css';
 
@@ -12,9 +9,6 @@ export function Skills() {
   const hardReveal = useScrollReveal('skills-hard');
   const toolsReveal = useScrollReveal('skills-tools');
   const softReveal = useScrollReveal('skills-soft');
-  const reducedMotion = useReducedMotion();
-  const netCanvasRef = useRef<HTMLCanvasElement>(null);
-  useNetworkCanvas(netCanvasRef, reducedMotion);
 
   const groups = [
     { key: 'hard', revealId: 'skills-hard', label: 'hard skills', items: skills.hard, reveal: hardReveal },
@@ -24,7 +18,6 @@ export function Skills() {
 
   return (
     <Section id="skills" stageAnchor={3} paddingTop={60} paddingBottom={100}>
-      <canvas ref={netCanvasRef} className={styles.netCanvas} aria-hidden="true" />
       <div className={styles.content}>
         <Container size="wide">
           <PromptSteps question="какими инструментами и навыками владеешь" />

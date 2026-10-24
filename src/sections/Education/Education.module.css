@@ -17,25 +17,55 @@
 }
 
 .row {
+  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.15);
+  padding-bottom: var(--space-16);
+  transition:
+    border-color var(--duration-250) var(--ease-standard),
+    transform var(--duration-250) var(--ease-standard);
+}
+
+.row:focus-within {
+  border-color: rgba(var(--color-accent-rgb), 0.5);
+  transform: translateX(var(--space-8));
+}
+
+/* Hover/focus split (2026-10-24, review-animations audit): touch taps set
+   :hover and it sticks until another tap elsewhere — :hover gated behind
+   `(hover: hover) and (pointer: fine)`, :focus-within stays ungated. */
+@media (hover: hover) and (pointer: fine) {
+  .row:hover {
+    border-color: rgba(var(--color-accent-rgb), 0.5);
+    transform: translateX(var(--space-8));
+  }
+}
+
+/*
+ * `.content` wrap (2026-10-24, review-animations audit) — the old rest state
+ * cancelled a negative `margin-left` against a `padding-left` of the same
+ * size so the border-bottom (on `.row`) sat 8px further left than the text,
+ * then grew both on hover for a 16px text shift against an 8px border shift.
+ * Both were layout-tier (reflow). Reproduced with transform only: `.row`
+ * itself now carries half the shift (8px, moves the border-bottom with it),
+ * and this inner wrapper carries the other half on top of it, landing the
+ * text at the same net +16px while the border only moves +8px — same two-
+ * speed effect, composite-only.
+ */
+.content {
   display: flex;
   gap: var(--space-24);
   align-items: baseline;
   flex-wrap: wrap;
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.15);
-  padding-bottom: var(--space-16);
-  padding-left: var(--space-8);
-  margin-left: calc(var(--space-8) * -1);
-  transition:
-    border-color var(--duration-250) var(--ease-standard),
-    padding-left var(--duration-250) var(--ease-standard),
-    margin-left var(--duration-250) var(--ease-standard);
+  transition: transform var(--duration-250) var(--ease-standard);
 }
 
-.row:hover,
-.row:focus-within {
-  border-color: rgba(var(--color-accent-rgb), 0.5);
-  padding-left: var(--space-16);
-  margin-left: 0;
+.row:focus-within .content {
+  transform: translateX(var(--space-8));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .row:hover .content {
+    transform: translateX(var(--space-8));
+  }
 }
 
 .year {
@@ -73,7 +103,7 @@
    its own row, in that DOM order (see Education.tsx — already year/title/
    links in source order, nothing to reorder). Desktop/tablet untouched. */
 @media (max-width: 640px) {
-  .row {
+  .content {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-8);

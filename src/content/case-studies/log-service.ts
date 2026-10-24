@@ -130,4 +130,11 @@ export const matrix = {
 } as const;
 
 export const CELL_TEXT: Record<string, string> = { yes: 'есть', partial: 'частично', no: '—' };
-export const CELL_COLOR: Record<string, string> = { yes: '#E8432B', partial: '#c8cdd6', no: '#5c6675' };
+// 2026-10-24: `yes` was a literal red hex (#E8432B), outside the project's
+// palette entirely — found during a site-wide sweep for stray red text/
+// badges. Used in CaseStudy.tsx's feature-coverage table only for
+// COMPETITOR "yes" cells ("наш продукт"'s own "yes" is colored separately,
+// always `--color-accent`) — this needed a neutral, in-scheme token, not
+// the accent color itself (that would blur the us/competitor distinction
+// the table exists to show).
+export const CELL_COLOR: Record<string, string> = { yes: 'var(--color-text-primary)', partial: '#c8cdd6', no: '#5c6675' };

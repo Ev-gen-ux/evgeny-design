@@ -19,7 +19,7 @@
   background: var(--toggle-bg);
   color: var(--toggle-fg);
   border: 1px solid var(--toggle-fg);
-  border-radius: 3px;
+  border-radius: var(--radius-6);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   cursor: pointer;

@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react';
-import { useLenis } from 'lenis/react';
 import { useMenuAssembly } from '../../hooks/useMenuAssembly';
 import styles from './MobileNavOverlay.module.css';
 
@@ -9,77 +8,96 @@ export interface MobileNavOverlayLink {
 }
 
 export interface MobileNavOverlayProps {
-  /** Header's own wordmark name (e.g. "Евгений Яковенко") — shown top-left here too, same as the collapsed header, so identity/branding doesn't disappear while the menu covers the rest of it. */
-  name: string;
   links: readonly MobileNavOverlayLink[];
   /** Home-page anchors (`#work`) vs. cross-route links (`/work`) — same rule Header already applies to its own inline nav. */
   onHome: boolean;
   reducedMotion: boolean;
-  /** Controls the slide transition — component stays mounted either way (2026-09-17 follow-up, see docstring). */
+  /** Controls the expand transition — component stays mounted either way (2026-09-17 follow-up, see docstring). */
   open: boolean;
   onClose: () => void;
+  /** Referenced by Header's `.menuTrigger` via `aria-controls`. */
+  panelId: string;
 }
 
 /**
- * Fullscreen mobile nav (2026-09-17, responsive pass follow-up) — replaces
- * Header's inline `.links` row on phone (see Header.module.css's ≤640px
- * `display:none`).
+ * Mobile link disclosure panel (2026-10-24, 6th redesign pass same day —
+ * see MobileNavOverlay.module.css's and Header.module.css's `.surface`
+ * docstrings for the full story). Earlier passes: a fullscreen
+ * `position:fixed` overlay with its own background that REPLACED Header's
+ * `.nav` card while open; an in-flow flex row inside `.nav` (grew `.nav`'s
+ * own box height, pushing sticky-positioned page content on open); a
+ * `position:absolute` panel with its OWN glass background flush-aligned
+ * against `.nav`'s — this last one still read as two containers, because
+ * two independent `backdrop-filter` passes produce a visibly non-uniform
+ * glass texture at the seam no matter how precisely the borders align
+ * (confirmed live, screenshot 224).
  *
- * Always mounted (2026-09-17 follow-up) rather than conditionally rendered
- * — a slide-in/out transition needs the panel present in the DOM on the way
- * OUT too, not just the way in; `open` drives a CSS transform (see
- * `.overlay[data-open]`) instead of React mount/unmount. `useMenuAssembly`
- * re-splits/re-scatters the link labels every time `open` flips true
- * (see that hook's own docstring for why re-running on every open, not
- * just once, is the right call here).
+ * Now: this component owns ONLY the content (links) and the height
+ * transition — no background/border/blur of its own. The actual glass
+ * card is `Header.module.css`'s `.surface`, a sibling inside `.nav` that
+ * grows down by this panel's measured height in lockstep with this
+ * element's own `max-height` reveal, so there's exactly one
+ * `backdrop-filter` pass for the whole card, whatever its height.
+ * `.wordmark` (name + session tag + dot) stays on screen unchanged the
+ * whole time; the ONLY thing that changes on open is Header's own trigger
+ * label (`[ menu ]` → `[ close ]`, via `useLabelMorph`, untouched by this
+ * component).
  *
- * No close button of its own (2026-09-17 follow-up — there used to be one
- * in `.topRow`, removed per explicit user request): a button living inside
- * this panel would slide out WITH it on close, which read as "the close
- * button flies away" instead of a clean morph. Header's own `.menuTrigger`
- * (fixed in place, outside this sliding panel, raised above it via
- * `z-index`) is the only control — it morphs its own label between
- * `[ menu ]`/`[ close ]` in place via `useLabelMorph` and toggles `open`.
- * Escape and clicking a link still close via `onClose`.
+ * Always mounted — a height transition needs the panel present in the DOM
+ * on the way OUT too, not just the way in; `open` drives a CSS `max-height`
+ * transition against a JS-measured `--panel-h` custom property, written to
+ * `:root` so `.surface` (a sibling, not a descendant) can read it too —
+ * grid's `0fr`→`1fr` trick doesn't reliably collapse to true 0 here, since
+ * this container's own height is itself auto/intrinsic, which is exactly
+ * the case where browsers fall back to the row's max-content size instead
+ * of 0. `useMenuAssembly` re-splits/re-scatters the link labels every time
+ * `open` flips true (see that hook's own docstring).
  */
-export function MobileNavOverlay({ name, links, onHome, reducedMotion, open, onClose }: MobileNavOverlayProps) {
+export function MobileNavOverlay({ links, onHome, reducedMotion, open, onClose, panelId }: MobileNavOverlayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
   useMenuAssembly(containerRef, reducedMotion, open);
-  const lenis = useLenis();
+
+  // Keeps `--panel-h` current with the links column's real content height,
+  // continuously (not just on open) — so the very first open already has
+  // an accurate value instead of a guessed fallback, and a viewport
+  // resize/rotation while open re-measures live. Written to `:root`, not
+  // this panel's own element (2026-10-24, 6th pass) — Header.module.css's
+  // `.surface` is a SIBLING of this component inside `.nav`, not a
+  // descendant, so it needs the variable on a shared ancestor to read it;
+  // `:root` is the simplest one, safe since only one Header/menu exists
+  // per page at a time.
+  useEffect(() => {
+    const linksEl = containerRef.current;
+    if (!linksEl) return;
+    const update = () => {
+      document.documentElement.style.setProperty('--panel-h', `${linksEl.scrollHeight}px`);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(linksEl);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!open) return;
-    // Scroll lock is `lenis?.stop()` alone (2026-09-18, same-day revision —
-    // see App.tsx's docstring for the full story of why `autoToggle` stays
-    // at its default true). Lenis's own `.stop()` sets `overflow: clip` on
-    // `document.documentElement`, which blocks scrolling robustly regardless
-    // of input method (wheel, touch, keyboard, scrollbar drag) — a second,
-    // independent `document.body.style.overflow = 'hidden'` here used to
-    // duplicate that block on a different element, which was *harmless* for
-    // actually stopping scroll but was the root of the menu trigger's edge
-    // padding coming out wrong: two separately-toggled overflow sources
-    // fighting over the same scrollbar-width layout shift. Not setting our
-    // own overflow at all removes that conflict outright.
+    // No scroll lock (2026-10-24, explicit user request) — the page behind
+    // the panel stays scrollable while it's open; the menu only opens/
+    // closes via the trigger button (never by an outside click or scroll
+    // gesture), so there's no risk of losing the open panel to a stray
+    // scroll. An earlier version locked scroll via `lenis?.stop()` plus a
+    // scrollbar-width `padding-right` compensation on `<body>` — removed
+    // outright, not just the lock: that compensation was *only* non-zero
+    // on pages with their own vertical scrollbar (Home, not the single-
+    // viewport case-study pages), so it visibly nudged just Home's content
+    // left by a few px on every open (reported live, screenshot 225/226 —
+    // `<body style="padding-right: 4px">` only on Home).
     //
-    // The compensating `padding-right` still has to happen here, though —
-    // Lenis's own toggle still removes the scrollbar and still shifts
-    // available page width by that amount, same as any overflow:hidden
-    // would. Measured and applied *before* `lenis.stop()` runs, so the
-    // scrollbar is still present when we measure it. On a real mobile
-    // device (overlay scrollbars, no reserved width) this measures 0 and is
-    // a complete no-op either way.
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-    const prevPaddingRight = document.body.style.paddingRight;
-    if (scrollbarWidth > 0) {
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-    }
-    lenis?.stop();
-    // `preventScroll` (2026-10-09) — without it, focusing a link that's
-    // still mid-`translateX` (the panel's own open transition hasn't
-    // finished yet) could make the browser auto-scroll the page to bring
-    // the not-yet-fully-on-screen element into view, which reads as the
-    // whole page lurching sideways right as the menu opens.
+    // `preventScroll` (2026-10-09) — without it, focusing a link while the
+    // panel's own expand transition hasn't finished yet could make the
+    // browser auto-scroll the page to bring the not-yet-fully-visible
+    // element into view, which reads as the page lurching right as the menu
+    // opens.
     firstLinkRef.current?.focus({ preventScroll: true });
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -88,26 +106,12 @@ export function MobileNavOverlay({ name, links, onHome, reducedMotion, open, onC
     window.addEventListener('keydown', onKeyDown);
 
     return () => {
-      document.body.style.paddingRight = prevPaddingRight;
-      lenis?.start();
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [open, onClose, lenis]);
+  }, [open, onClose]);
 
   return (
-    <div
-      className={styles.overlay}
-      data-open={open ? '1' : '0'}
-      role="dialog"
-      aria-modal="true"
-      aria-hidden={!open}
-      aria-label="Навигация"
-    >
-      <div className={styles.grid} aria-hidden="true" />
-      <div className={styles.glow} aria-hidden="true" />
-      <div className={styles.topRow}>
-        <span className={styles.name}>{name}</span>
-      </div>
+    <div id={panelId} className={styles.overlay} data-open={open ? '1' : '0'} aria-hidden={!open}>
       <div ref={containerRef} className={styles.links}>
         {links.map((l, i) => (
           <a

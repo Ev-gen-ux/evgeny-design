@@ -6,6 +6,7 @@
   text-transform: uppercase;
   padding: var(--space-5) var(--space-10);
   border: 1px solid transparent;
+  border-radius: var(--radius-3);
   transition:
     border-color var(--duration-250) var(--ease-standard),
     color var(--duration-250) var(--ease-standard),
@@ -29,10 +30,20 @@
 }
 
 /* Not reduced-motion-gated — matches source: this hover is a static template
-   attribute, not one of the JS-conditioned effects, so it stays as-is. */
-.chip:hover,
+   attribute, not one of the JS-conditioned effects, so it stays as-is.
+   Hover split from focus (2026-10-24, review-animations audit): a touch tap
+   sets :hover and it sticks until another tap elsewhere — gate behind
+   `(hover: hover) and (pointer: fine)` so touch only gets the focus state. */
 .chip:focus-visible {
   color: var(--color-accent);
   border-color: var(--color-accent);
   transform: translateY(-2px) scale(1.03);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    transform: translateY(-2px) scale(1.03);
+  }
 }

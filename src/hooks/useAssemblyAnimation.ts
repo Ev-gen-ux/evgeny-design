@@ -346,7 +346,20 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
     // card, every single frame (classic layout thrashing). Splitting into a
     // read-phase then a write-phase means every read happens against a layout
     // that's already settled, with zero forced recalculation in between.
-    const driveAsm = (dt: number) => {
+    // Scroll-jank fix (2026-10-24): this used to run `loop`/`driveAsm` in a
+    // perpetual, ungated `requestAnimationFrame` loop for the entire page
+    // lifetime — every frame, forever, regardless of scroll — doing a forced
+    // `getBoundingClientRect()` read per `syncEl` unit (About/SelectedWork
+    // card-synced text) and writing transform/opacity to every live span.
+    // With hundreds of text units across the page this is real per-frame
+    // cost paid even while sitting still, which is what made the Hero↔About
+    // and About↔SelectedWork boundaries (the sections with the heaviest
+    // synced text) stutter on repeated scroll back and forth. Same pattern
+    // as `useStageProgress`'s fix: `driveAsm` now reports whether anything is
+    // still mid-transition (eased units not yet snapped to target, or
+    // pending lazy split/reclaim candidates) and the loop stops itself once
+    // nothing is, restarting on the next scroll/resize.
+    const driveAsm = (dt: number): boolean => {
       const vh = window.innerHeight;
       const sy = window.scrollY;
       const vw = window.innerWidth;
@@ -384,9 +397,9 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
       // imperceptible as a delay, but each individual frame's own DOM work
       // stays small.
       const MAX_SPLITS_PER_FRAME = 6;
+      let splitsThisFrame = 0;
       if (candidatesRef.current.length) {
         const stillPending: Candidate[] = [];
-        let splitsThisFrame = 0;
         for (const c of candidatesRef.current) {
           if (splitsThisFrame < MAX_SPLITS_PER_FRAME && c.top < sy + vh * 2.5 && c.top > sy - vh * 2) {
             splitCandidate(c.el, c.sec, false, false);
@@ -461,6 +474,7 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
         for (const u of toReclaim) reclaimUnit(u);
       }
 
+      let unsettled = splitsThisFrame > 0 || toReclaim.length > 0;
       for (let i = 0; i < live.length; i++) {
         const u = live[i];
         const t = targets[i];
@@ -477,6 +491,7 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
           u.cur += (t - u.cur) * ease;
           if (Math.abs(t - u.cur) < 0.0015) u.cur = t;
         }
+        if (u.cur !== t) unsettled = true;
         const q = Math.round(u.cur * 240) / 240;
         if (q === u.t) continue;
         u.t = q;
@@ -510,12 +525,32 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
             ')';
         }
       }
+      return !unsettled;
+    };
+
+    let running = false;
+
+    const stop = () => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+      running = false;
     };
 
     const loop = (now: number) => {
       const dt = now - last;
       last = now;
-      driveAsm(dt);
+      const settled = driveAsm(dt) && loadT >= 1;
+      if (settled) {
+        stop();
+        return;
+      }
+      raf = requestAnimationFrame(loop);
+    };
+
+    const ensureRunning = () => {
+      if (running) return;
+      running = true;
+      last = performance.now();
       raf = requestAnimationFrame(loop);
     };
 
@@ -523,16 +558,22 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
     const startRaf = requestAnimationFrame(() => {
       loadT = 0;
       tickClock();
-      raf = requestAnimationFrame(loop);
+      ensureRunning();
     });
 
-    const onResize = () => measureUnits();
+    const onScroll = () => ensureRunning();
+    const onResize = () => {
+      measureUnits();
+      ensureRunning();
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onResize);
 
     return () => {
+      window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
       cancelAnimationFrame(startRaf);
-      if (raf) cancelAnimationFrame(raf);
+      stop();
       if (clockRaf) cancelAnimationFrame(clockRaf);
     };
   }, [rootRef, enabled]);

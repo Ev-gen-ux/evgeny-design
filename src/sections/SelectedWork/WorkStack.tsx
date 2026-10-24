@@ -145,7 +145,7 @@ export function WorkStack({ cases, cursor }: WorkStackProps) {
               <div className={styles.cardLinks}>
                 <MagnetLink
                   href={`/work/${cs.id}`}
-                  variant="accent"
+                  variant="underline"
                   reducedMotion={reducedMotion}
                   onMouseEnter={cursor.onEnter}
                   onMouseLeave={cursor.onLeave}

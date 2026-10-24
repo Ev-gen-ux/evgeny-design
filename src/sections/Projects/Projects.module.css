@@ -20,6 +20,7 @@
   background: transparent;
   padding: var(--space-28);
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
+  border-radius: var(--radius-9);
   transition:
     border-color var(--duration-300) var(--ease-standard),
     transform var(--duration-300) var(--ease-signature),
@@ -27,11 +28,21 @@
 }
 
 /* Not reduced-motion-gated in the source's projectCardStyle() — left as-is. */
-.card:hover,
 .card:focus-within {
   border-color: var(--color-accent);
   transform: translateY(-4px);
   box-shadow: 0 20px 40px -24px rgba(var(--color-accent-rgb), 0.35);
+}
+
+/* Hover/focus split (2026-10-24, review-animations audit): touch taps set
+   :hover and it sticks until another tap elsewhere — :hover gated behind
+   `(hover: hover) and (pointer: fine)`, :focus-within stays ungated. */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -24px rgba(var(--color-accent-rgb), 0.35);
+  }
 }
 
 .title {

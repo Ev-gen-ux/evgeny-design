@@ -160,6 +160,7 @@
 
 .ioCard {
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+  border-radius: var(--radius-9);
 }
 
 .ioRow {

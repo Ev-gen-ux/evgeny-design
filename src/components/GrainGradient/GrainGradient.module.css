@@ -1,0 +1,94 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--color-bg-page);
+}
+
+/* Nested usage (MobileNavOverlay) — the host already paints its own
+   tinted/blurred background, this instance only contributes the streak +
+   noise on top of it. */
+.bare {
+  background: none;
+}
+
+.streak {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(ellipse 60% 25% at 70% 80%, rgba(var(--color-glow-light-rgb), 0.5) 0%, transparent 70%),
+    radial-gradient(ellipse 70% 50% at 85% 55%, rgba(var(--color-accent-rgb), 0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 60% at 60% 40%, rgba(var(--color-graphite-rgb), 0.9) 0%, transparent 75%);
+  transform: rotate(-25deg) scale(1.4);
+  filter: blur(40px) saturate(110%);
+  opacity: 0.6;
+  transition: opacity var(--duration-700) var(--ease-standard);
+}
+
+/* Home page gets a bolder streak — closer to the reference's dramatic
+   dark-to-mauve diagonal — everywhere else stays understated so it doesn't
+   compete with case-study content. */
+.intense .streak {
+  background:
+    radial-gradient(ellipse 65% 30% at 72% 78%, rgba(var(--color-glow-rgb), 0.65) 0%, transparent 70%),
+    radial-gradient(ellipse 75% 55% at 85% 52%, rgba(var(--color-accent-rgb), 0.3) 0%, transparent 72%),
+    radial-gradient(ellipse 85% 65% at 58% 38%, rgba(var(--color-graphite-rgb), 1) 0%, transparent 78%);
+  opacity: 0.85;
+}
+
+.streakAnimated {
+  animation: streakDrift 30s ease-in-out infinite;
+}
+
+@keyframes streakDrift {
+  0%, 100% {
+    transform: rotate(-25deg) scale(1.4) translate(0, 0);
+  }
+  50% {
+    transform: rotate(-22deg) scale(1.45) translate(-2%, 2%);
+  }
+}
+
+/* Case-study pages (2026-10-24 follow-up, per user request): same streak,
+   mirrored so the glow reads from the left edge instead of the right —
+   `scaleX(-1)` prepended ahead of the existing rotate/scale keeps every
+   other number (ellipse sizes, colors, blur) identical, just reflected. */
+.flip .streak {
+  transform: scaleX(-1) rotate(-25deg) scale(1.4);
+}
+
+.flip .streakAnimated {
+  animation-name: streakDriftFlip;
+}
+
+@keyframes streakDriftFlip {
+  0%, 100% {
+    transform: scaleX(-1) rotate(-25deg) scale(1.4) translate(0, 0);
+  }
+  50% {
+    transform: scaleX(-1) rotate(-22deg) scale(1.45) translate(-2%, 2%);
+  }
+}
+
+.noise {
+  position: absolute;
+  inset: -10%;
+  width: 120%;
+  height: 120%;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+.intense .noise {
+  opacity: 0.22;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .streakAnimated {
+    animation: none;
+  }
+}

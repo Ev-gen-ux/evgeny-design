@@ -2,6 +2,8 @@
    canvas-field, or matrix bar-reveal scroll animation yet (deferred per user). */
 
 .grid {
+  /* 2026-10-24 — redesign exploration: hidden, not deleted, per user request. Remove this line to restore. */
+  display: none;
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -13,6 +15,8 @@
 }
 
 .glow {
+  /* 2026-10-24 — redesign exploration: hidden, not deleted, per user request. Remove this line to restore. */
+  display: none;
   position: fixed;
   left: -10%;
   top: -10%;
@@ -55,6 +59,8 @@
 
 /* Cursor-follow glow over the background grid — same mechanic as Hero's .spot (useSpotGlow), added to case pages per user request (2026-08-02): active over the bare grid, hidden the moment the cursor is over actual content (handled by the onMouseMove/onMouseLeave logic in CaseStudy.tsx, not by this CSS). */
 .spot {
+  /* 2026-10-24 — redesign exploration: hidden, not deleted, per user request. Remove this line to restore. */
+  display: none;
   position: absolute;
   inset: 0;
   z-index: 0;
@@ -68,7 +74,12 @@
   z-index: 1;
   max-width: 840px;
   margin: 0 auto;
-  padding: 120px var(--space-container-x) 120px;
+  /* Top 140px, not 120px (2026-10-24, header redesign) — desktop `.nav`
+     moved from `top: 0` to `top: var(--space-20)` (floating container), so
+     its bottom edge sits 20px lower than before; this padding (tuned to
+     clear the fixed Header, see comment below) grows by the same 20px.
+     Bottom padding is unrelated to the header and stays 120px. */
+  padding: 140px var(--space-container-x) 120px;
 }
 
 /* Phone (2026-10-09): the desktop 120px top padding (tuned to clear the
@@ -210,6 +221,7 @@
 .matrixBox {
   margin-top: 52px;
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+  border-radius: var(--radius-11);
   padding: clamp(22px, 3.5vw, 44px);
   background: rgba(var(--color-graphite-rgb), 0.35);
 }
@@ -348,6 +360,7 @@
 }
 
 .personaCard {
+  border-radius: var(--radius-11);
   padding: clamp(20px, 3vw, 32px);
 }
 
@@ -374,6 +387,7 @@
   letter-spacing: var(--tracking-wider);
   padding: var(--space-4) var(--space-8);
   border: 1px solid transparent;
+  border-radius: var(--radius-3);
 }
 
 .personaGrid {
@@ -512,6 +526,7 @@
 /* Metrics (log-service) */
 .northStar {
   border: 1px solid rgba(var(--color-accent-rgb), 0.4);
+  border-radius: var(--radius-11);
   padding: clamp(22px, 3vw, 36px);
   margin-bottom: 36px;
   background: rgba(var(--color-accent-rgb), 0.06);
@@ -594,6 +609,7 @@
 .pairsBox {
   margin-top: var(--space-32);
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+  border-radius: var(--radius-11);
 }
 
 .pairsHead {
@@ -666,6 +682,7 @@
   font-size: var(--fs-sm);
   color: var(--color-text-body);
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.3);
+  border-radius: var(--radius-3);
   padding: var(--space-6) 11px;
   overflow-wrap: break-word;
 }
@@ -697,6 +714,7 @@
   margin-top: 40px;
   padding: 22px 24px;
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
+  border-radius: var(--radius-11);
   display: flex;
   gap: var(--space-16);
   align-items: flex-start;

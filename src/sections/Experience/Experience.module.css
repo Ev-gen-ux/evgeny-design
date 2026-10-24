@@ -19,17 +19,44 @@
   position: relative;
   margin-bottom: var(--space-44);
   padding-bottom: var(--space-20);
-  padding-left: 0;
   border-bottom: 1px solid rgba(var(--color-accent-rgb), 0);
-  transition:
-    border-color var(--duration-250) var(--ease-standard),
-    padding-left var(--duration-250) var(--ease-standard);
+  transition: border-color var(--duration-250) var(--ease-standard);
 }
 
-.item:hover,
 .item:focus-within {
   border-bottom-color: rgba(var(--color-accent-rgb), 0.5);
-  padding-left: var(--space-16);
+}
+
+/* Hover/focus split (2026-10-24, review-animations audit): touch taps set
+   :hover and it sticks until another tap elsewhere — :hover gated behind
+   `(hover: hover) and (pointer: fine)`, :focus-within stays ungated. */
+@media (hover: hover) and (pointer: fine) {
+  .item:hover {
+    border-bottom-color: rgba(var(--color-accent-rgb), 0.5);
+  }
+}
+
+/*
+ * `.content` wrap (2026-10-24, review-animations audit) — the indent used to
+ * be `.item`'s own `padding-left` (layout-tier, forces reflow); moved to a
+ * `transform: translateX` on this wrapper (composite-only) for the identical
+ * visual result — `.item` is `width: auto`, so the old padding-left only ever
+ * shifted the content, never the border-bottom box edge, which is exactly
+ * what `translateX` on a child reproduces. `.dot` stays a sibling, outside
+ * this wrapper — it's absolutely positioned off `.item`, never shifted.
+ */
+.content {
+  transition: transform var(--duration-250) var(--ease-standard);
+}
+
+.item:focus-within .content {
+  transform: translateX(var(--space-16));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .item:hover .content {
+    transform: translateX(var(--space-16));
+  }
 }
 
 /*

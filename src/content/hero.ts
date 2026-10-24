@@ -17,8 +17,17 @@ export const hero = {
   goal: 'Цель — решать реальные бизнес‑задачи',
   // Two parts (2026-09-26, per user request): on desktop the line breaks before «AI Design Pipeline», so «AI» no
   // longer dangles at the end of the first line (Hero.tsx puts a desktop-only <br> between them; elsewhere the parts
-  // read as one sentence). A non-breaking space does not work here: the assembly engine splits on it.
-  sub: ['Веду продуктовый дизайн enterprise fintech и строю', 'AI Design Pipeline: путь от брифа до готового прототипа.'],
+  // read as one sentence).
+  // "AI Design Pipeline:" is glued with U+00A0 non-breaking spaces (2026-10-24, found via a screenshot where "AI"
+  // split off alone at the end of a line with "Design Pipeline:" on the next): the assembly engine's own word
+  // splitter (`useAssemblyAnimation.ts`, `text.split(/(\s+)/)`) treats U+00A0 as whitespace too and still carries the
+  // literal NBSP character through into its own text node between the per-word spans (same mechanism that lets the
+  // U+2028 hard break above survive the split) — the browser then refuses to wrap a line at that NBSP, so the three
+  // words move as one atomic unit no matter where the line actually breaks. A plain space here let "AI" strand alone.
+  sub: [
+    'Веду продуктовый дизайн enterprise fintech и строю',
+    'AI Design Pipeline: путь от брифа до готового прототипа.',
+  ],
 } as const;
 
 export const heroCtas = [

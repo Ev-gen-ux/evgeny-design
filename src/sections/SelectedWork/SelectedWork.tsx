@@ -135,7 +135,7 @@ function PhoneCaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: Curs
         <div className={styles.phoneFooter}>
           <MagnetLink
             href={`/work/${cs.id}`}
-            variant="accent"
+            variant="underline"
             reducedMotion={reducedMotion}
             onMouseEnter={cursor.onEnter}
             onMouseLeave={cursor.onLeave}
@@ -231,7 +231,7 @@ function CaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: CursorTra
         <div className={styles.footerLinks}>
           <MagnetLink
             href={`/work/${cs.id}`}
-            variant="accent"
+            variant="underline"
             reducedMotion={reducedMotion}
             onMouseEnter={cursor.onEnter}
             onMouseLeave={cursor.onLeave}

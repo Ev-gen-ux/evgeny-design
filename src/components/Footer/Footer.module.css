@@ -20,8 +20,11 @@
      page's own responsibility) and below this row, to match. `env()`
      (2026-09-17) — ChatBar itself now sits `env(safe-area-inset-bottom)`
      above the true bottom (see ChatBar.module.css), so this reserve needs
-     the same extra amount to still fully clear it. */
-  padding-bottom: calc(var(--space-40) + 52px + env(safe-area-inset-bottom, 0px));
+     the same extra amount to still fully clear it. +16px (2026-10-24) —
+     ChatBar now floats 16px above the viewport bottom instead of sitting
+     flush, so its top edge sits 16px higher too; the old 52px reserve
+     alone would be 16px short. */
+  padding-bottom: calc(var(--space-40) + 52px + var(--space-16) + env(safe-area-inset-bottom, 0px));
 }
 
 /* Phone (2026-09-17, responsive pass follow-up) — on mobile ThemeToggle sits
@@ -33,7 +36,10 @@
    bumped to clear ThemeToggle's own height too, not just ChatBar's. */
 @media (max-width: 640px) {
   .footerRow {
-    padding-bottom: calc(var(--space-40) + 52px + 40px + env(safe-area-inset-bottom, 0px));
+    /* ThemeToggle removed from render (2026-10-24) — its old +40px raised-
+       above-ChatBar reservation is gone; +16px added instead for ChatBar's
+       own floating gap (same reasoning as the desktop rule above). */
+    padding-bottom: calc(var(--space-40) + 52px + var(--space-16) + env(safe-area-inset-bottom, 0px));
     /* Stacked, not `justify-content: space-between` in a wrapped row
        (2026-09-18, explicit user request/bug report — on some phones the
        copyright line landed beside the contact links instead of below

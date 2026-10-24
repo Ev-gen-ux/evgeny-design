@@ -1,0 +1,12 @@
+/* Border-radius scale (2026-10-24, explicit user request) — deliberately not
+   the generic 4/8/12/16/24 scale most UI frameworks default to: odd-leaning
+   values read as a made scale, not a framework default. Nesting rule: a
+   child surface always gets the next size down from its parent (a tag
+   inside a card uses --radius-3 while the card itself uses --radius-9), so
+   corners read as concentric rather than one flat radius applied everywhere. */
+:root {
+  --radius-3: 3px;  /* badges/tags, chips, small pills nested inside larger surfaces */
+  --radius-6: 6px;  /* buttons, small controls, code blocks */
+  --radius-9: 9px;  /* cards */
+  --radius-11: 11px; /* large blocks, modals/panels, Header, top-level sections */
+}

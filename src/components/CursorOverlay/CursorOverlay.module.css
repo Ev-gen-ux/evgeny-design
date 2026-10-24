@@ -1,6 +1,15 @@
-/* 1:1 with cursorRingStyle/cursorDotStyle/cursorCoordStyle in Portfolio.dc.html. */
+/*
+ * 1:1 with cursorRingStyle/cursorDotStyle/cursorCoordStyle in Portfolio.dc.html.
+ * `top: 0; left: 0;` (2026-10-24, review-animations audit) — position used to
+ * come from React-supplied inline `left`/`top` (layout-tier); now the hook
+ * writes `transform: translate3d(...)` straight to these elements every
+ * frame, so `top`/`left` just need a fixed 0,0 anchor for that transform to
+ * offset from.
+ */
 .ring {
   position: fixed;
+  top: 0;
+  left: 0;
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -19,6 +28,8 @@
 
 .dot {
   position: fixed;
+  top: 0;
+  left: 0;
   width: 5px;
   height: 5px;
   border-radius: 50%;
@@ -29,6 +40,8 @@
 
 .coord {
   position: fixed;
+  top: 0;
+  left: 0;
   font-family: var(--font-mono);
   font-size: var(--fs-tiny);
   letter-spacing: var(--tracking-wider);

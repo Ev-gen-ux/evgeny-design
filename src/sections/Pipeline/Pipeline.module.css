@@ -6,6 +6,57 @@
  * Only typography/content styling lives here, shared by both modes.
  */
 
+/* 2026-10-24 — glass frame + ambient glow (explicit user request: the
+   backdrop-blur recipe shared with Card.module.css only reads as "glass"
+   when something lit is behind it to blur — the frame had the border but
+   no background/blur/glow at all). `.frame` carries the blur+tint (same
+   values as Card.module.css's `.card`), `.glow` is a static mauve bloom
+   behind it, same color language as SelectedWork's cursor-follow `.blob`
+   but ambient/drifting instead of pointer-driven (this frame isn't a
+   hover target). Desktop/sticky mode only — `frameStyle`'s stacked-layout
+   branch stays plain, this class is applied conditionally in Pipeline.tsx. */
+.frame {
+  position: relative;
+  overflow: hidden;
+  background: rgba(var(--color-graphite-rgb), 0.18);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.glow {
+  position: absolute;
+  z-index: 0;
+  width: 480px;
+  height: 480px;
+  left: 62%;
+  top: 22%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--color-glow-rgb), 0.38), transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.glowAnimated {
+  animation: glowDrift 22s ease-in-out infinite;
+}
+
+@keyframes glowDrift {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-45%, -55%) scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glowAnimated {
+    animation: none;
+  }
+}
+
 .sub {
   font-size: clamp(14px, 1.1vw, 17px);
   color: var(--color-text-secondary);
@@ -73,6 +124,7 @@
   font-size: var(--fs-sm);
   color: var(--color-text-secondary);
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.35);
+  border-radius: var(--radius-3);
   padding: var(--space-7) var(--space-12);
   display: inline-block;
   max-width: 100%;

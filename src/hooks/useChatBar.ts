@@ -95,13 +95,44 @@ export function useChatBar(
     // that caused the jump; `top` measured from the layout viewport's own
     // top sidesteps it entirely.
     const vv = window.visualViewport;
-    const BAR_HEIGHT = 52; // matches `.bar`'s fixed CSS `height`, both breakpoints
+    // 16px floating gap from the visible viewport's bottom (2026-10-24,
+    // same floating-container treatment as Header's `.nav`, explicit user
+    // request) — this JS path computes `top` directly and always wins over
+    // the CSS `bottom` fallback (see the comment above), so the gap has to
+    // be subtracted here too, not just set in `.bar`'s own `bottom` rule.
+    const BOTTOM_GAP = 16;
+    // Side gap mirrors ChatBar.module.css's own `left`/`right` tokens
+    // (`--space-40` desktop / `--space-20` ≤640px) — kept as a plain JS
+    // constant pair rather than read from the stylesheet, same breakpoint
+    // already used site-wide for this phone cutoff (see Hero.tsx's own
+    // `isNarrow` comment).
+    const getSideGap = () => (window.innerWidth <= 640 ? 20 : 40);
+    // Width bug (2026-10-24, live report): same root cause class as the
+    // vertical jump documented above, just on the other axis — `left`/
+    // `right` in CSS resolve against the LARGE/layout viewport, which can
+    // momentarily disagree with the visual one while a mobile browser's
+    // address bar is animating out of/into view during scroll, making the
+    // bar's rendered width drift and sometimes touch the right edge. Same
+    // fix as `top` got: stop relying on a CSS property that resolves
+    // against the layout viewport, and instead derive `left`/`width`
+    // purely from `visualViewport`, which is self-consistent frame to
+    // frame.
     const syncBarPosition = () => {
       const bar = barRef.current;
       if (!bar) return;
       if (!vv) return;
+      // Measured live, not a hardcoded constant (2026-10-24, height-
+      // symmetry request — `.bar` dropped its fixed `height: 52px` in
+      // favor of Header's own padding-driven box model, so there's no
+      // longer a single static number to hardcode here; this now stays
+      // correct automatically if either box's padding changes again).
+      const barHeight = bar.getBoundingClientRect().height;
       bar.style.bottom = 'auto';
-      bar.style.top = `${(vv.offsetTop + vv.height - BAR_HEIGHT).toFixed(1)}px`;
+      bar.style.top = `${(vv.offsetTop + vv.height - barHeight - BOTTOM_GAP).toFixed(1)}px`;
+      const gap = getSideGap();
+      bar.style.right = 'auto';
+      bar.style.left = `${(vv.offsetLeft + gap).toFixed(1)}px`;
+      bar.style.width = `${(vv.width - gap * 2).toFixed(1)}px`;
     };
 
     let curIdx = -1;

@@ -10,9 +10,12 @@
   width: 100%;
   container-type: inline-size;
   padding: var(--space-100) var(--space-container-x);
-  /* Same reservation as the old Footer: the fixed ThemeToggle (bottom-left) and
-     ChatBar (52px) must never sit on top of the giant word. */
-  padding-bottom: calc(var(--space-32) + 52px + env(safe-area-inset-bottom, 0px));
+  /* Same reservation as the old Footer: the fixed ChatBar (52px) must never
+     sit on top of the giant word. +16px (2026-10-24) — ChatBar now floats
+     16px above the viewport bottom instead of sitting flush (see its own
+     module's 2026-10-24 comment), so its top edge sits 16px higher too;
+     the old 52px reserve alone would be 16px short. */
+  padding-bottom: calc(var(--space-32) + 52px + var(--space-16) + env(safe-area-inset-bottom, 0px));
 }
 
 .top {
@@ -107,9 +110,17 @@
   transition: color var(--duration-300) var(--ease-standard);
 }
 
-.giant:hover,
 .giant:focus-visible {
   color: var(--color-accent);
+}
+
+/* Hover/focus split (2026-10-24, review-animations audit): touch taps set
+   :hover and it sticks until another tap elsewhere — :hover gated behind
+   `(hover: hover) and (pointer: fine)`, :focus-visible stays ungated. */
+@media (hover: hover) and (pointer: fine) {
+  .giant:hover {
+    color: var(--color-accent);
+  }
 }
 
 /* Desktop only (2026-09-26): the 200px gap to the previous section lives in this padding. */
@@ -122,8 +133,11 @@
 @media (max-width: 640px) {
   .root {
     padding-top: 80px;
-    /* ThemeToggle is raised above ChatBar's band on phone (see its own CSS). */
-    padding-bottom: calc(var(--space-32) + 52px + 40px + env(safe-area-inset-bottom, 0px));
+    /* ThemeToggle removed from render (2026-10-24) — the old +40px raised-
+       above-ChatBar reservation for it is gone; +16px added instead for
+       ChatBar's own floating gap (same reasoning as the desktop rule
+       above). */
+    padding-bottom: calc(var(--space-32) + 52px + var(--space-16) + env(safe-area-inset-bottom, 0px));
   }
 
   .top {

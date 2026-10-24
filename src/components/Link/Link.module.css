@@ -16,11 +16,18 @@
   border-bottom: 1px solid transparent;
 }
 
-.nav:hover,
 .nav:focus-visible {
   color: var(--color-accent);
   border-bottom-color: var(--color-accent);
   transform: translateY(-2px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav:hover {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
 }
 
 /* Hero CTA / project links — persistent underline, color+border shift on hover.
@@ -31,10 +38,16 @@
   border-bottom: 1px solid var(--color-slate-mist);
 }
 
-.underline:hover,
 .underline:focus-visible {
   color: var(--color-accent);
   border-bottom-color: var(--color-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .underline:hover {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+  }
 }
 
 /* "Open case study" style link — already Redline, border solidifies on hover. */
@@ -43,9 +56,14 @@
   border-bottom: 1px solid rgba(var(--color-accent-rgb), 0.5);
 }
 
-.accent:hover,
 .accent:focus-visible {
   border-bottom-color: var(--color-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .accent:hover {
+    border-bottom-color: var(--color-accent);
+  }
 }
 
 /* Footer/contact links — color-only hover, no border ever (matches source: borderBottom stays 'none'). */
@@ -54,9 +72,14 @@
   border-bottom: none;
 }
 
-.plain:hover,
 .plain:focus-visible {
   color: var(--color-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .plain:hover {
+    color: var(--color-accent);
+  }
 }
 
 /* Contact row (phone/telegram/site/github) — same resting color as .plain, but the
@@ -68,11 +91,18 @@
   border-bottom: 1px solid transparent;
 }
 
-.contactNav:hover,
 .contactNav:focus-visible {
   color: var(--color-accent);
   border-bottom-color: var(--color-accent);
   transform: translateY(-2px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contactNav:hover {
+    color: var(--color-accent);
+    border-bottom-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
 }
 
 /* Same color-only hover, but Vellum by default instead of Slate Mist (other-projects links). */
@@ -81,9 +111,14 @@
   border-bottom: none;
 }
 
-.ghost:hover,
 .ghost:focus-visible {
   color: var(--color-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ghost:hover {
+    color: var(--color-accent);
+  }
 }
 
 /* Contact email — big display-size link, persistent thick Redline underline. */
@@ -107,10 +142,19 @@
   padding-bottom: var(--space-8);
 }
 
-.email:hover,
 .email:focus-visible {
   color: var(--color-accent);
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .email:hover {
+    color: var(--color-accent);
+  }
+}
+
 /* Not reduced-motion-gated — the source's nav/link hovers are static template
-   attributes, not JS-conditioned effects, so they're left running either way. */
+   attributes, not JS-conditioned effects, so they're left running either way.
+   Hover/focus split site-wide in this file (2026-10-24, review-animations
+   audit): touch taps set :hover and it sticks until another tap elsewhere —
+   :hover now gated behind `(hover: hover) and (pointer: fine)`, :focus-visible
+   stays ungated so keyboard nav keeps working everywhere. */

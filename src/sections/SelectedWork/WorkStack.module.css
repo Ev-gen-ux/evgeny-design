@@ -15,7 +15,7 @@
   top: 290px;
   width: min(88vw, 34rem);
   transform-origin: bottom center;
-  border-radius: 2px;
+  border-radius: var(--radius-9);
   /* Thinner + fainter than before (was 1px/0.28) — the corner brackets below now carry the crisp accent, this just needs to read as a faint frame. */
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.16);
   background: rgba(var(--color-graphite-rgb), 0.55);
@@ -49,10 +49,10 @@
 .card:hover .corner,
 .card[aria-current='true'] .corner,
 .card:focus-within .corner {
-  border-top-color: var(--color-accent);
-  border-right-color: var(--color-accent);
-  border-bottom-color: var(--color-accent);
-  border-left-color: var(--color-accent);
+  border-top-color: var(--color-vellum);
+  border-right-color: var(--color-vellum);
+  border-bottom-color: var(--color-vellum);
+  border-left-color: var(--color-vellum);
 }
 
 .cornerTopLeft {

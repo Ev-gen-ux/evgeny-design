@@ -127,7 +127,12 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
     <div
       ref={rootRef}
       style={{
-        background: 'var(--color-bg-page)',
+        /* No background here (2026-10-24 redesign) — this opaque inline
+           fill used to sit directly on top of the shared GrainGradient
+           (mounted once in App.tsx, position:fixed, z-index:-1) and hide
+           it completely. `body` already supplies --color-bg-page as the
+           page's base color (index.css); the gradient layer now shows
+           through everywhere this div doesn't paint its own content. */
         color: 'var(--color-text-primary)',
         minHeight: '100vh',
         position: 'relative',

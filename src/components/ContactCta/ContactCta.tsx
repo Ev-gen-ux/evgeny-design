@@ -24,11 +24,7 @@ export interface ContactCtaProps {
  *
  * No page-specific content: same email, same question, same everywhere,
  * deliberately — this is "how to reach me," not something worth varying per
- * page. The one thing that does NOT come along with it is Home's roaming
- * icosahedron/network-graph background (Hero's own `useHeroThreeScene`
- * canvas, `position: fixed` over the whole home page) — that's Home-only
- * machinery this component never touched in the first place, so there was
- * nothing to strip out when reusing it on CaseStudy.
+ * page.
  */
 export function ContactCta({ reducedMotion }: ContactCtaProps) {
   return (

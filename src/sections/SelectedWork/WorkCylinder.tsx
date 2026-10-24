@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { MagnetLink, Tag } from '../../components';
 import type { CursorTracker } from '../../hooks/useCursorTracker';
@@ -81,6 +81,22 @@ export function WorkCylinder({ cases, cursor }: WorkCylinderProps) {
   const assemblies = useRef<(CardAssembly | null)[]>([]);
   // Per-card assembly progress 0..1 and the moment of the last frame — the assembly is time-based, see onFrame.
   const assemble = useRef<{ v: number[]; want: boolean[]; last: number; dir: number; lastT: number | null }>({ v: [], want: [], last: 0, dir: 1, lastT: null });
+
+  // Scroll-jank fix (2026-10-24): useWorkWheelScroll's rAF loop used to run
+  // unconditionally (enabled=true below) for the entire time this component
+  // was mounted, doing forced-layout reads (docTop/offsetHeight/
+  // getBoundingClientRect) every single frame even while the section was
+  // nowhere near the viewport. Gated behind an IntersectionObserver —
+  // generous rootMargin so the loop is already warm by the time the section
+  // reaches the viewport, instead of starting cold.
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const sec = sectionRef.current;
+    if (!sec) return;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { rootMargin: '40% 0px' });
+    observer.observe(sec);
+    return () => observer.disconnect();
+  }, []);
 
   // Declared before useWorkWheelScroll so its rAF loop never runs a frame without these handles.
   useEffect(() => {
@@ -174,7 +190,7 @@ export function WorkCylinder({ cases, cursor }: WorkCylinderProps) {
     });
   }, []);
 
-  useWorkWheelScroll(sectionRef, cases.length, onFrame, true);
+  useWorkWheelScroll(sectionRef, cases.length, onFrame, inView);
 
   const scrollToCard = (i: number) => {
     const sec = sectionRef.current;
@@ -259,7 +275,7 @@ export function WorkCylinder({ cases, cursor }: WorkCylinderProps) {
                     <span data-ag="4" data-ak="b">
                       <MagnetLink
                         href={`/work/${cs.id}`}
-                        variant="accent"
+                        variant="underline"
                         reducedMotion={reducedMotion}
                         onMouseEnter={cursor.onEnter}
                         onMouseLeave={cursor.onLeave}

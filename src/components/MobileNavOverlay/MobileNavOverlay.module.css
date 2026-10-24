@@ -1,99 +1,44 @@
-/* Slides in from the right (2026-09-17 follow-up, explicit user request) —
-   `translateX(100%)` already moves the whole panel fully off-screen, so no
-   `visibility`/`display` toggle is needed on top of it for the closed
-   state; `pointer-events:none` + `aria-hidden` (set in the .tsx) keep it
-   out of interaction/AT while off-screen without unmounting it, so the
-   reverse (closing) transition has something to animate. */
+/* Disclosure panel anchored below Header's `.nav` card (2026-10-24, 6th
+   pass — see MobileNavOverlay.tsx's docstring for the full before/after,
+   and Header.module.css's `.surface` comment for why this element now has
+   NO background/border/radius/blur of its own). `position: absolute`
+   against `.nav` instead of a real flex row inside it: keeps `.nav`'s own
+   flow-box height constant regardless of open/closed, so opening/closing
+   never pushes the sticky-positioned page content below it. Purely a
+   content clipper now — all visible chrome (the glass card itself) is
+   `Header.module.css`'s `.surface`, a sibling inside `.nav` that grows
+   down by this panel's own measured height (`--panel-h`, see below) in
+   lockstep with this element's own `max-height` reveal, so the two stay
+   visually synced as one continuous surface instead of two separately
+   blurred boxes (the bug reported on screenshot 224: two independent
+   `backdrop-filter` passes read as visibly non-uniform glass, even with
+   pixel-perfect aligned borders). `max-height` + a JS-measured `--panel-h`
+   custom property (ResizeObserver, written to `:root` — see
+   MobileNavOverlay.tsx) rather than the `grid-template-rows: 0fr→1fr`
+   trick tried first: that trick only reliably collapses to true 0 when the
+   grid container's own block size is non-auto, which doesn't hold here. */
 .overlay {
-  position: fixed;
-  inset: 0;
-  /* `100vh`, not `100dvh`, while closed (2026-09-19, real-device report —
-     a "shadow"/dark-underlay flash caught live in a screenshot, right in
-     the same transitional zone as two other now-fixed toolbar-animation
-     glitches this session). `100dvh` recalculates continuously as
-     Chrome-on-Android's own dynamic toolbar hides/shows *during ordinary
-     page scroll* — this element sits at `inset:0` (a full-viewport box)
-     for the ~100% of the time it's actually closed too, so every one of
-     those recalculations forces a real layout pass on it regardless, on
-     top of an already-heavy `backdrop-filter: blur(16px)`. That's a
-     concrete, structural trigger for the exact class of compositor glitch
-     the header/ChatBar fixes earlier today were chasing, and unlike
-     those, a stable value here doesn't cost anything: this box's *exact*
-     height only ever mattered for the reason `dvh` was added in the first
-     place — keeping the links column clear of the toolbar while the panel
-     is actually open and visible. While closed, it's fully off-screen (`transform`) regardless
-     of being a few px short/tall, so there's nothing to protect there.
-     `[data-open='1']` below switches to `dvh` only for the window it's
-     actually needed. */
-  height: 100vh;
-  /* Above Header's .nav (z-index:100), below CursorOverlay's 9999 — see
-     process log for the full z-index survey done before picking this. */
-  z-index: 200;
-  display: flex;
-  flex-direction: column;
+  position: absolute;
+  /* `-1px`, matching `.surface`'s own left/right compensation (2026-10-24,
+     5th pass finding) — keeps this panel's content area exactly as wide as
+     `.nav`/`.surface`, not 1px narrower on each side. */
+  top: 100%;
+  left: -1px;
+  right: -1px;
+  z-index: 1;
+  box-sizing: border-box;
   overflow: hidden;
-  background: rgba(var(--color-blueprint-rgb), 0.97);
-  /* `-webkit-` prefix before the standard property (2026-09-18) — see
-     Skills.module.css's identical comment for the full reasoning: the
-     production build's minifier was dropping whichever declaration came
-     first as a "duplicate," silently killing the blur site-wide. */
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  /* Longhand, not the `padding` shorthand (2026-09-17 follow-up — reported
-     by the user as "no left/right padding at all" when open) — kept as
-     four independent declarations so a problem resolving any one custom
-     property can't invalidate the whole shorthand and silently zero out
-     every side at once. */
-  padding-top: var(--space-24);
-  padding-right: var(--space-container-x);
-  padding-bottom: 0;
-  padding-left: var(--space-container-x);
-  transform: translateX(100%);
+  max-height: 0;
+  opacity: 0;
   pointer-events: none;
-  transition: transform var(--duration-400) var(--ease-signature);
-}
-
-/* Same repeating-grid backdrop as Hero (2026-09-17 follow-up, explicit user
-   request — "тот же самый эффект сетки, что и в Hero-блоке"), 1:1 pattern
-   copied from Hero.module.css's `.grid` rather than shared as a class
-   across files (the two components don't otherwise share any styling
-   relationship, not worth introducing a cross-cutting utility for one
-   reused rule). Static, no drift animation — this is a brief overlay, not
-   a page section someone lingers on. */
-.grid {
-  position: absolute;
-  inset: 0;
-  opacity: 0.5;
-  pointer-events: none;
-  background-image:
-    repeating-linear-gradient(0deg, rgba(var(--color-slate-mist-rgb), 0.1) 0px, rgba(var(--color-slate-mist-rgb), 0.1) 1px, transparent 1px, transparent 48px),
-    repeating-linear-gradient(90deg, rgba(var(--color-slate-mist-rgb), 0.1) 0px, rgba(var(--color-slate-mist-rgb), 0.1) 1px, transparent 1px, transparent 48px);
-}
-
-/* Small ambient glow, right side (2026-09-17 follow-up, explicit user
-   request — "небольшой" per their own wording, deliberately modest next to
-   PageBackdrop's much bigger 260-460px blobs elsewhere on the site). Static
-   (no cursor-follow, no drift) — same blur-heavy treatment as
-   PageBackdrop's blobs, just smaller and stationary. */
-.glow {
-  position: absolute;
-  top: 12%;
-  right: -8%;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(var(--color-accent-rgb), 0.35), transparent 70%);
-  filter: blur(50px);
-  pointer-events: none;
+  transition:
+    max-height var(--duration-400) var(--ease-signature),
+    opacity var(--duration-400) var(--ease-signature);
 }
 
 .overlay[data-open='1'] {
-  /* `dvh` only while genuinely open — see `.overlay`'s own comment above
-     for why the closed state deliberately stays on a stable `100vh`
-     instead. This is the window where the real visible-viewport height
-     (not the toolbar-inflated one) actually matters. */
-  height: 100dvh;
-  transform: translateX(0);
+  max-height: var(--panel-h, 70vh);
+  opacity: 1;
   pointer-events: auto;
 }
 
@@ -103,49 +48,18 @@
   }
 }
 
-/* No close button here (2026-09-17 follow-up) — see MobileNavOverlay.tsx's
-   docstring for why; `.topRow` now only ever holds `.name`, kept as its own
-   wrapper for the position:relative/z-index stacking fix below rather than
-   applying that directly to `.name`, in case something else joins this row
-   later. */
-.topRow {
-  /* position:relative + z-index (2026-09-17, added alongside .grid/.glow) —
-     without it, `.grid`/`.glow` (position:absolute) would stack ABOVE this
-     plain-flow flex child regardless of DOM order, per CSS stacking rules
-     (any positioned element outranks a non-positioned one in the same
-     context). Same fix on `.links` below. */
-  position: relative;
-  z-index: 1;
-}
-
-.name {
-  font-weight: var(--fw-bold);
-  font-size: var(--fs-lg);
-  letter-spacing: var(--tracking-tight);
-  color: var(--color-text-primary);
-}
-
 .links {
   display: flex;
   flex-direction: column;
-  /* Close to the header, not vertically centered (2026-09-17 follow-up, per
-     user's own screenshot feedback) — links start right under the top row
-     instead of floating in the middle of a mostly-empty viewport. No
-     internal scroll container here (dropped the earlier `overflow-y:auto`
-     safety net, per explicit user request). */
   gap: var(--space-24);
-  padding-top: var(--space-32);
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-24));
-  position: relative;
-  z-index: 1;
+  padding: var(--space-24);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-16));
 }
 
 .link {
   /* Lowercase (2026-09-17 follow-up) — matches the desktop header's own
      `.links` (content/nav.ts's labels are authored lowercase, rendered
-     as-is there, no text-transform). This panel had them force-uppercased;
-     per explicit user request, only that transform comes off — size,
-     weight, family all stay exactly as they were. */
+     as-is there, no text-transform). */
   font-family: var(--font-display);
   font-weight: var(--fw-bold);
   font-size: var(--fs-fluid-xl);
@@ -158,4 +72,3 @@
 .link:focus-visible {
   color: var(--color-accent);
 }
-
