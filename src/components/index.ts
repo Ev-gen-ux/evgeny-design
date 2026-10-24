@@ -16,6 +16,4 @@ export * from './ContactFooter';
 export * from './CursorOverlay';
 export * from './PageBackdrop';
 export * from './GrainGradient';
-export * from './GrainOverlay';
-export * from './ThemeToggle';
 export * from './MobileNavOverlay';

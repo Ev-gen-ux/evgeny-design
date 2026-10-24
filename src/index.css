@@ -8,8 +8,11 @@
 @import './tokens/spacing.css';
 @import './tokens/radius.css';
 @import './tokens/motion.css';
-@import './tokens/theme-mono.css';
-@import './tokens/theme-light.css';
+/* Light/mono theme tokens + ThemeToggle/GrainOverlay archived out of the
+   build entirely (2026-10-25, explicit user call — only the default theme
+   ships to prod). See
+   /Users/evgeniyakovenko/Desktop/work_environment/projects/evgeny.design/_archive/themes/
+   if that work is ever picked back up. */
 
 * {
   box-sizing: border-box;

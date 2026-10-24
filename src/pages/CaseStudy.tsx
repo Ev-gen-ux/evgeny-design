@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useLenis } from 'lenis/react';
-import { Tag, MagnetLink, CodeBlock, CursorOverlay, PromptSteps, ContactFooter, ChatBar, GrainOverlay } from '../components';
+import { Tag, MagnetLink, CodeBlock, CursorOverlay, PromptSteps, ContactFooter, ChatBar } from '../components';
 import { Header } from '../sections/Header';
 import type { CursorTracker } from '../hooks/useCursorTracker';
 import { useCursorTracker } from '../hooks/useCursorTracker';
@@ -463,9 +463,6 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
         <ContactFooter reducedMotion={reducedMotion} />
       </div>
       <ChatBar barRef={chatBarRef} textRef={chatTextRef} statusDotRef={chatStatusDotRef} statusTextRef={chatStatusTextRef} />
-      <GrainOverlay />
-      {/* Mono theme switcher hidden site-wide (2026-09-18, explicit user
-          request) — component + hook are untouched, just not mounted here. */}
     </div>
   );
 }

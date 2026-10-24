@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useLenis } from 'lenis/react';
-import { CursorOverlay, PageBackdrop, ChatBar, GrainOverlay } from '../components';
+import { CursorOverlay, PageBackdrop, ChatBar } from '../components';
 import { useCursorTracker } from '../hooks/useCursorTracker';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useAssemblyAnimation } from '../hooks/useAssemblyAnimation';
@@ -75,7 +75,6 @@ export function Home() {
         <Contact />
       </ScrollRevealProvider>
       <ChatBar barRef={chatBarRef} textRef={chatTextRef} statusDotRef={chatStatusDotRef} statusTextRef={chatStatusTextRef} />
-      <GrainOverlay />
     </div>
   );
 }
