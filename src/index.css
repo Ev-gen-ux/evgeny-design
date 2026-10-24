@@ -63,6 +63,20 @@ html {
      own containing-block math at all). */
   overflow-x: clip;
   overscroll-behavior-x: none;
+  /* `-y` added 2026-10-25, live report (Samsung Galaxy S24, Android Chrome):
+     scrolling past the true bottom of the page and back up briefly shows a
+     black strip. Same root cause as the `-x` bounce documented above, just
+     the vertical axis — Android Chrome's own rubber-band overscroll paints
+     its own gutter colour (not this page's background) for that instant
+     past the document's real scroll bounds, and defaults dark/black rather
+     than falling back to `--color-bg-page`. `overscroll-behavior-y: none`
+     (not `contain`) stops the bounce animation outright on Chromium, the
+     same way `-x` already does; iOS Safari's own elastic bounce is a
+     platform-level effect this property doesn't fully suppress there (not
+     addressed here — no live iOS report yet, and a larger architecture
+     change (`position: fixed` body + JS-driven scroll) would be needed to
+     fully kill it on that engine specifically). */
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -70,9 +84,11 @@ body {
   background: var(--color-bg-page);
   color: var(--color-text-primary);
   font-family: var(--font-display);
-  /* Paired with `html`'s own `overscroll-behavior-x` above — some engines
-     only respect it reliably on whichever element actually scrolls. */
+  /* Paired with `html`'s own `overscroll-behavior-x`/`-y` above — some
+     engines only respect it reliably on whichever element actually
+     scrolls. */
   overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
 }
 
 ::selection {

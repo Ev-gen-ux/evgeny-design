@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Section, Text, Link } from '../../components';
 import type { CursorTracker } from '../../hooks/useCursorTracker';
 import { useSpotGlow } from '../../hooks/useSpotGlow';
@@ -54,16 +54,25 @@ export function Hero({ cursor }: HeroProps) {
   // the renderer+rAF on `enabled: false`, not any DOM node) — same performance
   // guard as before, with no layout consequence.
   const saturnMounted = !reducedMotion && (isNarrow || !isTouch);
-  const [heroInView, setHeroInView] = useState(true);
-  useEffect(() => {
-    if (!isNarrow) return;
-    const el = sectionRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(([entry]) => setHeroInView(entry.isIntersecting), { threshold: 0.05 });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [isNarrow]);
-  const saturnRunning = saturnMounted && (isNarrow ? heroInView : true);
+  // No visibility-gated pause on phone any more (2026-10-25, reverted same
+  // day it was added — live report, explicit user call). The render loop
+  // used to pause/resume via `heroInView` (an IntersectionObserver at
+  // `threshold: 0.05`) as a battery-saving guard once Hero was almost fully
+  // scrolled past. `useThreeScene`'s `enabled` isn't a cheap play/stop flag
+  // though — toggling it tears the whole WebGL context down and rebuilds it
+  // (dynamic `three` import, shader compile, buffer upload), and ordinary
+  // scroll momentum crossing that 0.05 boundary more than once in quick
+  // succession fired that rebuild repeatedly, right where the stutter was
+  // reported (only on Home — case-study pages mount no Saturn scene at all,
+  // and never showed the bug). A 150ms debounce on the flip shipped first
+  // as a smaller fix, but the simpler call is to not pause it at all:
+  // Saturn just runs continuously for as long as it's mounted, same as it
+  // already does on desktop/tablet (`saturnRunning` there was never gated
+  // by visibility either, see below) — mobile's in-flow Saturn (not a
+  // fixed/crossfading backdrop, see the crossfade effect further down,
+  // desktop-only) simply scrolls off naturally like any other block once
+  // the user passes it, exactly like it visually already appeared to work.
+  const saturnRunning = saturnMounted;
   const { canvasRef: saturnCanvasRef } = useSaturnThreeScene(saturnRunning);
   const saturnLayerRef = useRef<HTMLDivElement>(null);
   // Scroll-driven crossfade (plan: "Saturn-слой гаснет по мере выхода Hero из

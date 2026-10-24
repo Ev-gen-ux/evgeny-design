@@ -219,6 +219,20 @@
   gap: var(--space-12);
 }
 
+/* Samsung Galaxy S24 (360px, narrower than the 375-411px widths this
+   breakpoint was tuned against) — live report 2026-10-25: the tag line
+   ("session #2026 · agent-built") is wide enough at 360px that `.wordmark` +
+   `.menuTrigger` no longer fit on one line, so `flex-wrap` (needed on wider
+   phones/tablets where it's harmless) wrapped the trigger onto its own row,
+   flush left under the name instead of staying pinned top-right. Taking the
+   trigger out of flow at this breakpoint — `.wordmark`'s own width can never
+   push it around again regardless of how long the tag text gets. */
+@media (max-width: 640px) {
+  .topRow {
+    flex-wrap: nowrap;
+  }
+}
+
 .wordmark {
   display: flex;
   align-items: baseline;
