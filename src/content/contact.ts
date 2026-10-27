@@ -12,7 +12,6 @@ export const contact = {
 export const contactLinks = [
   { id: 'contact-phone', label: '+7 (926) 936-33-29', url: 'tel:+79269363329', external: false },
   { id: 'contact-tg', label: 'telegram', url: 'https://t.me/EvgeniYakovenko84', external: true },
-  { id: 'contact-site', label: 'резюме-сайт', url: 'https://evgeniyakovenko-resumewebsite.netlify.app', external: true },
   { id: 'contact-gh', label: 'github', url: 'https://github.com/Ev-gen-ux/AI-PDP-DS', external: true },
 ] as const;
 
@@ -39,5 +38,5 @@ export const contactColumns: { head: string; links: FooterLink[] }[] = [
       linkById('contact-phone'),
     ],
   },
-  { head: 'смотреть', links: [linkById('contact-site'), linkById('contact-gh')] },
+  { head: 'смотреть', links: [linkById('contact-gh')] },
 ];

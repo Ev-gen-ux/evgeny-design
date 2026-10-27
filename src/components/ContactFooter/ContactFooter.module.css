@@ -150,8 +150,12 @@
     row-gap: var(--space-32);
   }
 
-  /* Phone (2026-09-18, explicit user request, carried over from the old footer): no github link, no "how the site was built" credit. */
-  .col a[href*='github.com'],
+  /* Phone (2026-09-18, explicit user request, carried over from the old footer):
+     no "how the site was built" credit. The github link used to be hidden here
+     too, back when "смотреть" held two links (резюме-сайт + github) and only
+     one was meant to show on phone — now резюме-сайт is gone (2026-10-27, the
+     whole link removed from the site), so hiding github left the column with
+     just a bare "СМОТРЕТЬ" heading and nothing under it. */
   .metaExtra {
     display: none;
   }

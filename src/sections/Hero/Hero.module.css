@@ -108,6 +108,12 @@
   pointer-events: none;
 }
 
+/* Desktop/tablet render nothing for this — it only exists as a layout anchor
+   on phone (see the `≤640px` block below). */
+.saturnSpacer {
+  display: none;
+}
+
 .inner {
   position: relative;
   z-index: 1;
@@ -313,43 +319,54 @@
     flex-shrink: 0;
   }
 
-  /* Saturn hero figure on phone (2026-10-24, per user-supplied reference
-     screenshot of the old mobile layout): the icosahedron that used to sit
-     here was centered, in-flow, between the CTA row and the goal line — the
-     gap left between ctaRow's order:5 and goal's order:7 above is order:6,
-     reserved for it. Desktop's `.saturnLayer` is `position:fixed; inset:0`,
-     a full-bleed backdrop behind corner-pinned text — wrong model here, where
-     there's no corner text to sit behind. On phone it's an ordinary in-flow
-     block like every other phone section, not a fixed backdrop.
-     Width (2026-10-24 bugfix round 2, explicit user correction with screenshot):
-     the rings must never stop at a visible straight edge mid-screen — that
-     reads as "clipped by a container", which is wrong. They're only allowed
-     to end at the true screen edge. `width: 100%` (scoped to `.inner`'s own
-     padded content box, narrower than the viewport) put a hard box edge well
-     inside the screen, which is exactly the look the user flagged. Sized past
-     100vw instead (`left: 50%` + `translateX(-50%)`, the standard full-bleed
-     break-out) and centered on the viewport itself, so the rings' natural
-     render edge lands beyond both screen edges — `html`'s own
-     `overflow-x: clip` (index.css) trims whatever pokes out there, with no
-     inner box visible doing the cropping. The vignette (::after) existed only
-     to darken the corners under desktop's corner text — nothing to darken
-     here, so it's turned off. */
+  /* Particle Portrait hero figure on phone — full history archived in
+     `_process_log.md` (in-flow centered block → enlarged in-flow →
+     full-bleed-fixed-behind-all-text, rejected → a `130vw`/`62vh` in-flow
+     box, ALSO rejected 2026-10-27: "частица опять в обрезанном контейнере.
+     Я устал тебе это повторять" — any div with an explicit width/height is
+     itself a clipping box for the canvas inside it, regardless of how that
+     box is positioned in the flow. The fix: stop giving the canvas its own
+     box at all. `.saturnLayer` is now `position:absolute; inset:0` against
+     `.section` (below, `position:relative`) — full section bleed, no edges
+     of its own — while `.section`'s existing `overflow:hidden` (base rule,
+     top of file) is what keeps the dust from spilling onto neighboring
+     sections, satisfying "только в рамках главного экрана" without a
+     visible box. `.saturnSpacer`, a separate INVISIBLE in-flow element, is
+     what actually reserves the 20px/20px document-flow gap to the CTA row
+     and the goal text now — the hook reads its on-screen rect (see
+     Hero.tsx's `saturnSpacerRef` / usePortraitSaturnScene.ts) to vertically
+     center the bust inside that reserved band via the camera, not via any
+     CSS box the canvas itself sits in. */
   .saturnLayer {
-    position: relative;
-    order: 6;
-    left: 50%;
-    width: 130vw;
-    /* Height stays tied to the SAFE content width (viewport minus the
-       container's own side margins), not to the bled 130vw — `aspect-ratio`
-       against the bled width would make the block ~30% taller than before
-       and shove the goal line down. Only the horizontal bleed is new. */
-    height: calc(100vw - var(--space-container-x) * 2);
-    transform: translateX(-50%);
-    margin-bottom: var(--space-16);
+    position: absolute;
+    inset: 0;
+    z-index: 0;
   }
 
   .saturnLayer::after {
     display: none;
+  }
+
+  .saturnSpacer {
+    display: block;
+    order: 6;
+    /* 2026-10-27: shrunk from 62vh/420px — at that size the whole stack
+       (header, headline, CTA row, bust, goal line) ran taller than one
+       phone screen, pushing "Цель — решать реальные бизнес‑задачи" below
+       the fold entirely: you'd read the headline, see the bust, scroll, and
+       only then catch the goal line mid scroll-reveal animation. Explicit
+       request: shrink the bust itself, nothing else (not a reorder, not a
+       reflow of the surrounding text) — see usePortraitSaturnScene.ts's
+       `MOBILE_ZOOM_OUT` for the matching camera-side half of this change. */
+    height: 42vh;
+    min-height: 300px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 1;
   }
 
   .section {

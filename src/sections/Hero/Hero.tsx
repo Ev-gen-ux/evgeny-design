@@ -4,7 +4,9 @@ import type { CursorTracker } from '../../hooks/useCursorTracker';
 import { useSpotGlow } from '../../hooks/useSpotGlow';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useIsTouchDevice } from '../../hooks/useIsTouchDevice';
-import { useSaturnThreeScene } from '../../hooks/useSaturnThreeScene';
+// LOCAL PREVIEW SWAP (2026-10-27, not in prod) — Particle Portrait bust fully
+// in place of Saturn (rings removed, bust-only). See usePortraitSaturnScene.ts / _process_log.md.
+import { usePortraitSaturnScene as useSaturnThreeScene } from '../../hooks/usePortraitSaturnScene';
 import { useWindowWidth } from '../../hooks/useWindowWidth';
 import { useTokenCounter } from '../../hooks/useTokenCounter';
 import { hero, heroCtas, typeTags } from '../../content/hero';
@@ -73,7 +75,16 @@ export function Hero({ cursor }: HeroProps) {
   // desktop-only) simply scrolls off naturally like any other block once
   // the user passes it, exactly like it visually already appeared to work.
   const saturnRunning = saturnMounted;
-  const { canvasRef: saturnCanvasRef } = useSaturnThreeScene(saturnRunning);
+  // Mobile-only anchor (2026-10-27): an invisible in-flow spacer that reserves
+  // the exact 20px/20px gap to the CTA row and the goal text (same box the
+  // figure used to be visually clipped to — see Hero.module.css's
+  // `.saturnSpacer`), while the actual canvas (below) is now a full-section
+  // layer so the dust cloud isn't boxed in. The hook reads this element's
+  // on-screen rect to vertically center the bust inside it, on phone only —
+  // desktop ignores this ref entirely (its own fixed full-viewport shift is
+  // unchanged, see usePortraitSaturnScene.ts).
+  const saturnSpacerRef = useRef<HTMLDivElement>(null);
+  const { canvasRef: saturnCanvasRef } = useSaturnThreeScene(saturnRunning, saturnSpacerRef);
   const saturnLayerRef = useRef<HTMLDivElement>(null);
   // Scroll-driven crossfade (plan: "Saturn-слой гаснет по мере выхода Hero из
   // вьюпорта") — opacity set directly via ref, not React state, to avoid a
@@ -119,24 +130,35 @@ export function Hero({ cursor }: HeroProps) {
     >
       <div className={[styles.grid, !reducedMotion && styles.gridAnimated].filter(Boolean).join(' ')} aria-hidden="true" />
       <div className={styles.spot} style={{ background: spotBackground }} aria-hidden="true" />
+      {/* 2026-10-27: canvas layer is a sibling of `.inner`, not nested inside
+          it — on phone it's `position:absolute; inset:0` against `.section`
+          (which clips via its own `overflow:hidden`, so the dust cloud still
+          can't bleed onto neighboring sections) instead of being boxed into
+          a small `width/height`-constrained div. That was the actual source
+          of "частицы опять в обрезанном контейнере": a 130vw/62vh container
+          IS a clipped container, just a differently-sized one than the
+          earlier complaints — any div with explicit width/height clips its
+          own canvas at its own edges, full-bleed-within-the-section is the
+          only way to avoid a visible box edge while still honoring "только в
+          рамках главного экрана". Desktop keeps its original
+          `position:fixed` (unaffected by moving this element — DOM position
+          relative to `.inner` never mattered there, see Hero.module.css). */}
+      {saturnMounted && (
+        <div ref={saturnLayerRef} className={styles.saturnLayer} aria-hidden="true">
+          <canvas ref={saturnCanvasRef} className={styles.saturnCanvas} />
+        </div>
+      )}
       <div className={styles.inner}>
-        {/* Lives inside `.inner` (2026-10-24 bugfix), not as a sibling of it — on
-            phone `.inner` is the `display:flex` container whose children carry
-            the `order` values that build the vertical stack (tokenCounter 1 …
-            typeTags 8). `order` only reorders siblings within the SAME flex
-            formatting context: as a sibling of `.inner` (one level up, under a
-            plain `position:relative` `.section` with no flex at all), this
-            block's `order:6` had no flex context to act in — it just rendered
-            in DOM position, before `.inner` entirely, well above the CTA row
-            it was supposed to sit below (caught live via user screenshot: no
-            gap between the CTA row and the goal line, Saturn nowhere in that
-            gap). Desktop/tablet are unaffected — there `.saturnLayer` is
-            `position:fixed; inset:0`, so its DOM position never mattered. */}
-        {saturnMounted && (
-          <div ref={saturnLayerRef} className={styles.saturnLayer} aria-hidden="true">
-            <canvas ref={saturnCanvasRef} className={styles.saturnCanvas} />
-          </div>
-        )}
+        {/* 2026-10-27: invisible spacer, phone only — reserves the exact
+            20px/20px gap to the CTA row and the goal text that the figure
+            used to visually occupy, so the document flow keeps the same
+            rhythm even though the canvas itself moved out of `.inner` (see
+            above). The hook reads this element's rect every resize to
+            vertically center the bust inside it. Renders as nothing
+            (`display:none` outside the phone breakpoint, see
+            `.saturnSpacer` in Hero.module.css) — desktop's grid layout is
+            untouched by its presence in the DOM. */}
+        {saturnMounted && <div ref={saturnSpacerRef} className={styles.saturnSpacer} aria-hidden="true" />}
         <Text variant="eyebrow" className={styles.eyebrow}>
           {hero.eyebrow}
         </Text>
