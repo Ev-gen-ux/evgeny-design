@@ -39,11 +39,11 @@ const BUST_TURN_RANGE = 0.35;
 const BUST_INNER_RADIUS = 0.32;
 const BUST_OUTER_RADIUS = 0.8;
 const BUST_ASSEMBLE_TIME = 0.22;
-// 2026-10-27: compensates mobile's lower point density (BUST_COUNT_MOBILE is
-// less than half of BUST_COUNT_DESKTOP, for GPU budget) by boosting
-// per-particle brightness, so the average screen-pixel luminance matches
-// desktop despite fewer points covering the same area — see bustUniforms.
-const DENSITY_COMPENSATION = Math.sqrt(BUST_COUNT_DESKTOP / BUST_COUNT_MOBILE);
+// 2026-10-27, dialed back same day after a real-device overexposure report —
+// see `uSize`'s own comment in bustUniforms for the full story. Was the
+// derived `Math.sqrt(BUST_COUNT_DESKTOP / BUST_COUNT_MOBILE) * 1.3` (≈×2.03),
+// cheapest/lowest-risk fix chosen: a single flat constant, mobile-only.
+const MOBILE_SIZE_BOOST = 1.35;
 
 function decodeBustPoints(buffer: ArrayBuffer, n: number) {
   const u8 = new Uint8Array(buffer);
@@ -287,7 +287,20 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
         // opened up. Only this one uniform changes — no layout/camera/
         // composition impact (explicit constraint: keep everything else
         // exactly as already approved).
-        uSize: { value: 2.7 * (wantN === BUST_COUNT_MOBILE ? DENSITY_COMPENSATION * 1.3 : 1) },
+        // 2026-10-27, follow-up: `DENSITY_COMPENSATION*1.3` (≈×2.03) read
+        // badly overexposed on a real AMOLED phone screen (live report,
+        // prod screenshot) — bigger points overlap more, and additive
+        // blending has no ceiling until the final clamp, so denser overlap
+        // clips to blown-out white much more aggressively on a real high-
+        // brightness/high-contrast panel than it ever did in headless/
+        // DevTools testing (which can't reproduce real display behavior at
+        // all — same caveat as the earlier brightness-vs-desktop measurement
+        // above). Dialed back to a flat `MOBILE_SIZE_BOOST` within the
+        // originally-estimated 1.3–1.4 range instead of the derived-but-too-
+        // strong `DENSITY_COMPENSATION*1.3` — still fills most of the
+        // coverage gap from fewer mobile points without pushing overlap into
+        // clipping. Needs eyes on a real device again, not just headless.
+        uSize: { value: 2.7 * (wantN === BUST_COUNT_MOBILE ? MOBILE_SIZE_BOOST : 1) },
         uPR: { value: readPixelRatio() },
         uColor: { value: bustGlowColor.clone() },
         // 2026-10-27, explicit request: "прозрачность... точно такая же как
@@ -410,10 +423,29 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
       const _dir = new THREE.Vector3();
       let cursorOverCanvas = false;
       let cursorActivity = 0;
+      // 2026-10-27, perf fix: `canvas.getBoundingClientRect()` is a forced
+      // synchronous layout read — doing it unconditionally every rAF frame
+      // (60/s, for as long as the Hero figure is mounted, i.e. basically
+      // always on Home) is the same "layout thrashing" class of bug already
+      // diagnosed and fixed once in useAssemblyAnimation.ts's own history.
+      // On touch devices `mouseRef.current` never gets set at all (no
+      // `mousemove` ever fires), so this was a 100%-wasted forced reflow on
+      // every single frame on phones — live report: "микрофриз... во всех
+      // блоках" while scrolling, worst exactly where the assembly engine's
+      // own rAF loop is also competing for main-thread frame budget.
+      // `updateCursorWorld` used to call `getBoundingClientRect()` BEFORE
+      // checking whether there even IS a mouse position to use it for
+      // (`turnAmount` below already had the check in the right order) — bug
+      // was just the order of these two lines, fixed by swapping them so a
+      // null cursor short-circuits before the read, not after.
       function updateCursorWorld() {
         const m = mouseRef.current;
+        if (!m) {
+          cursorOverCanvas = false;
+          return;
+        }
         const r = canvas.getBoundingClientRect();
-        if (!m || r.width <= 0 || r.height <= 0 || m.x < r.left || m.x > r.right || m.y < r.top || m.y > r.bottom) {
+        if (r.width <= 0 || r.height <= 0 || m.x < r.left || m.x > r.right || m.y < r.top || m.y > r.bottom) {
           cursorOverCanvas = false;
           return;
         }
@@ -561,7 +593,22 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
           const target = bustLoaded ? BUST_IDLE_ASSEMBLE : 0;
           const u = bustUniforms.uAssemble;
           u.value += (target - u.value) * (1 - Math.exp(-dt / BUST_ASSEMBLE_TIME));
-          const turn = reduced ? 0 : turnAmount();
+          // 2026-10-27: gated on `coarse` too, not just `reduced` — live
+          // report on a real Samsung Galaxy S24 showed the cursor-repel
+          // distortion triggering continuously WHILE SCROLLING (no mouse
+          // involved at all), and the bust never settling into a resolved
+          // face. `mouseRef` is only ever written from a `mousemove`
+          // listener (see useThreeScene.ts) which shouldn't fire from touch
+          // input — but some Android browsers synthesize compatibility
+          // mouse events for touch/scroll gestures under certain
+          // conditions, and this scene had no explicit guard against that
+          // actually happening, only an implicit assumption that it
+          // wouldn't. `coarse` (pointer: coarse) is already computed above
+          // for the particle-count choice — reusing it here makes the whole
+          // cursor-interaction branch (turn + repel) structurally unable to
+          // run on a touch/coarse-pointer device, regardless of whatever
+          // stray mouse-compatibility events a given mobile browser fires.
+          const turn = reduced || coarse ? 0 : turnAmount();
           parallax.lerp(parallaxTarget, 1 - Math.exp(-dt / 0.4));
           // base three-quarter pose always shown (bust is always assembled
           // now); cursor proximity only adds the extra lean on top.
@@ -574,8 +621,8 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
           // space, hence the explicit updateMatrixWorld here rather than
           // waiting for the renderer's own automatic one later this frame.
           bustGroup.updateMatrixWorld(true);
-          if (!reduced) updateCursorWorld();
-          const activityTarget = !reduced && cursorOverCanvas ? 1 : 0;
+          if (!reduced && !coarse) updateCursorWorld();
+          const activityTarget = !reduced && !coarse && cursorOverCanvas ? 1 : 0;
           cursorActivity += (activityTarget - cursorActivity) * (1 - Math.exp(-dt / 0.3));
           bustUniforms.uActivity.value = cursorActivity;
           if (cursorOverCanvas) {
