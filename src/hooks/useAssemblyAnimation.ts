@@ -431,7 +431,14 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
           // see `navFixed`'s own docstring.
           t = le;
         } else if (u.hero) {
-          t = loadT < 1 ? le : Math.max(0, Math.min(1, 1 - sy / (vh * 0.5)));
+          // One-time reveal only (2026-10-27, explicit request) — Hero text
+          // used to re-scatter once scrolled half a viewport past, exactly
+          // like every other section's own scroll-position formula below;
+          // the user wants Hero to behave like `navFixed` instead: play the
+          // load-in once and stay assembled regardless of scroll position
+          // afterward. Was: `loadT < 1 ? le : Math.max(0, Math.min(1, 1 - sy
+          // / (vh * 0.5)))`.
+          t = le;
         } else {
           const raw = (sy + vh * winStart - u.top) / (vh * winSpan * (mobile ? 1 : u.spanK));
           t = Math.max(0, Math.min(1, raw));

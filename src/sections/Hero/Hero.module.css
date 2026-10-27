@@ -341,6 +341,16 @@
     position: absolute;
     inset: 0;
     z-index: 0;
+    /* 2026-10-27, explicit user request (prod screenshot): the dust cloud
+       reaches the canvas's own edges (top, by the header; bottom) and
+       `.section`'s `overflow:hidden` (base rule, top of file) was cropping
+       it there with a visible straight line. A soft fade instead of a hard
+       crop — only this, nothing else (chosen explicitly over shrinking the
+       cloud's spread or enlarging the canvas past the section). Physical
+       particle positions are untouched; this only fades the rendered LAYER
+       near its own edges. `-webkit-` prefix required for iOS Safari. */
+    mask-image: linear-gradient(to bottom, transparent 0, black 72px, black calc(100% - 72px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 72px, black calc(100% - 72px), transparent 100%);
   }
 
   .saturnLayer::after {
