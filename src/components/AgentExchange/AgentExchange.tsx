@@ -1,3 +1,4 @@
+import { token } from '../../tokens';
 import { useRef } from 'react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useAgentExchangeReveal } from '../../hooks/useAgentExchangeReveal';
@@ -60,7 +61,7 @@ export function AgentExchange({ question, resolvedIn, className, variant = 'defa
           </span>
         ) : (
           <span className={styles.barTrack} aria-hidden="true">
-            <span className={styles.barFill} style={{ width: `${t * 100}%`, transition: reducedMotion ? 'none' : 'width 0.5s ease-out' }} />
+            <span className={styles.barFill} style={{ width: `${t * 100}%`, transition: reducedMotion ? 'none' : token('agent-exchange-bar-fill-transition-default') }} />
           </span>
         )}
         <span className={styles.resolved} style={{ opacity: resolved ? 1 : 0 }}>

@@ -13,39 +13,39 @@
  */
 .promptSteps {
   position: relative;
-  margin-bottom: var(--space-16);
+  margin-bottom: var(--prompt-steps-promptSteps-margin-bottom);
 }
 
 .promptStep {
   position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-10);
+  gap: var(--prompt-steps-promptStep-gap);
 }
 
 .promptStep:first-child {
-  padding-bottom: var(--space-16);
+  padding-bottom: var(--prompt-steps-promptStep-first-child-padding-bottom);
 }
 
 .promptStep:first-child::before {
   content: '';
   position: absolute;
-  left: 3px;
-  top: 13px;
-  bottom: 2px;
-  width: 1px;
-  background: rgba(var(--color-slate-mist-rgb), 0.25);
+  left: var(--prompt-steps-promptStep-first-child-before-left);
+  top: var(--prompt-steps-promptStep-first-child-before-top);
+  bottom: var(--prompt-steps-promptStep-first-child-before-bottom);
+  width: var(--prompt-steps-promptStep-first-child-before-width);
+  background: var(--prompt-steps-promptStep-first-child-before-background);
 }
 
 .promptDot {
   flex-shrink: 0;
-  width: 7px;
-  height: 7px;
+  width: var(--prompt-steps-promptDot-width);
+  height: var(--prompt-steps-promptDot-height);
   border-radius: 50%;
 }
 
 .promptDot[data-tone='pending'] {
-  background: rgba(var(--color-slate-mist-rgb), 0.4);
+  background: var(--prompt-steps-promptDot-data-tone-pending-background);
 }
 
 .promptDot[data-tone='done'] {
@@ -69,8 +69,8 @@
 
 .sectionTagHidden {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: var(--prompt-steps-sectionTagHidden-width);
+  height: var(--prompt-steps-sectionTagHidden-height);
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;

@@ -4,29 +4,29 @@
   font-size: var(--fs-sm-md);
   text-decoration: none;
   transition:
-    color var(--duration-200) var(--ease-standard),
-    border-color var(--duration-200) var(--ease-standard),
-    transform var(--duration-250) var(--ease-signature);
+    color var(--motion-control) var(--ease-standard),
+    border-color var(--motion-control) var(--ease-standard),
+    transform var(--motion-hover) var(--ease-signature);
 }
 
 /* Header nav item — plain CSS hover (no cursor-tracking), matches the current site 1:1. */
 .nav {
   color: var(--color-link);
-  padding-bottom: 3px;
-  border-bottom: 1px solid transparent;
+  padding-bottom: var(--link-nav-padding-bottom);
+  border-bottom: var(--link-nav-border-bottom);
 }
 
 .nav:focus-visible {
   color: var(--color-accent);
   border-bottom-color: var(--color-accent);
-  transform: translateY(-2px);
+  transform: translateY(var(--motion-hover-lift));
 }
 
 @media (hover: hover) and (pointer: fine) {
   .nav:hover {
     color: var(--color-accent);
     border-bottom-color: var(--color-accent);
-    transform: translateY(-2px);
+    transform: translateY(var(--motion-hover-lift));
   }
 }
 
@@ -35,7 +35,7 @@
    that's layered on top of this static variant in the cursor-interaction hook step. */
 .underline {
   color: var(--color-link);
-  border-bottom: 1px solid var(--color-slate-mist);
+  border-bottom: var(--link-underline-border-bottom);
 }
 
 .underline:focus-visible {
@@ -53,7 +53,7 @@
 /* "Open case study" style link — already Redline, border solidifies on hover. */
 .accent {
   color: var(--color-accent);
-  border-bottom: 1px solid rgba(var(--color-accent-rgb), 0.5);
+  border-bottom: var(--link-accent-border-bottom);
 }
 
 .accent:focus-visible {
@@ -87,21 +87,21 @@
    Deliberate deviation from source's contactBase (user request, 2026-08-02). */
 .contactNav {
   color: var(--color-link-secondary);
-  padding-bottom: 3px;
-  border-bottom: 1px solid transparent;
+  padding-bottom: var(--link-contactNav-padding-bottom);
+  border-bottom: var(--link-contactNav-border-bottom);
 }
 
 .contactNav:focus-visible {
   color: var(--color-accent);
   border-bottom-color: var(--color-accent);
-  transform: translateY(-2px);
+  transform: translateY(var(--motion-hover-lift));
 }
 
 @media (hover: hover) and (pointer: fine) {
   .contactNav:hover {
     color: var(--color-accent);
     border-bottom-color: var(--color-accent);
-    transform: translateY(-2px);
+    transform: translateY(var(--motion-hover-lift));
   }
 }
 
@@ -127,10 +127,10 @@
   max-width: 100%;
   overflow-wrap: break-word;
   font-family: var(--font-display);
-  font-size: clamp(18px, 2.4vw, 30px);
+  font-size: var(--link-email-font-size);
   font-weight: var(--fw-semibold);
   color: var(--color-link);
-  border-bottom: 2px solid var(--color-accent);
+  border-bottom: var(--link-email-border-bottom);
   /* Own padding-bottom (space between the text and its underline) kept —
      `margin-bottom` removed (2026-08-03): it used to be this element's own
      "gap before the links row" back when that row sat right after it inside
@@ -139,7 +139,7 @@
      separate `.footerRow` sibling — the two stacked, doubling the visible
      gap to ~88px instead of the intended clean 40px. Only used here, so
      nothing else depended on this margin. */
-  padding-bottom: var(--space-8);
+  padding-bottom: var(--link-email-padding-bottom);
 }
 
 .email:focus-visible {

@@ -6,14 +6,14 @@
 .header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
-  margin-bottom: var(--space-48);
+  gap: var(--skills-header-gap);
+  margin-bottom: var(--skills-header-margin-bottom);
 }
 
 .headerRow {
   display: flex;
   align-items: baseline;
-  gap: var(--space-16);
+  gap: var(--skills-headerRow-gap);
   flex-wrap: wrap;
 }
 
@@ -23,14 +23,14 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--space-32);
+  grid-template-columns: var(--skills-grid-grid-template-columns);
+  gap: var(--skills-grid-gap);
 }
 
 .card {
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
-  border-radius: var(--radius-9);
-  background: rgba(var(--color-graphite-rgb), 0.45);
+  border: var(--skills-card-border);
+  border-radius: var(--radius-card);
+  background: var(--skills-card-background);
   /* `-webkit-` prefix BEFORE the standard property (2026-09-18) — the
      production build's CSS minifier was collapsing these as "duplicates"
      and keeping only whichever came last, silently dropping the standard
@@ -38,9 +38,9 @@
      non-functional) vendor-prefixed one — reported live as the header/
      footer/ChatBar glass blur simply not rendering on the deployed site.
      Standard property last = it wins the collapse, in every browser. */
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  padding: var(--space-28);
+  -webkit-backdrop-filter: blur(var(--skills-webkit-backdrop-filter-detail-14px));
+  backdrop-filter: var(--skills-card-backdrop-filter);
+  padding: var(--skills-card-padding);
   height: 100%;
 }
 
@@ -49,11 +49,11 @@
   font-family: var(--font-mono);
   color: var(--color-accent);
   text-transform: uppercase;
-  margin-bottom: var(--space-20);
+  margin-bottom: var(--skills-cardLabel-margin-bottom);
 }
 
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-10);
+  gap: var(--skills-chips-gap);
 }

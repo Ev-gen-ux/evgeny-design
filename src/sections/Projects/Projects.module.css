@@ -1,11 +1,11 @@
 .eyebrow {
-  margin-bottom: var(--space-32);
+  margin-bottom: var(--projects-eyebrow-margin-bottom);
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-20);
+  grid-template-columns: var(--projects-grid-grid-template-columns);
+  gap: var(--projects-grid-gap);
 }
 
 /*
@@ -18,9 +18,9 @@
   position: relative;
   overflow: hidden;
   background: transparent;
-  padding: var(--space-28);
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
-  border-radius: var(--radius-9);
+  padding: var(--projects-card-padding);
+  border: var(--projects-card-border);
+  border-radius: var(--radius-card);
   transition:
     border-color var(--duration-300) var(--ease-standard),
     transform var(--duration-300) var(--ease-signature),
@@ -30,8 +30,8 @@
 /* Not reduced-motion-gated in the source's projectCardStyle() — left as-is. */
 .card:focus-within {
   border-color: var(--color-accent);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -24px rgba(var(--color-accent-rgb), 0.35);
+  transform: translateY(var(--motion-card-lift));
+  box-shadow: var(--projects-card-focus-within-box-shadow);
 }
 
 /* Hover/focus split (2026-10-24, review-animations audit): touch taps set
@@ -40,27 +40,27 @@
 @media (hover: hover) and (pointer: fine) {
   .card:hover {
     border-color: var(--color-accent);
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px -24px rgba(var(--color-accent-rgb), 0.35);
+    transform: translateY(var(--motion-card-lift));
+    box-shadow: var(--projects-card-hover-box-shadow-hover);
   }
 }
 
 .title {
   font-size: var(--fs-lg);
   font-weight: var(--fw-semibold);
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--projects-title-margin-bottom);
 }
 
 .desc {
   font-size: var(--fs-sm-md);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-16);
+  margin-bottom: var(--projects-desc-margin-bottom);
   line-height: var(--lh-normal);
 }
 
 .links {
   display: flex;
-  gap: var(--space-16);
+  gap: var(--projects-links-gap);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
 }

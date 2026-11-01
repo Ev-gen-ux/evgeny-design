@@ -1,7 +1,7 @@
 .root {
   display: flex;
   flex-direction: column;
-  gap: var(--space-44);
+  gap: var(--about-dialog-root-gap);
 }
 
 /* Before the block is scrolled to (and after it has left the screen) nothing of it is shown; it assembles on entry. */
@@ -13,7 +13,7 @@
 .exchange {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: var(--about-dialog-exchange-gap);
 }
 
 .line {
@@ -28,28 +28,28 @@
 
 /* Answer + its small grey explanation. The column keeps room for the longest pair (3 lines of each) as ONE block, so a short answer never leaves a gap before its note and the tabs below never jump. */
 .answerCol {
-  --ans-fs: clamp(17px, 1.5vw, 24px);
-  --note-fs: clamp(14px, 1.1vw, 16px);
+  --ans-fs: var(--about-dialog-ans-fs);
+  --note-fs: var(--about-dialog-note-fs);
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: var(--about-dialog-answerCol-gap);
   min-height: calc(var(--ans-fs) * 4.2 + var(--note-fs) * 4.5 + var(--space-12));
 }
 
 .answer {
   font-size: var(--ans-fs);
-  line-height: 1.4;
+  line-height: var(--about-dialog-answer-line-height);
   color: var(--color-text-primary);
-  max-width: 42ch;
+  max-width: var(--about-dialog-answer-max-width);
   display: block;
 }
 
 .note {
   display: block;
   font-size: var(--note-fs);
-  line-height: 1.5;
+  line-height: var(--about-dialog-note-line-height);
   color: var(--color-text-secondary);
-  max-width: 46ch;
+  max-width: var(--about-dialog-note-max-width);
 }
 
 .wordBox {
@@ -62,7 +62,7 @@
   display: inline-block;
   white-space: pre;
   opacity: 0;
-  animation: letterIn 500ms var(--ease-signature) forwards;
+  animation: var(--about-dialog-letter-animation);
 }
 
 @keyframes letterIn {
@@ -78,8 +78,8 @@
 
 .sr {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: var(--about-dialog-sr-width);
+  height: var(--about-dialog-sr-height);
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
@@ -89,8 +89,8 @@
   position: relative;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-8) var(--space-32);
-  padding-bottom: var(--space-8);
+  gap: var(--about-dialog-tabs-gap);
+  padding-bottom: var(--about-dialog-tabs-padding-bottom);
 }
 
 /* Phone (2026-10-09, explicit user request): tabs never wrap to a second
@@ -107,16 +107,16 @@
    side margins come from the padding below, equal to the same
    `--space-container-x` every other mobile block respects, so the first/
    last tab never sits flush against the true screen edge. */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .tabs {
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scroll-padding-inline: var(--space-container-x);
-    padding-inline: var(--space-container-x);
-    margin-inline: calc(-1 * var(--space-container-x));
+    padding-inline: var(--about-dialog-tabs-padding-inline-phone);
+    margin-inline: var(--about-dialog-tabs-margin-inline-phone);
     scrollbar-width: none;
-    mask-image: linear-gradient(to right, black calc(100% - 32px), transparent 100%);
+    mask-image: var(--about-dialog-tabs-mask-image-phone);
   }
 
   .tabs::-webkit-scrollbar {
@@ -136,8 +136,8 @@
   color: var(--color-text-secondary);
   background: none;
   border: 0;
-  border-bottom: 1px solid transparent;
-  padding: 0 0 calc(var(--space-6) - 1px);
+  border-bottom: var(--about-dialog-tab-border-bottom);
+  padding: var(--about-dialog-tab-padding);
   cursor: pointer;
   transition:
     color var(--duration-300) var(--ease-standard),
@@ -152,12 +152,12 @@
 .tab:hover,
 .tab:focus-visible {
   color: var(--color-text-primary);
-  border-bottom-color: rgba(var(--color-slate-mist-rgb), 0.6);
+  border-bottom-color: var(--about-dialog-tab-hover-border-bottom-color);
 }
 
 .tab:focus-visible {
-  outline: 1px solid var(--color-accent);
-  outline-offset: 4px;
+  outline: var(--about-dialog-tab-focus-visible-outline);
+  outline-offset: var(--about-dialog-tab-focus-visible-outline-offset);
 }
 
 .tabOn,
@@ -170,10 +170,9 @@
   position: absolute;
   left: 0;
   bottom: 0;
-  height: 1px;
-  transition:
-    transform 450ms var(--ease-signature),
-    width 450ms var(--ease-signature);
+  height: var(--about-dialog-indicator-height);
+  transition:transform var(--about-dialog-transition-detail-450ms) var(--ease-signature),
+    width var(--about-dialog-transition-detail-450ms) var(--ease-signature);
 }
 
 /* The underline is a progress bar: a faint track under the active tab and an accent fill that grows over the time the
@@ -184,10 +183,10 @@
   position: absolute;
   inset: 0;
   width: 100%;
-  height: 1px;
-  background: rgba(var(--color-slate-mist-rgb), 0.3);
+  height: var(--about-dialog-track-height);
+  background: var(--about-dialog-track-background);
   opacity: 0;
-  animation: trackIn 500ms var(--ease-standard) forwards;
+  animation: var(--about-dialog-track-animation);
 }
 
 @keyframes trackIn {
@@ -201,7 +200,7 @@
   position: absolute;
   inset: 0;
   width: 100%;
-  height: 1px;
+  height: var(--about-dialog-fill-height);
   background: var(--color-accent);
   transform-origin: left;
 }

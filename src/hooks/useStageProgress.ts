@@ -1,7 +1,8 @@
+import { runtimeTokens } from '../tokens';
 import { useEffect, type RefObject } from 'react';
 
 /** 1:1 with STAGE_HUES in Portfolio.dc.html — hero/about/work/skills/(implicit contact). */
-export const STAGE_HUES = [25, 60, 15, 190, 300];
+export const STAGE_HUES: readonly number[] = runtimeTokens.legacyBackdrop.stageHues;
 
 export interface StageBackdropRefs {
   washRef: RefObject<HTMLElement | null>;
@@ -113,11 +114,11 @@ export function useStageProgress(refs: StageBackdropRefs, enabled: boolean) {
       // rendering pure grey — checked fresh every frame since the toggle can
       // flip at any time without remounting this hook.
       const mono = document.documentElement.dataset.theme === 'mono';
-      const c0 = mono ? 0 : 0.18;
-      const c1 = mono ? 0 : 0.05;
-      const c2 = mono ? 0 : 0.045;
-      const c3 = mono ? 0 : 0.035;
-      const stageColor = `oklch(0.65 ${c0} ${hueStr})`;
+      const c0 = mono ? 0 : runtimeTokens.legacyBackdrop.stageChroma;
+      const c1 = mono ? 0 : runtimeTokens.legacyBackdrop.washChroma[0];
+      const c2 = mono ? 0 : runtimeTokens.legacyBackdrop.washChroma[1];
+      const c3 = mono ? 0 : runtimeTokens.legacyBackdrop.washChroma[2];
+      const stageColor = `oklch(${runtimeTokens.legacyBackdrop.lightness} ${c0} ${hueStr})`;
 
       if (stageColor !== lastStageColor || mono !== lastMono) {
         lastStageColor = stageColor;
@@ -134,7 +135,7 @@ export function useStageProgress(refs: StageBackdropRefs, enabled: boolean) {
           if (!el) continue;
           const alpha = el.dataset.dynAlpha;
           if (!alpha) continue;
-          const color = `radial-gradient(circle, oklch(0.65 ${c0} ${hueStr} / ${alpha}), transparent 70%)`;
+          const color = `radial-gradient(circle, oklch(${runtimeTokens.legacyBackdrop.lightness} ${c0} ${hueStr} / ${alpha}), transparent 70%)`;
           if (lastBlobColor[i] !== color) {
             lastBlobColor[i] = color;
             el.style.background = color;

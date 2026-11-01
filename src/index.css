@@ -1,13 +1,9 @@
+@import './tokens/generated.css';
 /*
  * 1:1 with the <style> block in Portfolio.dc.html's <helmet>. Keyframes are kept
  * here even though nothing uses them yet — they belong to the three.js/canvas/
  * assembly hooks wired up in later steps, not to this static markup pass.
  */
-@import './tokens/colors.css';
-@import './tokens/typography.css';
-@import './tokens/spacing.css';
-@import './tokens/radius.css';
-@import './tokens/motion.css';
 /* Light/mono theme tokens + ThemeToggle/GrainOverlay archived out of the
    build entirely (2026-10-25, explicit user call — only the default theme
    ships to prod). See
@@ -110,8 +106,8 @@ a {
 a:focus-visible,
 button:focus-visible,
 span:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
+  outline: var(--site-a-focus-visible-outline);
+  outline-offset: var(--site-a-focus-visible-outline-offset);
 }
 
 @view-transition {
@@ -129,7 +125,7 @@ span:focus-visible {
     background-position: 0 0;
   }
   100% {
-    background-position: 96px 96px;
+    background-position: var(--site-step-100-background-position);
   }
 }
 
@@ -156,13 +152,13 @@ span:focus-visible {
 
 @keyframes washShimmer {
   0% {
-    filter: hue-rotate(0deg);
+    filter: var(--site-step-0-filter);
   }
   50% {
-    filter: hue-rotate(10deg);
+    filter: var(--site-step-50-filter);
   }
   100% {
-    filter: hue-rotate(0deg);
+    filter: var(--site-step-100-filter);
   }
 }
 
@@ -182,7 +178,7 @@ span:focus-visible {
 
 @keyframes projSpin {
   to {
-    transform: rotate(360deg);
+    transform: var(--site-to-transform);
   }
 }
 
@@ -203,15 +199,15 @@ span:focus-visible {
    style (see sections/Pipeline/Pipeline.tsx's `stickyStyle`), already
    matching this target, nothing to override. `#hero`/`#contact` are handled
    in their own files (only one side of each needs touching, not both). */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   #about,
   #work,
   #projects,
   #experience,
   #skills,
   #education {
-    padding-top: 80px !important;
-    padding-bottom: 80px !important;
+    padding-top: var(--site-about-padding-top-phone) !important;
+    padding-bottom: var(--site-about-padding-bottom-phone) !important;
   }
 }
 
@@ -222,21 +218,21 @@ span:focus-visible {
    (it keeps the tags above the fixed ChatBar) so the visible gap Hero -> About is
    also 200. `#work` and `#pipeline` are pinned sections: Work only gets the top,
    the rest comes from the pin. Inline padding from <Section> needs !important. */
-@media (min-width: 1025px) {
+@media (--viewport-desktop) {
   #about,
   #work,
   #projects,
   #experience,
   #skills,
   #education {
-    padding-top: 200px !important;
+    padding-top: var(--site-about-padding-top-desktop) !important;
     padding-bottom: 0 !important;
   }
 
   /* #about: 300px = the 200px above + 100px more between Hero and About (user request). */
   #about {
-    margin-top: -84px;
-    padding-top: 300px !important;
+    margin-top: var(--site-about-margin-top-desktop);
+    padding-top: var(--site-about-padding-top-desktop-8967) !important;
   }
 }
 

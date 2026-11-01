@@ -7,7 +7,7 @@ export function Education() {
   const reveal = useScrollReveal('education');
 
   return (
-    <Section id="education" revealId="education" paddingTop={100} paddingBottom={100} style={reveal}>
+    <Section id="education" revealId="education" paddingTop="section-block" paddingBottom="section-block" style={reveal}>
       <Container size="narrow">
         <PromptSteps question="как ты учился" />
         <div className={styles.header}>

@@ -1,3 +1,4 @@
+import { breakpoints, runtimeTokens } from '../../tokens';
 import { useRef, useState } from 'react';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
 import { useLenis } from 'lenis/react';
@@ -44,7 +45,7 @@ export function Header({ cursor }: HeaderProps) {
   // must match Header.module.css's own `--space-40`/`--space-20` values at
   // the same 640px breakpoint used there.
   const viewportWidth = useStableViewportWidth();
-  const navMargin = viewportWidth !== undefined && viewportWidth <= 640 ? 20 : 40;
+  const navMargin = viewportWidth !== undefined && viewportWidth <= breakpoints.phone ? runtimeTokens.floatingPanel.sidePhone : runtimeTokens.floatingPanel.sideDesktop;
   const navStyle =
     viewportWidth !== undefined ? { left: navMargin, width: viewportWidth - navMargin * 2 } : undefined;
   const menuPanelId = 'mobile-nav-panel';

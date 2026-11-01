@@ -1,10 +1,10 @@
 .codeBlock {
-  margin: var(--space-32) 0 0;
-  padding: 22px;
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
-  border-radius: var(--radius-6);
+  margin: var(--code-block-codeBlock-margin);
+  padding: var(--code-block-codeBlock-padding);
+  border: var(--code-block-codeBlock-border);
+  border-radius: var(--radius-control);
   overflow-x: auto;
   font-family: var(--font-mono);
-  font-size: 12.5px;
+  font-size: var(--code-block-codeBlock-font-size);
   line-height: var(--lh-loose);
 }

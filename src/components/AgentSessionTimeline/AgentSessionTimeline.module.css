@@ -11,7 +11,7 @@
  * the same raw hex duplicated in three other components too.
  */
 .agentSession {
-  margin-top: var(--space-32);
+  margin-top: var(--agent-session-timeline-agentSession-margin-top);
 }
 
 .agentSessionLabel {
@@ -20,7 +20,7 @@
   color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
-  margin-bottom: var(--space-18);
+  margin-bottom: var(--agent-session-timeline-agentSessionLabel-margin-bottom);
 }
 
 .agentSteps {
@@ -30,8 +30,8 @@
 .agentStep {
   position: relative;
   display: flex;
-  gap: var(--space-14);
-  padding-bottom: var(--space-24);
+  gap: var(--agent-session-timeline-agentStep-gap);
+  padding-bottom: var(--agent-session-timeline-agentStep-padding-bottom);
 }
 
 .agentStep:last-child {
@@ -52,11 +52,11 @@
 .agentStep:not(:last-child)::before {
   content: '';
   position: absolute;
-  left: 3px;
-  top: 14px;
-  bottom: -10px;
-  width: 1px;
-  background: rgba(var(--color-slate-mist-rgb), 0.25);
+  left: var(--agent-session-timeline-agentStep-not-last-child-before-left);
+  top: var(--agent-session-timeline-agentStep-not-last-child-before-top);
+  bottom: var(--offset-negative-10);
+  width: var(--agent-session-timeline-agentStep-not-last-child-before-width);
+  background: var(--agent-session-timeline-agentStep-not-last-child-before-background);
   transform-origin: top;
   transform: scaleY(var(--agent-line-progress, 1));
 }
@@ -70,17 +70,17 @@
  */
 .agentStepDot {
   flex-shrink: 0;
-  width: 7px;
-  height: 7px;
+  width: var(--agent-session-timeline-agentStepDot-width);
+  height: var(--agent-session-timeline-agentStepDot-height);
   border-radius: 50%;
-  margin-top: 5px;
-  background: rgba(var(--color-slate-mist-rgb), 0.4);
+  margin-top: var(--agent-session-timeline-agentStepDot-margin-top);
+  background: var(--agent-session-timeline-agentStepDot-background);
   transform-origin: center;
   transform: scale(0.35);
-  opacity: 0.35;
+  opacity: var(--agent-session-timeline-agentStepDot-opacity);
   transition:
-    background var(--duration-200) var(--ease-standard),
-    box-shadow var(--duration-200) var(--ease-standard);
+    background var(--motion-control) var(--ease-standard),
+    box-shadow var(--motion-control) var(--ease-standard);
 }
 
 .agentStepDot[data-state='done'] {
@@ -93,7 +93,7 @@
    monochrome theme, unlike every other accent-colored element on the site. */
 .agentStepDot[data-state='active'] {
   background: var(--color-redline);
-  box-shadow: 0 0 0 4px rgba(var(--color-redline-rgb), 0.2);
+  box-shadow: var(--agent-session-timeline-agentStepDot-data-state-active-box-shadow);
 }
 
 .agentStepBody {
@@ -102,7 +102,7 @@
 
 .agentStepHead {
   font-size: var(--fs-sm-md);
-  line-height: 1.3;
+  line-height: var(--agent-session-timeline-agentStepHead-line-height);
 }
 
 .agentStepVerb {
@@ -119,8 +119,8 @@
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--color-text-secondary);
-  margin-top: var(--space-4);
-  transition: color var(--duration-200) var(--ease-standard);
+  margin-top: var(--agent-session-timeline-agentStepOutcome-margin-top);
+  transition: color var(--motion-control) var(--ease-standard);
 }
 
 /* Phone (2026-09-19, explicit user request) — `--fs-xs` (11px, fixed, not
@@ -129,7 +129,7 @@
    `.agentStepHead`'s own `--fs-sm-md` (13px) so the verb/target line and
    the outcome line underneath it read as one consistent weight instead of
    "large label, tiny detail." Desktop/tablet untouched. */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .agentStepOutcome {
     font-size: var(--fs-sm-md);
   }
@@ -141,7 +141,7 @@
 }
 
 .agentStepOutcome[data-state='pending'] {
-  opacity: 0.45;
+  opacity: var(--agent-session-timeline-agentStepOutcome-data-state-pending-opacity);
 }
 
 /*
@@ -154,25 +154,25 @@
   font-size: var(--fs-sm-md);
   font-weight: var(--fw-bold);
   color: var(--color-text-primary);
-  line-height: 1.3;
-  margin-bottom: var(--space-8);
+  line-height: var(--agent-session-timeline-agentStepVerbHead-line-height);
+  margin-bottom: var(--agent-session-timeline-agentStepVerbHead-margin-bottom);
 }
 
 .ioCard {
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
-  border-radius: var(--radius-9);
+  border: var(--agent-session-timeline-ioCard-border);
+  border-radius: var(--radius-card);
 }
 
 .ioRow {
   display: flex;
-  gap: var(--space-10);
-  padding: var(--space-8) var(--space-12);
+  gap: var(--agent-session-timeline-ioRow-gap);
+  padding: var(--agent-session-timeline-ioRow-padding);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
 }
 
 .ioRow:first-child {
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+  border-bottom: var(--agent-session-timeline-ioRow-first-child-border-bottom);
 }
 
 .ioLabel {
@@ -180,12 +180,12 @@
   color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
-  min-width: 2.2em;
+  min-width: var(--agent-session-timeline-ioLabel-min-width);
 }
 
 .ioValue {
   color: var(--color-text-secondary);
-  transition: color var(--duration-200) var(--ease-standard);
+  transition: color var(--motion-control) var(--ease-standard);
 }
 
 /* Same status-indicator exemption — stays red even in mono theme. */

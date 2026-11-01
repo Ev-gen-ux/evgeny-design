@@ -9,33 +9,33 @@
   z-index: 1;
   width: 100%;
   container-type: inline-size;
-  padding: var(--space-100) var(--space-container-x);
+  padding: var(--contact-footer-root-padding);
   /* Same reservation as the old Footer: the fixed ChatBar (52px) must never
      sit on top of the giant word. +16px (2026-10-24) — ChatBar now floats
      16px above the viewport bottom instead of sitting flush (see its own
      module's 2026-10-24 comment), so its top edge sits 16px higher too;
      the old 52px reserve alone would be 16px short. */
-  padding-bottom: calc(var(--space-32) + 52px + var(--space-16) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: var(--contact-footer-root-padding-bottom);
 }
 
 .top {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 2fr);
-  column-gap: var(--space-40);
+  column-gap: var(--contact-footer-top-column-gap);
   align-items: start;
 }
 
 .prompt {
-  margin-bottom: var(--space-32);
+  margin-bottom: var(--contact-footer-prompt-margin-bottom);
 }
 
 .eyebrow {
   text-transform: uppercase;
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--contact-footer-eyebrow-margin-bottom);
 }
 
 .title {
-  max-width: 14ch;
+  max-width: var(--contact-footer-title-max-width);
 }
 
 .cols {
@@ -43,14 +43,14 @@
   /* Columns hug their content (the email is the widest link and must never wrap its arrow) and spread to the margins. */
   grid-template-columns: max-content max-content;
   justify-content: space-between;
-  column-gap: var(--space-40);
+  column-gap: var(--contact-footer-cols-column-gap);
 }
 
 /* Desktop only (>= 1025px, 2026-09-26, per user request): the "смотреть" column sits next to "написать" instead of at the far right edge. */
-@media (min-width: 1025px) {
+@media (--viewport-desktop) {
   .cols {
     justify-content: start;
-    column-gap: clamp(64px, 8.4vw, 140px);
+    column-gap: var(--contact-footer-cols-column-gap-desktop);
   }
 }
 
@@ -58,13 +58,13 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-12);
+  gap: var(--contact-footer-col-gap);
   font-family: var(--font-mono);
   font-size: var(--fs-sm-md);
 }
 
 .colHead {
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--contact-footer-colHead-margin-bottom);
   font-size: var(--fs-xs);
   letter-spacing: var(--tracking-widest);
   text-transform: uppercase;
@@ -80,8 +80,8 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-8) var(--space-32);
-  margin-top: clamp(48px, 10vw, 140px);
+  gap: var(--contact-footer-meta-gap);
+  margin-top: var(--contact-footer-meta-margin-top);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--color-text-secondary);
@@ -89,24 +89,24 @@
 
 .giant {
   display: block;
-  margin-top: var(--space-24);
+  margin-top: var(--contact-footer-giant-margin-top);
   font-family: var(--font-display);
   font-weight: var(--fw-bold);
   text-transform: uppercase;
   color: var(--color-link);
   text-decoration: none;
   white-space: nowrap;
-  line-height: 0.78;
+  line-height: var(--contact-footer-giant-line-height);
   /* Kerning off so the width is identical whether the letter-scatter engine has
      split the word into per-letter spans (which loses kerning) or not. */
   font-kerning: none;
-  font-size: 22vw;
+  font-size: var(--contact-footer-giant-font-size);
   /* 4.38 = the visible ink width of «CONTACT» in em (measured, kerning off);
      the negative margin pulls the C's left side-bearing back so the INK, not
      the glyph boxes, runs exactly margin to margin. Re-measure if the word or
      the font changes. */
   font-size: calc(100cqw / 4.38);
-  margin-left: -0.043em;
+  margin-left: var(--contact-footer-giant-margin-left);
   transition: color var(--duration-300) var(--ease-standard);
 }
 
@@ -124,30 +124,30 @@
 }
 
 /* Desktop only (2026-09-26): the 200px gap to the previous section lives in this padding. */
-@media (min-width: 1025px) {
+@media (--viewport-desktop) {
   .root {
-    padding-top: 200px;
+    padding-top: var(--contact-footer-root-padding-top-desktop);
   }
 }
 
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .root {
-    padding-top: 80px;
+    padding-top: var(--contact-footer-root-padding-top-phone);
     /* ThemeToggle removed from render (2026-10-24) — the old +40px raised-
        above-ChatBar reservation for it is gone; +16px added instead for
        ChatBar's own floating gap (same reasoning as the desktop rule
        above). */
-    padding-bottom: calc(var(--space-32) + 52px + var(--space-16) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: var(--contact-footer-root-padding-bottom-phone);
   }
 
   .top {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: var(--space-40);
+    row-gap: var(--contact-footer-top-row-gap-phone);
   }
 
   .cols {
     grid-template-columns: minmax(0, 1fr);
-    row-gap: var(--space-32);
+    row-gap: var(--contact-footer-cols-row-gap-phone);
   }
 
   /* Phone (2026-09-18, explicit user request, carried over from the old footer):
@@ -161,6 +161,6 @@
   }
 
   .meta {
-    margin-top: var(--space-60);
+    margin-top: var(--contact-footer-meta-margin-top-phone);
   }
 }

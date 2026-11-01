@@ -11,7 +11,7 @@
 }
 
 .washAnimated {
-  animation: washShimmer 26s ease-in-out infinite;
+  animation: var(--page-backdrop-washAnimated-animation);
 }
 
 .blobOuter {
@@ -24,7 +24,7 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  filter: blur(90px);
+  filter: var(--page-backdrop-blobInner-filter);
 }
 
 /* Mobile-only (2026-09-19, real-device report — the top-right accent blob,
@@ -38,14 +38,14 @@
    background element. Halving opacity is a size/position-safe way to make
    that harder edge read as a subtle wash instead of a distinct shape,
    without touching the blur/size/position values shared with desktop. */
-@media (max-width: 768px) {
+@media (--viewport-tablet) {
   .blobInner {
-    opacity: 0.5;
+    opacity: var(--page-backdrop-blobInner-opacity-tablet);
   }
 }
 
 .blobAnimated {
-  animation: blobDrift 20s ease-in-out infinite;
+  animation: var(--page-backdrop-blobAnimated-animation);
 }
 
 .grain {
@@ -53,18 +53,18 @@
   inset: -10%;
   width: 120%;
   height: 120%;
-  z-index: 120;
+  z-index: var(--page-backdrop-grain-z-index);
   pointer-events: none;
   /* Doubled from 0.045 (2026-10-24, explicit user request — noise read as
      "barely there"). */
-  opacity: 0.09;
+  opacity: var(--page-backdrop-grain-opacity);
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 120px 120px;
+  background-size: var(--page-backdrop-grain-background-size);
 }
 
 .grainAnimated {
-  animation: grainShift 1.4s steps(6) infinite;
+  animation: var(--page-backdrop-grainAnimated-animation);
 }
 
 .progressTrack {
@@ -72,9 +72,9 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
-  background: rgba(var(--color-slate-mist-rgb), 0.15);
-  z-index: 101;
+  height: var(--page-backdrop-progressTrack-height);
+  background: var(--page-backdrop-progressTrack-background);
+  z-index: var(--page-backdrop-progressTrack-z-index);
   pointer-events: none;
 }
 
@@ -82,5 +82,5 @@
   height: 100%;
   transition:
     width var(--duration-150) var(--ease-linear),
-    background-color var(--duration-400) var(--ease-standard);
+    background-color var(--motion-reveal) var(--ease-standard);
 }

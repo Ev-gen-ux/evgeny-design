@@ -4,29 +4,29 @@
   font-size: var(--fs-xs);
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
-  padding: var(--space-5) var(--space-10);
-  border: 1px solid transparent;
-  border-radius: var(--radius-3);
+  padding: var(--tag-tag-padding);
+  border: var(--tag-tag-border);
+  border-radius: var(--radius-badge);
   transition:
-    border-color var(--duration-250) var(--ease-standard),
-    color var(--duration-250) var(--ease-standard),
-    transform var(--duration-250) var(--ease-signature);
+    border-color var(--motion-hover) var(--ease-standard),
+    color var(--motion-hover) var(--ease-standard),
+    transform var(--motion-hover) var(--ease-signature);
 }
 
 /* Case-study problem-type badge — always Redline, no hover state (it's a label, not interactive). */
 .accent {
   color: var(--color-accent);
-  border-color: rgba(var(--color-accent-rgb), 0.4);
+  border-color: var(--tag-accent-border-color);
 }
 
 /* Skills chip — neutral by default, lights up to Redline on hover/focus. */
 .chip {
-  padding: var(--space-7) var(--space-12);
+  padding: var(--tag-chip-padding);
   font-size: var(--fs-sm-md);
   letter-spacing: normal;
   text-transform: none;
   color: var(--color-text-primary);
-  border-color: rgba(var(--color-slate-mist-rgb), 0.35);
+  border-color: var(--tag-chip-border-color);
 }
 
 /* Not reduced-motion-gated — matches source: this hover is a static template
@@ -37,13 +37,13 @@
 .chip:focus-visible {
   color: var(--color-accent);
   border-color: var(--color-accent);
-  transform: translateY(-2px) scale(1.03);
+  transform: translateY(var(--motion-hover-lift)) scale(1.03);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .chip:hover {
     color: var(--color-accent);
     border-color: var(--color-accent);
-    transform: translateY(-2px) scale(1.03);
+    transform: translateY(var(--motion-hover-lift)) scale(1.03);
   }
 }

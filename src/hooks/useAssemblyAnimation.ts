@@ -1,3 +1,4 @@
+import { breakpoints } from '../tokens';
 import { useLayoutEffect, useRef, type RefObject } from 'react';
 import { pipelineSync } from './pipelineSync';
 import { seedOf, asmSeed, docTop, type AsmSpan } from './asmMath';
@@ -123,7 +124,7 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
     // reported broken, so it keeps the original eager-split-everything-
     // at-once behavior below, completely unaffected by the lazy
     // split/reclaim machinery.
-    const lazyMobile = vw0 <= 640;
+    const lazyMobile = vw0 <= breakpoints.phone;
 
     // Splits one already-validated candidate element's text into scattered
     // spans and pushes the resulting unit into `unitsRef` — extracted out of
@@ -383,7 +384,7 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
       // simplest fix is to just stop reclaiming once this close to the end.
       const nearBottom = document.documentElement.scrollHeight - (sy + vh) < vh * 2;
       const le = loadT * loadT * (3 - 2 * loadT);
-      const mobile = vw <= 768;
+      const mobile = vw <= breakpoints.tablet;
       const winStart = mobile ? 1.0 : 0.95;
       const winSpan = mobile ? 0.45 : 0.3;
       const ease = 1 - Math.pow(0.08, Math.min(0.05, (dt || 16) / 1000));
@@ -440,9 +441,9 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
           const raw = (vh * winStart - r.top) / (vh * winSpan);
           t = Math.max(0, Math.min(1, raw));
           if (atBottom) t = 1;
-        } else if (u.step != null && vw > 768) {
+        } else if (u.step != null && vw > breakpoints.tablet) {
           t = pipelineSync.stepT[u.step] ?? 0;
-        } else if (u.panel != null && vw > 768) {
+        } else if (u.panel != null && vw > breakpoints.tablet) {
           t = pipelineSync.panelT[u.panel] ?? 0;
         } else if (u.navFixed) {
           // Permanent — plays the load-in once and never scatters again,
@@ -462,7 +463,7 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
           t = Math.max(0, Math.min(1, raw));
           if (atBottom) t = 1;
         }
-        if (u.latch && u.panel == null && u.step == null && vw > 768) t = pipelineSync.leftT;
+        if (u.latch && u.panel == null && u.step == null && vw > breakpoints.tablet) t = pipelineSync.leftT;
 
         // Reclaim (2026-09-19, mobile-only — same `lazyMobile` gate as the
         // split-in above; desktop's units were all eagerly split and stay

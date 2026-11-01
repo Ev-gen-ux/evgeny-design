@@ -5,12 +5,12 @@
 .sticky {
   position: sticky;
   top: 0;
-  height: 100vh;
+  height: var(--work-cylinder-sticky-height);
   /* clip-path creates a backdrop root: faces then cannot blur the page
      background outside this transparent subtree. Overflow clipping keeps
      the backdrop available; the margin leaves room for tilted cards. */
   overflow: clip;
-  overflow-clip-margin: 300px;
+  overflow-clip-margin: var(--work-cylinder-sticky-overflow-clip-margin);
 }
 
 .scene {
@@ -19,11 +19,11 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  perspective: 1350px;
+  perspective: var(--work-cylinder-scene-perspective);
   pointer-events: none;
   /* Heading -> card gap is exactly 100px (2026-09-26, per user request), measured on the card as the viewer sees it. The pin starts 60px below the heading (SelectedWork .header margin-bottom). The resting card is pushed toward the viewer (translateZ 400 at perspective 1350 = 1.42x), so its visible top is 213px above its centre, not 150px: padding-top P puts the centre at P+150 from the pin's top, and the visible top edge at P+150-213 = P-63. The resting card is also turned -3deg, which lifts its highest corner another 17px, so the corner sits at P-80 = 40 (100px under the heading) => P = 120px. The perspective origin must sit on the card's centre, otherwise the projection pushes the card further up. */
-  padding-top: 120px;
-  perspective-origin: 50% calc(120px + 150px);
+  padding-top: var(--work-cylinder-scene-padding-top);
+  perspective-origin: var(--work-cylinder-scene-perspective-origin);
 }
 
 .rig {
@@ -42,7 +42,7 @@
 .slab {
   position: absolute;
   inset: 0;
-  border-radius: var(--radius-9);
+  border-radius: var(--radius-card);
   border: none;
 }
 
@@ -55,31 +55,31 @@
 .face {
   position: absolute;
   inset: 0;
-  border-radius: var(--radius-9);
+  border-radius: var(--radius-card);
   backface-visibility: hidden;
-  border: 1px solid var(--case-border-color, rgba(var(--color-slate-mist-rgb), 0.3));
-  background: var(--case-glass-background, rgba(var(--color-graphite-rgb), 0.45));
-  -webkit-backdrop-filter: var(--case-glass-blur, blur(6px));
-  backdrop-filter: var(--case-glass-blur, blur(6px));
+  border: var(--work-cylinder-face-border-length-0) solid var(--case-border-color, rgba(var(--color-slate-mist-rgb), var(--opacity-tint-30)));
+  background: var(--case-glass-background, rgba(var(--color-graphite-rgb), var(--opacity-tint-45)));
+  -webkit-backdrop-filter: var(--case-glass-blur, blur(var(--blur-card)));
+  backdrop-filter: var(--case-glass-blur, blur(var(--work-cylinder-face-backdrop-filter-length-28)));
 }
 
 .front {
-  transform: translateZ(1.5px);
+  transform: var(--work-cylinder-front-transform);
   display: flex;
   flex-direction: column;
-  padding: var(--space-28);
+  padding: var(--work-cylinder-front-padding);
   pointer-events: none;
 }
 
 .back {
-  background: var(--case-glass-background, rgba(var(--color-graphite-rgb), 0.45));
-  -webkit-backdrop-filter: var(--case-glass-blur, blur(6px));
-  backdrop-filter: var(--case-glass-blur, blur(6px));
-  transform: translateZ(-1.5px) rotateX(180deg);
+  background: var(--case-glass-background, rgba(var(--color-graphite-rgb), var(--opacity-tint-45)));
+  -webkit-backdrop-filter: var(--case-glass-blur, blur(var(--blur-card)));
+  backdrop-filter: var(--case-glass-blur, blur(var(--work-cylinder-back-backdrop-filter-length-28)));
+  transform: var(--work-cylinder-back-transform);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: var(--space-28);
+  padding: var(--work-cylinder-back-padding);
   pointer-events: none;
 }
 
@@ -105,12 +105,12 @@
 
 .top {
   position: relative;
-  z-index: 2;
+  z-index: var(--work-cylinder-top-z-index);
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-8) var(--space-12);
+  gap: var(--work-cylinder-top-gap);
   pointer-events: none;
 }
 
@@ -118,13 +118,13 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--space-6);
+  gap: var(--work-cylinder-tagGroup-gap);
 }
 
 /* Prod `Tag` accent badge, one step down — the card is drawn in perspective, so it reads larger than its CSS size. */
 .tag {
   font-size: var(--fs-micro);
-  padding: var(--space-3) var(--space-8);
+  padding: var(--work-cylinder-tag-padding);
 }
 
 .type {
@@ -135,8 +135,8 @@
 
 .name {
   position: relative;
-  z-index: 2;
-  margin: var(--space-16) 0 0;
+  z-index: var(--work-cylinder-name-z-index);
+  margin: var(--work-cylinder-name-margin);
   font-size: var(--fs-xl);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tracking-tight);
@@ -150,15 +150,15 @@
 
 .facts {
   position: relative;
-  z-index: 2;
-  margin-top: var(--space-16);
+  z-index: var(--work-cylinder-facts-z-index);
+  margin-top: var(--work-cylinder-facts-margin-top);
   pointer-events: none;
 }
 
 .teaser {
   position: relative;
-  z-index: 2;
-  margin: var(--space-14) 0 0;
+  z-index: var(--work-cylinder-teaser-z-index);
+  margin: var(--work-cylinder-teaser-margin);
   /* Smaller than the default card body text (2026-09-28, per user request, desktop only — the card sits scaled up
      in the 3D perspective, so its old --fs-sm-md/13px read visually larger than the Pipeline stage description,
      the size the user wants it to match): the default already carries through on phone/tablet fallback list. */
@@ -174,7 +174,7 @@
 .metrics {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-6) var(--space-20);
+  gap: var(--work-cylinder-metrics-gap);
 }
 
 .metricLabel {
@@ -182,7 +182,7 @@
   font-size: var(--fs-micro);
   text-transform: uppercase;
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--work-cylinder-metricLabel-margin-bottom);
 }
 
 .metricValue {
@@ -209,20 +209,20 @@
   left: var(--space-28);
   right: var(--space-28);
   bottom: var(--space-24);
-  z-index: 3;
-  padding-top: var(--space-14);
-  border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+  z-index: var(--work-cylinder-footer-z-index);
+  padding-top: var(--work-cylinder-footer-padding-top);
+  border-top: var(--work-cylinder-footer-border-top);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-8) var(--space-16);
+  gap: var(--work-cylinder-footer-gap);
 }
 
 /* `.link` (Link.module.css) sets its own font-size on the anchor, so the row's size has to be set on the anchors themselves. */
 .footer a {
   font-size: var(--fs-tiny);
-  letter-spacing: 0.03em;
-  padding-bottom: var(--space-2);
+  letter-spacing: var(--work-cylinder-footer-a-letter-spacing);
+  padding-bottom: var(--work-cylinder-footer-a-padding-bottom);
 }
 
 .backIndex,
@@ -242,9 +242,9 @@
 /* Corner brackets — same "inspector selection box" as Card.module.css, drawn just inside the face. */
 .corner {
   position: absolute;
-  width: 14px;
-  height: 14px;
-  z-index: 4;
+  width: var(--work-cylinder-corner-width);
+  height: var(--work-cylinder-corner-height);
+  z-index: var(--work-cylinder-corner-z-index);
   pointer-events: none;
   border-top-color: var(--color-slate-mist);
   border-right-color: var(--color-slate-mist);
@@ -253,44 +253,44 @@
 }
 
 .cornerTopLeft {
-  top: -1px;
-  left: -1px;
-  border-top-width: 2px;
+  top: var(--offset-border-overlap);
+  left: var(--offset-border-overlap);
+  border-top-width: var(--work-cylinder-cornerTopLeft-border-top-width);
   border-top-style: solid;
-  border-left-width: 2px;
+  border-left-width: var(--work-cylinder-cornerTopLeft-border-left-width);
   border-left-style: solid;
   /* Matches `.face`/`.slab`'s own `--radius-9` (2026-10-24, radius-scale
      rollout) — see Card.module.css's identical fix for why a square corner
      here would mismatch the now-rounded edge underneath. */
-  border-top-left-radius: var(--radius-9);
+  border-top-left-radius: var(--radius-card);
 }
 
 .cornerTopRight {
-  top: -1px;
-  right: -1px;
-  border-top-width: 2px;
+  top: var(--offset-border-overlap);
+  right: var(--offset-border-overlap);
+  border-top-width: var(--work-cylinder-cornerTopRight-border-top-width);
   border-top-style: solid;
-  border-right-width: 2px;
+  border-right-width: var(--work-cylinder-cornerTopRight-border-right-width);
   border-right-style: solid;
-  border-top-right-radius: var(--radius-9);
+  border-top-right-radius: var(--radius-card);
 }
 
 .cornerBottomLeft {
-  bottom: -1px;
-  left: -1px;
-  border-bottom-width: 2px;
+  bottom: var(--offset-border-overlap);
+  left: var(--offset-border-overlap);
+  border-bottom-width: var(--work-cylinder-cornerBottomLeft-border-bottom-width);
   border-bottom-style: solid;
-  border-left-width: 2px;
+  border-left-width: var(--work-cylinder-cornerBottomLeft-border-left-width);
   border-left-style: solid;
-  border-bottom-left-radius: var(--radius-9);
+  border-bottom-left-radius: var(--radius-card);
 }
 
 .cornerBottomRight {
-  bottom: -1px;
-  right: -1px;
-  border-bottom-width: 2px;
+  bottom: var(--offset-border-overlap);
+  right: var(--offset-border-overlap);
+  border-bottom-width: var(--work-cylinder-cornerBottomRight-border-bottom-width);
   border-bottom-style: solid;
-  border-right-width: 2px;
+  border-right-width: var(--work-cylinder-cornerBottomRight-border-right-width);
   border-right-style: solid;
-  border-bottom-right-radius: var(--radius-9);
+  border-bottom-right-radius: var(--radius-card);
 }

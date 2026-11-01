@@ -1,3 +1,4 @@
+import { breakpoints } from '../tokens';
 import { useLayoutEffect, useRef, type RefObject } from 'react';
 import { seedOf, asmSeed, docTop, type AsmSpan } from './asmMath';
 
@@ -256,7 +257,7 @@ export function useCaseStudyAssembly(
       for (const u of unitsRef.current) {
         if (!u.el.isConnected) continue;
         let t: number;
-        if (u.syncEl && !(u.own && vw > 768)) {
+        if (u.syncEl && !(u.own && vw > breakpoints.tablet)) {
           // `atBottom` failsafe (2026-09-18) — see useAssemblyAnimation's
           // identical branch for the full reasoning: the centering formula
           // below is unreachable for a sync block shorter than the viewport

@@ -1,12 +1,12 @@
 import type { CSSProperties, MouseEventHandler, ReactNode, Ref } from 'react';
-import { space } from '../../tokens';
+import { resolveSpacing, type SpacingValue } from '../../tokens';
 import styles from './Section.module.css';
 
 export interface SectionProps {
   id?: string;
   /** Vertical padding, in the fixed space scale (e.g. 60, 100) — matches the current site's per-section rhythm, not a single reused value. */
-  paddingTop?: keyof typeof space;
-  paddingBottom?: keyof typeof space;
+  paddingTop?: SpacingValue;
+  paddingBottom?: SpacingValue;
   /** Wired up by the scroll-reveal hook in a later step; kept as pass-through data attributes so Section doesn't need to change shape then. */
   stageAnchor?: number;
   revealId?: string;
@@ -51,8 +51,8 @@ export function Section({
       data-asm-span={asmSpan}
       className={[styles.section, className].filter(Boolean).join(' ')}
       style={{
-        paddingTop: paddingTop !== undefined ? space[paddingTop] : undefined,
-        paddingBottom: paddingBottom !== undefined ? space[paddingBottom] : undefined,
+        paddingTop: paddingTop !== undefined ? resolveSpacing(paddingTop) : undefined,
+        paddingBottom: paddingBottom !== undefined ? resolveSpacing(paddingBottom) : undefined,
         ...style,
       }}
       onMouseMove={onMouseMove}

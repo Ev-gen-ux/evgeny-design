@@ -17,7 +17,7 @@ export function Skills() {
   ] as const;
 
   return (
-    <Section id="skills" stageAnchor={3} paddingTop={100} paddingBottom={100}>
+    <Section id="skills" stageAnchor={3} paddingTop="section-block" paddingBottom="section-block">
       <div className={styles.content}>
         <Container size="wide">
           <PromptSteps question="какими инструментами и навыками владеешь" />

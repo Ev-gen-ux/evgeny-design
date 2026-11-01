@@ -1,8 +1,8 @@
 .header {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
-  margin-bottom: var(--space-60);
+  gap: var(--selected-work-header-gap);
+  margin-bottom: var(--selected-work-header-margin-bottom);
 }
 
 .headerRow {
@@ -10,7 +10,7 @@
   align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-16);
+  gap: var(--selected-work-headerRow-gap);
 }
 
 .count {
@@ -22,16 +22,16 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-40);
+  gap: var(--selected-work-list-gap);
 }
 
 /* Cursor-following glow — 1:1 with blobStyle(), corner-tilt hover only on these cards. */
 .blob {
   position: absolute;
-  width: 260px;
-  height: 260px;
+  width: var(--selected-work-blob-width);
+  height: var(--selected-work-blob-height);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(var(--color-accent-rgb), 0.2), transparent 70%);
+  background: var(--selected-work-blob-background);
   transform: translate(-50%, -50%);
   pointer-events: none;
   transition: opacity var(--duration-300) var(--ease-standard);
@@ -43,14 +43,14 @@
   justify-content: space-between;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: var(--space-12);
-  margin-bottom: var(--space-20);
+  gap: var(--selected-work-cardTop-gap);
+  margin-bottom: var(--selected-work-cardTop-margin-bottom);
 }
 
 .tagGroup {
   display: flex;
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--selected-work-tagGroup-gap);
   flex-wrap: wrap;
 }
 
@@ -61,15 +61,15 @@
 }
 
 .cardTitle {
-  margin-bottom: var(--space-28);
-  max-width: 28ch;
+  margin-bottom: var(--selected-work-cardTitle-margin-bottom);
+  max-width: var(--selected-work-cardTitle-max-width);
 }
 
 .flowRow {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: var(--space-32);
+  margin-bottom: var(--selected-work-flowRow-margin-bottom);
 }
 
 .flowNode {
@@ -85,13 +85,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-6);
+  gap: var(--selected-work-flowDotWrap-gap);
   flex-shrink: 0;
 }
 
 .flowDot {
-  width: 8px;
-  height: 8px;
+  width: var(--selected-work-flowDot-width);
+  height: var(--selected-work-flowDot-height);
   border-radius: 50%;
   background: var(--color-accent);
 }
@@ -106,20 +106,20 @@
 
 .flowLine {
   position: relative;
-  height: 2px;
-  background: rgba(var(--color-slate-mist-rgb), 0.2);
-  width: clamp(24px, 4vw, 60px);
-  margin: 0 var(--space-6) 16px;
+  height: var(--selected-work-flowLine-height);
+  background: var(--selected-work-flowLine-background);
+  width: var(--selected-work-flowLine-width);
+  margin: var(--selected-work-flowLine-margin);
   flex-shrink: 0;
 }
 
 .metrics {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-32);
-  margin-bottom: var(--space-32);
-  padding-bottom: var(--space-32);
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+  gap: var(--selected-work-metrics-gap);
+  margin-bottom: var(--selected-work-metrics-margin-bottom);
+  padding-bottom: var(--selected-work-metrics-padding-bottom);
+  border-bottom: var(--selected-work-metrics-border-bottom);
 }
 
 .metricLabel {
@@ -127,7 +127,7 @@
   font-size: var(--fs-xs);
   color: var(--color-text-secondary);
   text-transform: uppercase;
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--selected-work-metricLabel-margin-bottom);
 }
 
 .metricValue {
@@ -138,13 +138,13 @@
 
 .blocks {
   display: grid;
-  gap: var(--space-24);
+  gap: var(--selected-work-blocks-gap);
 }
 
 .block {
   display: grid;
-  grid-template-columns: minmax(90px, 120px) 1fr;
-  gap: var(--space-20);
+  grid-template-columns: var(--selected-work-block-grid-template-columns);
+  gap: var(--selected-work-block-gap);
 }
 
 .blockLabel {
@@ -155,7 +155,7 @@
   /* Was --tracking-wide (0.05em), below the site's ≥0.06em caps threshold
      (design-anti-slop audit, T3, 2026-08-03) — bumped to match. */
   letter-spacing: var(--tracking-wider);
-  padding-top: var(--space-2);
+  padding-top: var(--selected-work-blockLabel-padding-top);
 }
 
 .blockText {
@@ -167,15 +167,15 @@
 
 .footerLinks {
   display: flex;
-  gap: var(--space-24);
+  gap: var(--selected-work-footerLinks-gap);
   align-items: center;
   flex-wrap: wrap;
-  margin-top: var(--space-32);
+  margin-top: var(--selected-work-footerLinks-margin-top);
   font-family: var(--font-mono);
   font-size: var(--fs-sm-md);
   /* Above the card's full-cover overlay link (z-index 2) so these stay independently clickable. */
   position: relative;
-  z-index: 3;
+  z-index: var(--selected-work-footerLinks-z-index);
 }
 
 /* Whole-card click target. A real <a> so the card is clickable everywhere, sitting
@@ -183,20 +183,20 @@
 .cardOverlayLink {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: var(--selected-work-cardOverlayLink-z-index);
 }
 
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .block {
     grid-template-columns: 1fr;
-    gap: var(--space-6);
+    gap: var(--selected-work-block-gap-phone);
   }
 
   /* Phone (2026-10-09): .header is rendered above every variant (cylinder/
      list/phone), so its desktop-flat margin-bottom (60px) still needs
      tightening here regardless of which card variant renders below it. */
   .header {
-    margin-bottom: var(--space-40);
+    margin-bottom: var(--selected-work-header-margin-bottom-phone);
   }
 }
 
@@ -208,7 +208,7 @@
 .phoneList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-32);
+  gap: var(--selected-work-phoneList-gap);
 }
 
 .phoneTop {
@@ -216,8 +216,8 @@
   justify-content: space-between;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: var(--space-8);
-  margin-bottom: var(--space-16);
+  gap: var(--selected-work-phoneTop-gap);
+  margin-bottom: var(--selected-work-phoneTop-margin-bottom);
 }
 
 .phoneTag {
@@ -231,7 +231,7 @@
 }
 
 .phoneName {
-  margin: 0 0 var(--space-16);
+  margin: var(--selected-work-phoneName-margin);
   font-size: var(--fs-xl);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tracking-tight);
@@ -241,10 +241,10 @@
 .phoneMetrics {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-20);
-  margin-bottom: var(--space-16);
-  padding-bottom: var(--space-16);
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+  gap: var(--selected-work-phoneMetrics-gap);
+  margin-bottom: var(--selected-work-phoneMetrics-margin-bottom);
+  padding-bottom: var(--selected-work-phoneMetrics-padding-bottom);
+  border-bottom: var(--selected-work-phoneMetrics-border-bottom);
 }
 
 .phoneMetricLabel {
@@ -252,7 +252,7 @@
   font-size: var(--fs-tiny);
   color: var(--color-text-secondary);
   text-transform: uppercase;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--selected-work-phoneMetricLabel-margin-bottom);
 }
 
 .phoneMetricValue {
@@ -262,7 +262,7 @@
 }
 
 .phoneTeaser {
-  margin: 0 0 var(--space-20);
+  margin: var(--selected-work-phoneTeaser-margin);
   font-size: var(--fs-sm-md);
   line-height: var(--lh-relaxed-sm);
   color: var(--color-text-body);
@@ -270,11 +270,11 @@
 
 .phoneFooter {
   display: flex;
-  gap: var(--space-20);
+  gap: var(--selected-work-phoneFooter-gap);
   align-items: center;
   flex-wrap: wrap;
   font-family: var(--font-mono);
   font-size: var(--fs-tiny);
   position: relative;
-  z-index: 3;
+  z-index: var(--selected-work-phoneFooter-z-index);
 }

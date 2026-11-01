@@ -1,7 +1,7 @@
 .root {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--about-reel-root-gap);
 }
 
 .window {
@@ -9,25 +9,24 @@
   flex: none;
   min-width: 0;
   font-family: var(--font-display);
-  font-size: clamp(22px, 2.6vw, 38px);
+  font-size: var(--about-reel-window-font-size);
   font-weight: var(--fw-semibold);
-  height: calc(1.35em * 3);
+  height: var(--about-reel-window-height);
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0%, #000 30%, #000 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, var(--about-reel-webkit-mask-image-detail-000) 30%, var(--about-reel-webkit-mask-image-detail-000) 70%, transparent 100%);
+  mask-image: var(--about-reel-window-mask-image);
 }
 
 .item {
   position: absolute;
   left: 0;
-  top: 1.35em;
-  height: 1.35em;
-  line-height: 1.35em;
+  top: var(--about-reel-item-top);
+  height: var(--about-reel-item-height);
+  line-height: var(--about-reel-item-line-height);
   white-space: nowrap;
   color: var(--color-text-primary);
-  transition:
-    transform 700ms var(--ease-signature),
-    opacity 500ms var(--ease-standard);
+  transition:transform var(--about-reel-transition-detail-700ms) var(--ease-signature),
+    opacity var(--about-reel-transition-detail-500ms) var(--ease-standard);
   will-change: transform, opacity;
 }
 
@@ -39,13 +38,13 @@
   display: inline-block;
   white-space: pre;
   opacity: 0;
-  animation: reelIn 700ms var(--ease-signature) forwards;
+  animation: var(--about-reel-letter-animation);
 }
 
 @keyframes reelIn {
   from {
     opacity: 0;
-    transform: translate(calc(var(--dx) * 1em), calc(var(--dy) * 1em)) rotate(calc(var(--r) * 1deg));
+    transform: translate(calc(var(--dx) * var(--about-reel-from-transform-length-27)), calc(var(--dy) * var(--about-reel-from-transform-length-50))) rotate(calc(var(--r) * var(--about-reel-from-transform-length-79)));
   }
   to {
     opacity: 1;
@@ -56,10 +55,10 @@
 /* The explanation of the slide in focus: fixed height for 2 lines so the block below never jumps. */
 .text {
   margin: 0;
-  max-width: 44ch;
-  min-height: calc(1.45em * 2);
-  font-size: clamp(15px, 1.15vw, 18px);
-  line-height: 1.45;
+  max-width: var(--about-reel-text-max-width);
+  min-height: var(--about-reel-text-min-height);
+  font-size: var(--about-reel-text-font-size);
+  line-height: var(--about-reel-text-line-height);
   color: var(--color-text-secondary);
 }
 
@@ -67,13 +66,13 @@
   display: inline-block;
   white-space: pre;
   opacity: 0;
-  animation: wordIn 600ms var(--ease-signature) forwards;
+  animation: var(--about-reel-word-animation);
 }
 
 @keyframes wordIn {
   from {
     opacity: 0;
-    transform: translateY(0.5em);
+    transform: var(--about-reel-from-transform);
   }
   to {
     opacity: 1;
@@ -84,20 +83,20 @@
 .staticList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: var(--about-reel-staticList-gap);
 }
 
 .staticItem {
   margin: 0;
   font-size: var(--fs-fluid-sm);
-  line-height: 1.5;
+  line-height: var(--about-reel-staticItem-line-height);
   color: var(--color-text-primary);
 }
 
 .sr {
   position: absolute;
-  width: 1px;
-  height: 1px;
+  width: var(--about-reel-sr-width);
+  height: var(--about-reel-sr-height);
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;

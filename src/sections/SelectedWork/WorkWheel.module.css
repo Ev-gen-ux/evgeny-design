@@ -5,7 +5,7 @@
 .sticky {
   position: sticky;
   top: 0;
-  height: 100vh;
+  height: var(--work-wheel-sticky-height);
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -13,12 +13,12 @@
 
 .frame {
   width: 100%;
-  max-width: 1240px;
+  max-width: var(--work-wheel-frame-max-width);
   margin: 0 auto;
-  padding: 0 clamp(20px, 5vw, 64px);
+  padding: var(--work-wheel-frame-padding);
   display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: clamp(40px, 6vw, 96px);
+  grid-template-columns: var(--work-wheel-frame-grid-template-columns);
+  gap: var(--work-wheel-frame-gap);
   align-items: center;
 }
 
@@ -27,22 +27,21 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  width: 320px;
-  height: 420px;
-  border-radius: var(--radius-9);
+  width: var(--work-wheel-imagePanel-width);
+  height: var(--work-wheel-imagePanel-height);
+  border-radius: var(--radius-card);
   overflow: hidden;
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.3);
-  padding: var(--space-24);
+  border: var(--work-wheel-imagePanel-border);
+  padding: var(--work-wheel-imagePanel-padding);
   text-decoration: none;
 }
 
 .imageGradient {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 30% 20%, rgba(var(--color-accent-rgb), 0.35), transparent 60%),
-    radial-gradient(circle at 80% 90%, rgba(var(--color-accent-rgb), 0.18), transparent 55%),
-    #0a0a0c;
+  background:radial-gradient(circle at 30% 20%, rgba(var(--color-accent-rgb), var(--opacity-tint-35)), transparent 60%),
+    radial-gradient(circle at 80% 90%, rgba(var(--color-accent-rgb), var(--opacity-tint-18)), transparent 55%),
+    var(--work-wheel-background-detail-0a0a0c);
   transition: opacity var(--duration-300) var(--ease-standard);
 }
 
@@ -51,7 +50,7 @@
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--work-wheel-imageIndex-margin-bottom);
 }
 
 .imageTitle {
@@ -71,7 +70,7 @@
   /* left must equal -RADIUS from WorkWheel.tsx (620px) — off-screen circle
      center that the arc items rotate/translate out from. */
   position: absolute;
-  left: -620px;
+  left: var(--offset-negative-620);
   top: 50%;
 }
 
@@ -81,7 +80,7 @@
   top: 0;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-12);
+  gap: var(--work-wheel-item-gap);
   white-space: nowrap;
   font-size: var(--fs-xxl);
   font-weight: var(--fw-bold);
@@ -96,8 +95,8 @@
 }
 
 .itemDot {
-  width: 10px;
-  height: 10px;
+  width: var(--work-wheel-itemDot-width);
+  height: var(--work-wheel-itemDot-height);
   border-radius: 50%;
   background: var(--color-accent);
   flex-shrink: 0;

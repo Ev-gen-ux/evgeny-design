@@ -1,7 +1,7 @@
 .root {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: var(--grain-gradient-root-z-index);
   overflow: hidden;
   pointer-events: none;
   background: var(--color-bg-page);
@@ -18,12 +18,12 @@
   position: absolute;
   inset: -20%;
   background:
-    radial-gradient(ellipse 60% 25% at 70% 80%, rgba(var(--color-glow-light-rgb), 0.5) 0%, transparent 70%),
-    radial-gradient(ellipse 70% 50% at 85% 55%, rgba(var(--color-accent-rgb), 0.22) 0%, transparent 70%),
-    radial-gradient(ellipse 80% 60% at 60% 40%, rgba(var(--color-graphite-rgb), 0.9) 0%, transparent 75%);
+    radial-gradient(ellipse 60% 25% at 70% 80%, rgba(var(--color-glow-light-rgb), var(--opacity-tint-50)) 0%, transparent 70%),
+    radial-gradient(ellipse 70% 50% at 85% 55%, rgba(var(--color-accent-rgb), var(--opacity-tint-22)) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 60% at 60% 40%, rgba(var(--color-graphite-rgb), var(--opacity-tint-90)) 0%, transparent 75%);
   transform: rotate(-25deg) scale(1.4);
-  filter: blur(40px) saturate(110%);
-  opacity: 0.6;
+  filter: var(--grain-gradient-streak-filter);
+  opacity: var(--grain-gradient-streak-opacity);
   transition: opacity var(--duration-700) var(--ease-standard);
 }
 
@@ -32,14 +32,14 @@
    compete with case-study content. */
 .intense .streak {
   background:
-    radial-gradient(ellipse 65% 30% at 72% 78%, rgba(var(--color-glow-rgb), 0.65) 0%, transparent 70%),
-    radial-gradient(ellipse 75% 55% at 85% 52%, rgba(var(--color-accent-rgb), 0.3) 0%, transparent 72%),
-    radial-gradient(ellipse 85% 65% at 58% 38%, rgba(var(--color-graphite-rgb), 1) 0%, transparent 78%);
-  opacity: 0.85;
+    radial-gradient(ellipse 65% 30% at 72% 78%, rgba(var(--color-glow-rgb), var(--opacity-tint-65)) 0%, transparent 70%),
+    radial-gradient(ellipse 75% 55% at 85% 52%, rgba(var(--color-accent-rgb), var(--opacity-tint-30)) 0%, transparent 72%),
+    radial-gradient(ellipse 85% 65% at 58% 38%, rgba(var(--color-graphite-rgb), var(--opacity-tint-100)) 0%, transparent 78%);
+  opacity: var(--grain-gradient-intense-streak-opacity);
 }
 
 .streakAnimated {
-  animation: streakDrift 30s ease-in-out infinite;
+  animation: var(--grain-gradient-streakAnimated-animation);
 }
 
 @keyframes streakDrift {
@@ -77,14 +77,14 @@
   inset: -10%;
   width: 120%;
   height: 120%;
-  opacity: 0.16;
+  opacity: var(--grain-gradient-noise-opacity);
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
+  background-size: var(--grain-gradient-noise-background-size);
 }
 
 .intense .noise {
-  opacity: 0.22;
+  opacity: var(--grain-gradient-intense-noise-opacity);
 }
 
 @media (prefers-reduced-motion: reduce) {

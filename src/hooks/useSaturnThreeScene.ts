@@ -1,3 +1,4 @@
+import { breakpoints } from '../tokens';
 import { useRef } from 'react';
 import { useThreeScene, type ThreeSceneContext, type ThreeSceneHandle } from './useThreeScene';
 import { colorsNumeric } from '../tokens';
@@ -370,7 +371,7 @@ const SATURN_FRAGMENT = /* glsl */ `
 `;
 
 function readPixelRatio() {
-  const isMobile = window.innerWidth <= 768;
+  const isMobile = window.innerWidth <= breakpoints.tablet;
   return isMobile ? 1 : Math.min(1.5, window.devicePixelRatio || 1);
 }
 
@@ -415,7 +416,7 @@ const DESKTOP_RING_LIFT = 1.2;
 const MOBILE_RING_LIFT = 1.8;
 
 function readRingLift() {
-  const isMobile = window.innerWidth <= 768;
+  const isMobile = window.innerWidth <= breakpoints.tablet;
   return isMobile ? MOBILE_RING_LIFT : DESKTOP_RING_LIFT;
 }
 

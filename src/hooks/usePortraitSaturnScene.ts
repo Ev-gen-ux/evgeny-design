@@ -1,3 +1,5 @@
+import { breakpoints } from '../tokens';
+import { readToken, runtimeTokens } from '../tokens';
 import { useRef, type RefObject } from 'react';
 import { useThreeScene, type ThreeSceneContext, type ThreeSceneHandle } from './useThreeScene';
 
@@ -172,7 +174,7 @@ const BUST_FRAGMENT = /* glsl */ `
 `;
 
 function readPixelRatio() {
-  const isMobile = window.innerWidth <= 768;
+  const isMobile = window.innerWidth <= breakpoints.tablet;
   return isMobile ? 1 : Math.min(1.5, window.devicePixelRatio || 1);
 }
 
@@ -196,7 +198,7 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
       // ---------- bust ----------
       const coarse = matchMedia('(pointer: coarse)').matches;
       const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const wantN = coarse || window.innerWidth < 768 ? BUST_COUNT_MOBILE : BUST_COUNT_DESKTOP;
+      const wantN = coarse || window.innerWidth < breakpoints.tablet ? BUST_COUNT_MOBILE : BUST_COUNT_DESKTOP;
       const { idle, seed } = buildIdleCloud(wantN);
       const bright0 = new Float32Array(wantN).fill(0.6);
       const scale0 = new Float32Array(wantN).fill(1);
@@ -212,7 +214,7 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
       bustGeometry.setAttribute('aNormal', new THREE.BufferAttribute(normal0, 3));
       bustGeometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 5);
 
-      const bustGlowColor = new THREE.Color(0xd4d4dc);
+      const bustGlowColor = new THREE.Color(readToken('color-bust'));
       const bustUniforms = {
         uTime: { value: 0 },
         uAssemble: { value: 0 },
@@ -303,8 +305,8 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
               minY = Math.min(minY, y);
               maxY = Math.max(maxY, y);
             }
-            const fadeHeight = Math.max(0.001, (maxY - minY) * 0.2);
-            let randomState = 1337;
+            const fadeHeight = Math.max(0.001, (maxY - minY) * runtimeTokens.bust.lowerFadeFraction);
+            let randomState = runtimeTokens.bust.dissolveSeed as number;
             for (let i = 0; i < d.count; i++) {
               // Fixed per-index noise: no dependence on time, cursor, or
               // Math.random(), so the dissolve never crawls or flickers.
@@ -312,7 +314,7 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
               const noise = randomState / 4294967296;
               const height = Math.max(0, Math.min(1, (d.target[i * 3 + 1] - minY) / fadeHeight));
               const envelope = height * height * (3 - 2 * height);
-              const keep = Math.max(0, Math.min(1, (envelope - noise) / 0.12));
+              const keep = Math.max(0, Math.min(1, (envelope - noise) / runtimeTokens.bust.dissolveThreshold));
               const softKeep = keep * keep * (3 - 2 * keep);
               d.bright[i] *= envelope * softKeep;
             }
@@ -435,7 +437,7 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
       let lastT = performance.now();
 
       const updateCamera = (width: number, height: number) => {
-        const isMobile = window.innerWidth <= 640;
+        const isMobile = window.innerWidth <= breakpoints.phone;
         const aspect = Math.max(1, width) / Math.max(1, height);
         const distance = 1 / PERSPECTIVE;
         const span = VIEW_SPAN * (100 / SIZE_PERCENT);

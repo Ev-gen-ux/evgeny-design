@@ -23,8 +23,8 @@
      5th pass finding) — keeps this panel's content area exactly as wide as
      `.nav`/`.surface`, not 1px narrower on each side. */
   top: 100%;
-  left: -1px;
-  right: -1px;
+  left: var(--offset-border-overlap);
+  right: var(--offset-border-overlap);
   z-index: 1;
   box-sizing: border-box;
   overflow: hidden;
@@ -32,12 +32,12 @@
   opacity: 0;
   pointer-events: none;
   transition:
-    max-height var(--duration-400) var(--ease-signature),
-    opacity var(--duration-400) var(--ease-signature);
+    max-height var(--motion-reveal) var(--ease-signature),
+    opacity var(--motion-reveal) var(--ease-signature);
 }
 
 .overlay[data-open='1'] {
-  max-height: var(--panel-h, 70vh);
+  max-height: var(--panel-h, var(--mobile-nav-overlay-overlay-data-open-1-max-height-length-15));
   opacity: 1;
   pointer-events: auto;
 }
@@ -51,9 +51,9 @@
 .links {
   display: flex;
   flex-direction: column;
-  gap: var(--space-24);
-  padding: var(--space-24);
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-16));
+  gap: var(--mobile-nav-overlay-links-gap);
+  padding: var(--mobile-nav-overlay-links-padding);
+  padding-bottom: var(--mobile-nav-overlay-links-padding-bottom);
 }
 
 .link {

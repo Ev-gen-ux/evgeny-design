@@ -1,3 +1,4 @@
+import { runtimeTokens } from '../../tokens';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { MagnetLink, Tag } from '../../components';
@@ -12,14 +13,14 @@ import styles from './WorkCylinder.module.css';
 const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 
 /** Card text assembling (after landing) / breaking apart (on leaving). */
-const ASSEMBLE_MS = 1150;
-const DISASSEMBLE_MS = 450;
+const ASSEMBLE_MS = runtimeTokens.workCylinder.assemblyMs;
+const DISASSEMBLE_MS = runtimeTokens.workCylinder.disassemblyMs;
 
-const D = 1350;
-const GAP = 36;
-const PEEK = -55;
-const CARD_W = 440;
-const CARD_H = 300;
+const D = runtimeTokens.workCylinder.perspective;
+const GAP = runtimeTokens.workCylinder.gap;
+const PEEK = runtimeTokens.workCylinder.peek;
+const CARD_W = runtimeTokens.workCylinder.width;
+const CARD_H = runtimeTokens.workCylinder.height;
 
 /** Position of one card on the vertical cylinder for a given signed offset from the active index (math ported from the reference carousel, smoothstepped segments 0→1→2→3). */
 function place(offset: number, h: number) {

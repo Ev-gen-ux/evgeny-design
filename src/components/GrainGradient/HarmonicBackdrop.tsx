@@ -1,3 +1,4 @@
+import { token, readToken, runtimeTokens } from '../../tokens';
 import { useEffect, useRef } from 'react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { harmonicFluxFragment } from './harmonicFlux';
@@ -58,14 +59,15 @@ export function HarmonicBackdrop() {
       gl.enableVertexAttribArray(position);
       gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
       const uniform = (name: string) => gl.getUniformLocation(program!, name);
-      gl.uniform1f(uniform('speed'), 0.2);
-      gl.uniform1f(uniform('distortion'), 0.44);
-      gl.uniform1f(uniform('grainMixer'), 0.55);
-      gl.uniform1f(uniform('grainOverlay'), 0.22);
+      gl.uniform1f(uniform('speed'), runtimeTokens.background.speed);
+      gl.uniform1f(uniform('distortion'), runtimeTokens.background.distortion);
+      gl.uniform1f(uniform('grainMixer'), runtimeTokens.background.grainMixer);
+      gl.uniform1f(uniform('grainOverlay'), runtimeTokens.background.grainOverlay);
       gl.uniform1f(uniform('swirlMode'), 0);
       gl.uniform1f(uniform('viewAngle'), 0);
-      // Slightly more neutral than the reference's #5d6583.
-      gl.uniform3f(uniform('c1'), 94 / 255, 99 / 255, 121 / 255);
+      const glow = readToken('color-background-glow');
+      const channels = [1, 3, 5].map(offset => parseInt(glow.slice(offset, offset + 2), 16) / 255);
+      gl.uniform3f(uniform('c1'), channels[0], channels[1], channels[2]);
       for (let i = 2; i <= 6; i++) gl.uniform3f(uniform(`c${i}`), 0, 0, 0);
       const time = uniform('time');
       const resolution = uniform('resolution');
@@ -102,7 +104,7 @@ export function HarmonicBackdrop() {
     }
   }, [reducedMotion]);
 
-  return <div className={styles.root} aria-hidden="true" style={{ background: '#000' }}>
+  return <div className={styles.root} aria-hidden="true" style={{ background: token('harmonic-backdrop-root-background') }}>
     <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />
   </div>;
 }

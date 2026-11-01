@@ -8,6 +8,6 @@
  * nothing actually relied on clipping happening here.
  */
 .root {
-  min-height: 100vh;
+  min-height: var(--home-root-min-height);
   position: relative;
 }

@@ -10,32 +10,32 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 30px;
-  height: 30px;
+  width: var(--cursor-overlay-ring-width);
+  height: var(--cursor-overlay-ring-height);
   border-radius: 50%;
-  border: 1px solid var(--color-accent);
+  border: var(--cursor-overlay-ring-border);
   background: transparent;
   transition:
-    transform var(--duration-200) var(--ease-standard),
-    background-color var(--duration-200) var(--ease-standard);
+    transform var(--motion-control) var(--ease-standard),
+    background-color var(--motion-control) var(--ease-standard);
   pointer-events: none;
-  z-index: 9999;
+  z-index: var(--cursor-overlay-ring-z-index);
 }
 
 .ringHover {
-  background: rgba(var(--color-accent-rgb), 0.14);
+  background: var(--cursor-overlay-ringHover-background);
 }
 
 .dot {
   position: fixed;
   top: 0;
   left: 0;
-  width: 5px;
-  height: 5px;
+  width: var(--cursor-overlay-dot-width);
+  height: var(--cursor-overlay-dot-height);
   border-radius: 50%;
   background: var(--color-accent);
   pointer-events: none;
-  z-index: 9999;
+  z-index: var(--cursor-overlay-dot-z-index);
 }
 
 .coord {
@@ -47,9 +47,9 @@
   letter-spacing: var(--tracking-wider);
   color: var(--color-text-secondary);
   pointer-events: none;
-  z-index: 9999;
+  z-index: var(--cursor-overlay-coord-z-index);
   white-space: pre;
-  transition: color var(--duration-200) var(--ease-standard);
+  transition: color var(--motion-control) var(--ease-standard);
 }
 
 .coordHover {

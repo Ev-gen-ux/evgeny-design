@@ -1,3 +1,4 @@
+import { breakpoints } from '../../tokens';
 import { Link as RouterLink } from 'react-router-dom';
 import { Section, Container, Text, Tag, Card, MagnetLink, PromptSteps } from '../../components';
 import type { CursorTracker } from '../../hooks/useCursorTracker';
@@ -17,10 +18,10 @@ export interface SelectedWorkProps {
 }
 
 /** Same breakpoint Pipeline uses for its sticky-pin fallback — both animated prototypes need the same horizontal room. */
-const TABLET_BREAKPOINT = 768;
+const TABLET_BREAKPOINT = breakpoints.tablet;
 
 /** The site's one phone breakpoint — below this, the cylinder's 3D/scroll-pin rig is replaced by a static card (see PhoneCaseStudyCard) that mirrors its face visually, not its mechanics. */
-const PHONE_BREAKPOINT = 640;
+const PHONE_BREAKPOINT = breakpoints.phone;
 
 /** Prototype switch (2026-09-23, not committed to prod) — flip to compare the two animation candidates against the plain list; 'list' is the current prod behavior. */
 const VARIANT: 'wheel' | 'stack' | 'cylinder' | 'list' = 'cylinder';
@@ -40,7 +41,7 @@ export function SelectedWork({ cursor }: SelectedWorkProps) {
         : 'list';
 
   return (
-    <Section id="work" stageAnchor={2} paddingTop={100} paddingBottom={100}>
+    <Section id="work" stageAnchor={2} paddingTop="section-block" paddingBottom="section-block">
       <Container size="wide">
         <PromptSteps question="покажи, что ты уже сделал" />
         <div className={styles.header}>

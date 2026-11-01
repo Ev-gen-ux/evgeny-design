@@ -9,10 +9,10 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-16) var(--space-32);
-  max-width: 1200px;
+  gap: var(--footer-footerRow-gap);
+  max-width: var(--footer-footerRow-max-width);
   margin: 0 auto;
-  padding: 0 var(--space-container-x);
+  padding: var(--footer-footerRow-padding);
   /* Extra room at the true bottom for the fixed ChatBar (~52px tall, see
      components/ChatBar) — it sits over the viewport's last 52px whenever
      visible, so this row needs that much clearance to never be covered,
@@ -24,7 +24,7 @@
      ChatBar now floats 16px above the viewport bottom instead of sitting
      flush, so its top edge sits 16px higher too; the old 52px reserve
      alone would be 16px short. */
-  padding-bottom: calc(var(--space-40) + 52px + var(--space-16) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: var(--footer-footerRow-padding-bottom);
 }
 
 /* Phone (2026-09-17, responsive pass follow-up) — on mobile ThemeToggle sits
@@ -34,12 +34,12 @@
    footprint was landing right on top of this row's last line (the copyright
    credit), reported by the user from a live screenshot. Reserved clearance
    bumped to clear ThemeToggle's own height too, not just ChatBar's. */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .footerRow {
     /* ThemeToggle removed from render (2026-10-24) — its old +40px raised-
        above-ChatBar reservation is gone; +16px added instead for ChatBar's
        own floating gap (same reasoning as the desktop rule above). */
-    padding-bottom: calc(var(--space-40) + 52px + var(--space-16) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: var(--footer-footerRow-padding-bottom-phone);
     /* Stacked, not `justify-content: space-between` in a wrapped row
        (2026-09-18, explicit user request/bug report — on some phones the
        copyright line landed beside the contact links instead of below
@@ -56,7 +56,7 @@
 .linksRow {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-32);
+  gap: var(--footer-linksRow-gap);
   font-family: var(--font-mono);
   font-size: var(--fs-sm-md);
   color: var(--color-text-secondary);
@@ -71,7 +71,7 @@
 /* Phone (2026-09-18, explicit user request) — github link and the "index
    построен через AI Design Pipeline" explainer are dropped on mobile only;
    both stay on desktop/tablet. Only name + copyright year remain. */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .githubLink,
   .copyrightExtra {
     display: none;
@@ -83,6 +83,6 @@
   .linksRow {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-16);
+    gap: var(--footer-linksRow-gap-phone);
   }
 }

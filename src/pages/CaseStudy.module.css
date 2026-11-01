@@ -8,10 +8,9 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.35;
-  background-image:
-    repeating-linear-gradient(0deg, rgba(var(--color-slate-mist-rgb), 0.07) 0px, rgba(var(--color-slate-mist-rgb), 0.07) 1px, transparent 1px, transparent 64px),
-    repeating-linear-gradient(90deg, rgba(var(--color-slate-mist-rgb), 0.07) 0px, rgba(var(--color-slate-mist-rgb), 0.07) 1px, transparent 1px, transparent 64px);
+  opacity: var(--case-study-grid-opacity);
+  background-image:repeating-linear-gradient(0deg, rgba(var(--color-slate-mist-rgb), var(--opacity-tint-7)) var(--case-study-background-image-detail-0px), rgba(var(--color-slate-mist-rgb), var(--opacity-tint-7)) var(--case-study-background-image-detail-1px), transparent var(--case-study-background-image-detail-1px), transparent var(--case-study-background-image-detail-64px)),
+    repeating-linear-gradient(90deg, rgba(var(--color-slate-mist-rgb), var(--opacity-tint-7)) var(--case-study-background-image-detail-0px), rgba(var(--color-slate-mist-rgb), var(--opacity-tint-7)) var(--case-study-background-image-detail-1px), transparent var(--case-study-background-image-detail-1px), transparent var(--case-study-background-image-detail-64px));
 }
 
 .glow {
@@ -20,12 +19,12 @@
   position: fixed;
   left: -10%;
   top: -10%;
-  width: 60vw;
-  height: 60vw;
+  width: var(--case-study-glow-width);
+  height: var(--case-study-glow-height);
   border-radius: 50%;
   pointer-events: none;
   z-index: 0;
-  background: radial-gradient(circle, rgba(var(--color-accent-rgb), 0.07), transparent 62%);
+  background: var(--case-study-glow-background);
 }
 
 /* Fixed left-side progress rail, reusing Pipeline's AgentSessionTimeline
@@ -38,11 +37,11 @@
    clip awkwardly instead. */
 .timelineRail {
   position: fixed;
-  left: clamp(20px, 3.4vw, 56px);
+  left: var(--case-study-timelineRail-left);
   top: 50%;
   transform: translateY(-50%);
-  z-index: 5;
-  max-height: calc(100vh - 160px);
+  z-index: var(--case-study-timelineRail-z-index);
+  max-height: var(--case-study-timelineRail-max-height);
   overflow-y: auto;
   scrollbar-width: none;
 }
@@ -51,7 +50,7 @@
   display: none;
 }
 
-@media (max-width: 1180px) {
+@media (--viewport-nav-compact) {
   .timelineRail {
     display: none;
   }
@@ -72,14 +71,14 @@
 .main {
   position: relative;
   z-index: 1;
-  max-width: 840px;
+  max-width: var(--case-study-main-max-width);
   margin: 0 auto;
   /* Top 140px, not 120px (2026-10-24, header redesign) — desktop `.nav`
      moved from `top: 0` to `top: var(--space-20)` (floating container), so
      its bottom edge sits 20px lower than before; this padding (tuned to
      clear the fixed Header, see comment below) grows by the same 20px.
      Bottom padding is unrelated to the header and stays 120px. */
-  padding: 140px var(--space-container-x) 120px;
+  padding: var(--case-study-main-padding);
 }
 
 /* Phone (2026-10-09): the desktop 120px top padding (tuned to clear the
@@ -87,22 +86,22 @@
    huge dead gap between the sticky header and "← Вернуться к кейсам" on a
    phone screen — shrunk to a fixed 24px per explicit user request, on every
    case-study page (this file is shared across all of them). */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .main {
-    padding-top: 24px;
+    padding-top: var(--case-study-main-padding-top-phone);
   }
 }
 
 .backLink {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-10);
+  gap: var(--case-study-backLink-gap);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   letter-spacing: var(--tracking-wider);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-28);
-  transition: color var(--duration-250) var(--ease-standard);
+  margin-bottom: var(--case-study-backLink-margin-bottom);
+  transition: color var(--motion-hover) var(--ease-standard);
 }
 
 .backLink:hover,
@@ -113,34 +112,34 @@
 .tagsRow {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-10);
-  margin-bottom: var(--space-26);
+  gap: var(--case-study-tagsRow-gap);
+  margin-bottom: var(--case-study-tagsRow-margin-bottom);
 }
 
 .title {
-  font-size: clamp(32px, 5vw, 58px);
+  font-size: var(--case-study-title-font-size);
   font-weight: var(--fw-bold);
-  line-height: 1.08;
+  line-height: var(--case-study-title-line-height);
   letter-spacing: var(--tracking-tightest);
-  margin: 0 0 var(--space-24);
+  margin: var(--case-study-title-margin);
   text-wrap: pretty;
 }
 
 .subtitle {
-  font-size: clamp(17px, 1.7vw, 21px);
+  font-size: var(--case-study-subtitle-font-size);
   line-height: var(--lh-relaxed);
   color: var(--color-text-body);
   margin: 0;
-  max-width: 60ch;
+  max-width: var(--case-study-subtitle-max-width);
 }
 
 .metaGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-24);
-  margin: 44px 0 0;
-  padding-top: var(--space-28);
-  border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+  grid-template-columns: var(--case-study-metaGrid-grid-template-columns);
+  gap: var(--case-study-metaGrid-gap);
+  margin: var(--case-study-metaGrid-margin);
+  padding-top: var(--case-study-metaGrid-padding-top);
+  border-top: var(--case-study-metaGrid-border-top);
 }
 
 .metaLabel {
@@ -149,7 +148,7 @@
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-8);
+  margin-bottom: var(--case-study-metaLabel-margin-bottom);
 }
 
 .metaValue {
@@ -160,23 +159,23 @@
 }
 
 .section {
-  margin-top: 96px;
+  margin-top: var(--case-study-section-margin-top);
 }
 
 .sectionTitle {
-  font-size: clamp(26px, 3.4vw, 38px);
+  font-size: var(--case-study-sectionTitle-font-size);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tracking-tighter);
-  margin: 0 0 var(--space-24);
+  margin: var(--case-study-sectionTitle-margin);
   text-wrap: pretty;
 }
 
 .para {
   font-size: var(--fs-lg);
-  line-height: 1.75;
+  line-height: var(--case-study-para-line-height);
   color: var(--color-text-body);
-  margin: 0 0 var(--space-20);
-  max-width: 66ch;
+  margin: var(--case-study-para-margin);
+  max-width: var(--case-study-para-max-width);
   text-wrap: pretty;
   /* Long unbroken tokens (2026-09-19, reported: a paragraph mentioning
      "theme.colors.button.primary.background.hover" ran off the right edge
@@ -188,21 +187,21 @@
 }
 
 .numberedList {
-  margin: 28px 0 0;
+  margin: var(--case-study-numberedList-margin);
   padding: 0;
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--case-study-numberedList-gap);
 }
 
 .numberedRow {
   display: grid;
-  grid-template-columns: 44px 1fr;
-  gap: var(--space-16);
+  grid-template-columns: var(--case-study-numberedRow-grid-template-columns);
+  gap: var(--case-study-numberedRow-gap);
   align-items: baseline;
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.14);
+  padding: var(--case-study-numberedRow-padding);
+  border-bottom: var(--case-study-numberedRow-border-bottom);
 }
 
 .numberedNum {
@@ -219,11 +218,11 @@
 
 /* Matrix (log-service only) */
 .matrixBox {
-  margin-top: 52px;
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
-  border-radius: var(--radius-11);
-  padding: clamp(22px, 3.5vw, 44px);
-  background: rgba(var(--color-graphite-rgb), 0.35);
+  margin-top: var(--case-study-matrixBox-margin-top);
+  border: var(--case-study-matrixBox-border);
+  border-radius: var(--radius-panel);
+  padding: var(--case-study-matrixBox-padding);
+  background: var(--case-study-matrixBox-background);
 }
 
 .matrixBoxLabel {
@@ -232,25 +231,25 @@
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-28);
+  margin-bottom: var(--case-study-matrixBoxLabel-margin-bottom);
 }
 
 .matrixBars {
   display: flex;
   flex-direction: column;
-  gap: var(--space-18);
+  gap: var(--case-study-matrixBars-gap);
 }
 
 .matrixBarRow {
   display: grid;
-  grid-template-columns: minmax(120px, 180px) 1fr auto;
-  gap: var(--space-16);
+  grid-template-columns: var(--case-study-matrixBarRow-grid-template-columns);
+  gap: var(--case-study-matrixBarRow-gap);
   align-items: center;
 }
 
 .matrixBarTrack {
-  height: 10px;
-  background: rgba(var(--color-slate-mist-rgb), 0.14);
+  height: var(--case-study-matrixBarTrack-height);
+  background: var(--case-study-matrixBarTrack-background);
   position: relative;
   overflow: hidden;
 }
@@ -263,11 +262,11 @@
 }
 
 .matrixNote {
-  margin: 32px 0 0;
+  margin: var(--case-study-matrixNote-margin);
   font-size: var(--fs-md);
   line-height: var(--lh-loose);
   color: var(--color-text-secondary);
-  max-width: 60ch;
+  max-width: var(--case-study-matrixNote-max-width);
   overflow-wrap: break-word;
 }
 
@@ -279,10 +278,10 @@
    several lines — cheaper and lower-risk to let the table scroll
    horizontally there than to restructure it into stacked cards. */
 .tableWrap {
-  margin-top: var(--space-44);
+  margin-top: var(--case-study-tableWrap-margin-top);
 }
 
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .tableWrap {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -296,9 +295,9 @@
   font-size: var(--fs-sm-md);
 }
 
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .table {
-    min-width: 560px;
+    min-width: var(--case-study-table-min-width-phone);
   }
 }
 
@@ -309,7 +308,7 @@
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
   color: var(--color-text-secondary);
-  padding-bottom: var(--space-14);
+  padding-bottom: var(--case-study-tableCaption-padding-bottom);
 }
 
 .tableHeadFeature {
@@ -319,8 +318,8 @@
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
   color: var(--color-text-secondary);
-  padding: 0 14px 12px 0;
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+  padding: var(--case-study-tableHeadFeature-padding);
+  border-bottom: var(--case-study-tableHeadFeature-border-bottom);
   font-weight: var(--fw-regular);
 }
 
@@ -329,8 +328,8 @@
   font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
-  padding: 0 10px 12px;
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+  padding: var(--case-study-tableHeadCol-padding);
+  border-bottom: var(--case-study-tableHeadCol-border-bottom);
   text-align: center;
   font-weight: var(--fw-regular);
 }
@@ -339,38 +338,38 @@
   text-align: left;
   font-weight: var(--fw-medium);
   color: var(--color-text-body);
-  padding: 12px 14px 12px 0;
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.14);
+  padding: var(--case-study-tableRowFeature-padding);
+  border-bottom: var(--case-study-tableRowFeature-border-bottom);
   line-height: var(--lh-normal);
 }
 
 .tableCell {
-  padding: 12px 10px;
+  padding: var(--case-study-tableCell-padding);
   text-align: center;
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.14);
+  border-bottom: var(--case-study-tableCell-border-bottom);
 }
 
 /* Personas */
 .personaList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-20);
+  gap: var(--case-study-personaList-gap);
 }
 
 .personaCard {
-  border-radius: var(--radius-11);
-  padding: clamp(20px, 3vw, 32px);
+  border-radius: var(--radius-panel);
+  padding: var(--case-study-personaCard-padding);
 }
 
 .personaHead {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: var(--space-16);
+  gap: var(--case-study-personaHead-gap);
   flex-wrap: wrap;
-  margin-bottom: var(--space-16);
+  margin-bottom: var(--case-study-personaHead-margin-bottom);
 }
 
 .personaName {
@@ -385,15 +384,15 @@
   font-size: var(--fs-tiny);
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
-  padding: var(--space-4) var(--space-8);
-  border: 1px solid transparent;
-  border-radius: var(--radius-3);
+  padding: var(--case-study-personaBadge-padding);
+  border: var(--case-study-personaBadge-border);
+  border-radius: var(--radius-badge);
 }
 
 .personaGrid {
   display: grid;
-  grid-template-columns: minmax(80px, 120px) 1fr;
-  gap: 14px var(--space-20);
+  grid-template-columns: var(--case-study-personaGrid-grid-template-columns);
+  gap: var(--case-study-personaGrid-gap);
   font-size: var(--fs-md);
   line-height: var(--lh-relaxed-md);
 }
@@ -403,7 +402,7 @@
   font-size: var(--fs-xs);
   text-transform: uppercase;
   color: var(--color-text-secondary);
-  padding-top: 3px;
+  padding-top: var(--case-study-personaGridLabel-padding-top);
 }
 
 .personaGridValue {
@@ -415,16 +414,16 @@
 .solutionParts {
   display: flex;
   flex-direction: column;
-  gap: var(--space-18);
-  margin-bottom: 56px;
+  gap: var(--case-study-solutionParts-gap);
+  margin-bottom: var(--case-study-solutionParts-margin-bottom);
 }
 
 .solutionPart {
   display: grid;
-  grid-template-columns: minmax(150px, 220px) 1fr;
-  gap: var(--space-20);
-  padding-bottom: var(--space-18);
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.14);
+  grid-template-columns: var(--case-study-solutionPart-grid-template-columns);
+  gap: var(--case-study-solutionPart-gap);
+  padding-bottom: var(--case-study-solutionPart-padding-bottom);
+  border-bottom: var(--case-study-solutionPart-border-bottom);
 }
 
 .solutionPartName {
@@ -443,11 +442,11 @@
 .scenarioHeading {
   font-size: var(--fs-xxl);
   font-weight: var(--fw-bold);
-  margin: 0 0 var(--space-8);
+  margin: var(--case-study-scenarioHeading-margin);
 }
 
 .scenarioSub {
-  margin: 0 0 var(--space-32);
+  margin: var(--case-study-scenarioSub-margin);
   font-size: var(--fs-md);
   color: var(--color-text-secondary);
 }
@@ -456,10 +455,10 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  padding-left: 34px;
+  padding-left: var(--case-study-scenarioList-padding-left);
   display: flex;
   flex-direction: column;
-  gap: var(--space-26);
+  gap: var(--case-study-scenarioList-gap);
 }
 
 .scenarioItem {
@@ -484,19 +483,19 @@
 .scenarioItem:not(:last-child)::before {
   content: '';
   position: absolute;
-  left: -34px;
-  top: 17px;
+  left: var(--offset-negative-34);
+  top: var(--case-study-scenarioItem-not-last-child-before-top);
   bottom: calc(-1 * var(--space-26));
-  width: 1px;
-  background: rgba(var(--color-slate-mist-rgb), 0.25);
+  width: var(--case-study-scenarioItem-not-last-child-before-width);
+  background: var(--case-study-scenarioItem-not-last-child-before-background);
 }
 
 .scenarioDot {
   position: absolute;
-  left: -38.5px;
-  top: 4px;
-  width: 9px;
-  height: 9px;
+  left: var(--case-study-scenarioDot-left);
+  top: var(--case-study-scenarioDot-top);
+  width: var(--case-study-scenarioDot-width);
+  height: var(--case-study-scenarioDot-height);
   border-radius: 50%;
   background: var(--color-accent);
 }
@@ -505,7 +504,7 @@
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--case-study-scenarioNum-margin-bottom);
 }
 
 .scenarioText {
@@ -516,20 +515,20 @@
 }
 
 .edgeCaseNote {
-  margin: 40px 0 0;
+  margin: var(--case-study-edgeCaseNote-margin);
   font-size: var(--fs-md);
   line-height: var(--lh-loose);
   color: var(--color-text-secondary);
-  max-width: 64ch;
+  max-width: var(--case-study-edgeCaseNote-max-width);
 }
 
 /* Metrics (log-service) */
 .northStar {
-  border: 1px solid rgba(var(--color-accent-rgb), 0.4);
-  border-radius: var(--radius-11);
-  padding: clamp(22px, 3vw, 36px);
-  margin-bottom: 36px;
-  background: rgba(var(--color-accent-rgb), 0.06);
+  border: var(--case-study-northStar-border);
+  border-radius: var(--radius-panel);
+  padding: var(--case-study-northStar-padding);
+  margin-bottom: var(--case-study-northStar-margin-bottom);
+  background: var(--case-study-northStar-background);
 }
 
 .northStarTag {
@@ -538,13 +537,13 @@
   text-transform: uppercase;
   letter-spacing: var(--tracking-wider);
   color: var(--color-accent);
-  margin-bottom: var(--space-14);
+  margin-bottom: var(--case-study-northStarTag-margin-bottom);
 }
 
 .northStarText {
   margin: 0;
-  font-size: clamp(19px, 2.4vw, 26px);
-  line-height: 1.4;
+  font-size: var(--case-study-northStarText-font-size);
+  line-height: var(--case-study-northStarText-line-height);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tracking-tight);
 }
@@ -556,15 +555,15 @@
 
 .metricRow {
   display: grid;
-  grid-template-columns: minmax(110px, 150px) 1fr;
-  gap: var(--space-20);
+  grid-template-columns: var(--case-study-metricRow-grid-template-columns);
+  gap: var(--case-study-metricRow-gap);
   align-items: baseline;
-  padding: 20px 0;
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.14);
+  padding: var(--case-study-metricRow-padding);
+  border-bottom: var(--case-study-metricRow-border-bottom);
 }
 
 .metricValue {
-  font-size: clamp(22px, 3vw, 30px);
+  font-size: var(--case-study-metricValue-font-size);
   font-weight: var(--fw-bold);
   letter-spacing: var(--tracking-tight);
   color: var(--color-accent);
@@ -581,16 +580,16 @@
 .defsList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-18);
-  margin-top: var(--space-32);
+  gap: var(--case-study-defsList-gap);
+  margin-top: var(--case-study-defsList-margin-top);
 }
 
 .defRow {
   display: grid;
-  grid-template-columns: minmax(160px, 240px) 1fr;
-  gap: var(--space-20);
-  padding-bottom: var(--space-18);
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.14);
+  grid-template-columns: var(--case-study-defRow-grid-template-columns);
+  gap: var(--case-study-defRow-gap);
+  padding-bottom: var(--case-study-defRow-padding-bottom);
+  border-bottom: var(--case-study-defRow-border-bottom);
 }
 
 .defName {
@@ -607,9 +606,9 @@
 }
 
 .pairsBox {
-  margin-top: var(--space-32);
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
-  border-radius: var(--radius-11);
+  margin-top: var(--case-study-pairsBox-margin-top);
+  border: var(--case-study-pairsBox-border);
+  border-radius: var(--radius-panel);
 }
 
 .pairsHead {
@@ -620,25 +619,25 @@
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
   color: var(--color-text-secondary);
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
+  border-bottom: var(--case-study-pairsHead-border-bottom);
 }
 
 .pairsHeadCell {
-  padding: 12px 16px;
+  padding: var(--case-study-pairsHeadCell-padding);
 }
 
 .pairsHeadCell + .pairsHeadCell {
-  border-left: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+  border-left: var(--case-study-pairsHeadCell-pairsHeadCell-border-left);
 }
 
 .pairRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.12);
+  border-bottom: var(--case-study-pairRow-border-bottom);
 }
 
 .pairWas {
-  padding: 12px 16px;
+  padding: var(--case-study-pairWas-padding);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--color-text-secondary);
@@ -647,19 +646,19 @@
 }
 
 .pairShould {
-  padding: 12px 16px;
+  padding: var(--case-study-pairShould-padding);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--color-accent);
-  border-left: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+  border-left: var(--case-study-pairShould-border-left);
   word-break: break-word;
 }
 
 .groupsList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-26);
-  margin-top: var(--space-32);
+  gap: var(--case-study-groupsList-gap);
+  margin-top: var(--case-study-groupsList-margin-top);
 }
 
 .groupName {
@@ -668,31 +667,31 @@
   text-transform: uppercase;
   letter-spacing: var(--tracking-wide);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--case-study-groupName-margin-bottom);
 }
 
 .groupItems {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-8);
+  gap: var(--case-study-groupItems-gap);
 }
 
 .groupItem {
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--color-text-body);
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.3);
-  border-radius: var(--radius-3);
-  padding: var(--space-6) 11px;
+  border: var(--case-study-groupItem-border);
+  border-radius: var(--radius-badge);
+  padding: var(--case-study-groupItem-padding);
   overflow-wrap: break-word;
 }
 
 .sectionNote {
-  margin: 28px 0 0;
+  margin: var(--case-study-sectionNote-margin);
   font-size: var(--fs-md);
   line-height: var(--lh-loose);
   color: var(--color-text-secondary);
-  max-width: 64ch;
+  max-width: var(--case-study-sectionNote-max-width);
   /* Same fix as `.para` above — this is the exact element reported
      overflowing (the token-naming note mentioning
      "theme.colors.button.primary.background.hover"). */
@@ -701,22 +700,22 @@
 
 /* Outcome */
 .outcomeText {
-  font-size: clamp(18px, 2vw, 22px);
+  font-size: var(--case-study-outcomeText-font-size);
   line-height: var(--lh-relaxed-md);
   color: var(--color-text-primary);
   margin: 0;
-  max-width: 62ch;
+  max-width: var(--case-study-outcomeText-max-width);
   text-wrap: pretty;
   overflow-wrap: break-word;
 }
 
 .ndaBox {
-  margin-top: 40px;
-  padding: 22px 24px;
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
-  border-radius: var(--radius-11);
+  margin-top: var(--case-study-ndaBox-margin-top);
+  padding: var(--case-study-ndaBox-padding);
+  border: var(--case-study-ndaBox-border);
+  border-radius: var(--radius-panel);
   display: flex;
-  gap: var(--space-16);
+  gap: var(--case-study-ndaBox-gap);
   align-items: flex-start;
 }
 
@@ -725,7 +724,7 @@
   font-size: var(--fs-xs);
   color: var(--color-text-secondary);
   letter-spacing: var(--tracking-wider);
-  padding-top: 2px;
+  padding-top: var(--case-study-ndaTag-padding-top);
 }
 
 .ndaText {
@@ -733,13 +732,13 @@
   font-size: var(--fs-base);
   line-height: var(--lh-loose);
   color: var(--color-text-secondary);
-  max-width: 56ch;
+  max-width: var(--case-study-ndaText-max-width);
 }
 
 .outcomeLinks {
   display: flex;
-  gap: var(--space-20);
-  margin-top: 40px;
+  gap: var(--case-study-outcomeLinks-gap);
+  margin-top: var(--case-study-outcomeLinks-margin-top);
   font-family: var(--font-mono);
   font-size: var(--fs-sm-md);
   flex-wrap: wrap;
@@ -747,24 +746,24 @@
 
 /* Sibling nav */
 .siblingsNav {
-  margin-top: 120px;
-  padding-top: 36px;
-  border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+  margin-top: var(--case-study-siblingsNav-margin-top);
+  padding-top: var(--case-study-siblingsNav-padding-top);
+  border-top: var(--case-study-siblingsNav-border-top);
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-18);
+  gap: var(--case-study-siblingsNav-gap);
 }
 
 .siblingLink {
   font-family: var(--font-mono);
   font-size: var(--fs-sm-md);
   color: var(--color-text-secondary);
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.4);
+  border-bottom: var(--case-study-siblingLink-border-bottom);
   text-decoration: none;
-  padding-bottom: 3px;
+  padding-bottom: var(--case-study-siblingLink-padding-bottom);
   transition:
-    color var(--duration-200) var(--ease-standard),
-    border-color var(--duration-200) var(--ease-standard);
+    color var(--motion-control) var(--ease-standard),
+    border-color var(--motion-control) var(--ease-standard);
 }
 
 .siblingLink:hover,
@@ -775,10 +774,10 @@
 
 /* The bare copyright-only sub-footer that used to live here is now the shared `components/Footer` (2026-08-03) — same one Contact uses, with the full contact-links row, not just copyright. */
 
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .metaGrid {
     grid-template-columns: 1fr;
-    gap: var(--space-24);
+    gap: var(--case-study-metaGrid-gap-phone);
   }
 
   .personaGrid,
@@ -788,7 +787,7 @@
   .pairRow,
   .matrixBarRow {
     grid-template-columns: 1fr;
-    gap: var(--space-6);
+    gap: var(--case-study-personaGrid-gap-phone);
   }
 
   /* Number-then-text stack, not side by side (2026-09-18, user feedback —
@@ -799,7 +798,7 @@
   .numberedRow,
   .metricRow {
     grid-template-columns: 1fr;
-    gap: var(--space-6);
+    gap: var(--case-study-numberedRow-gap-phone);
   }
 
   /* Stacked to one column, "было" and "стало" no longer sit side by side
@@ -821,7 +820,7 @@
 
   .pairShould {
     border-left: none;
-    border-top: 1px solid rgba(var(--color-slate-mist-rgb), 0.2);
+    border-top: var(--case-study-pairShould-border-top-phone);
   }
 
   .pairShould::before {

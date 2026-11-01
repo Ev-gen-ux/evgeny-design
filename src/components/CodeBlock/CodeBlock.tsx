@@ -1,4 +1,10 @@
-import { Highlight, themes } from 'prism-react-renderer';
+import { Highlight } from 'prism-react-renderer';
+import { runtimeTokens } from '../../tokens';
+
+const syntaxTheme = {
+  plain: runtimeTokens.syntaxTheme.plain,
+  styles: runtimeTokens.syntaxTheme.styles.map(row => ({ ...row, types: [...row.types] })),
+};
 import styles from './CodeBlock.module.css';
 
 export interface CodeBlockProps {
@@ -18,7 +24,7 @@ export interface CodeBlockProps {
  */
 export function CodeBlock({ code, language = 'tsx' }: CodeBlockProps) {
   return (
-    <Highlight code={code.trim()} language={language} theme={themes.nightOwl}>
+    <Highlight code={code.trim()} language={language} theme={syntaxTheme}>
       {({ className, style, tokens, getLineProps, getTokenProps }) => (
         <pre data-noasm="1" className={`${styles.codeBlock} ${className}`} style={style}>
           {tokens.map((line, i) => (

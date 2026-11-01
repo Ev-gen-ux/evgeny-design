@@ -4,7 +4,7 @@ import styles from './Experience.module.css';
 
 export function Experience() {
   return (
-    <Section id="experience" paddingTop={100} paddingBottom={100}>
+    <Section id="experience" paddingTop="section-block" paddingBottom="section-block">
       <Container size="narrow">
         <PromptSteps question="какой у тебя опыт работы" />
         <div className={styles.header}>

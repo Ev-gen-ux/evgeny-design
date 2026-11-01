@@ -19,12 +19,12 @@
      earlier "no radius" reasoning was explicitly superseded by the user's
      own decision to apply `--radius-11` to Header and all top-level
      sections for consistency, overriding the original call. */
-  border-radius: var(--radius-11);
+  border-radius: var(--radius-panel);
   top: var(--space-20);
-  left: var(--space-40);
-  right: var(--space-40);
+  left: var(--floating-panel-inset-inline-desktop);
+  right: var(--floating-panel-inset-inline-desktop);
   width: auto;
-  z-index: 100;
+  z-index: var(--header-nav-z-index);
   /* Column, not row (2026-10-24 redesign) — `.nav` holds `.topRow` (name/
      tag, desktop links, trigger — the old row layout, moved there
      unchanged) as its only real flow child. MobileNavOverlay's link panel
@@ -40,7 +40,7 @@
   /* 24px fixed left/right padding (2026-10-24 follow-up, explicit user
      spec, replacing the fluid `--space-nav-x` clamp) — same value on every
      breakpoint, see the ≤640px override below. */
-  padding: var(--space-18) var(--space-24);
+  padding: var(--header-nav-padding);
   font-family: var(--font-display);
   isolation: isolate;
   /* No border/background of its own (2026-10-24, 6th pass on the mobile
@@ -77,17 +77,17 @@
    border lines up with where `.nav`'s border used to visually sit. */
 .surface {
   position: absolute;
-  top: -1px;
-  left: -1px;
-  right: -1px;
-  bottom: -1px;
-  border-radius: var(--radius-11);
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
+  top: var(--offset-border-overlap);
+  left: var(--offset-border-overlap);
+  right: var(--offset-border-overlap);
+  bottom: var(--offset-border-overlap);
+  border-radius: var(--radius-panel);
+  border: var(--header-surface-border);
   background: var(--floating-glass-background, var(--glass-background));
   -webkit-backdrop-filter: var(--header-glass-blur, var(--glass-blur));
   backdrop-filter: var(--header-glass-blur, var(--glass-blur));
   pointer-events: none;
-  transition: bottom var(--duration-400) var(--ease-signature);
+  transition: bottom var(--motion-reveal) var(--ease-signature);
 }
 
 /* Grows down by the measured link-panel height (2026-10-24) — `--panel-h`
@@ -95,7 +95,7 @@
    the panel itself) specifically so this sibling element can read it too;
    see that file's own docstring. */
 .nav[data-menu-open='1'] .surface {
-  bottom: calc(-1px - var(--panel-h, 0px));
+  bottom: calc(var(--offset-border-overlap) - var(--panel-h, var(--header-nav-data-menu-open-1-surface-bottom-length-27)));
 }
 
 /* Mobile-only `position: sticky` override (2026-09-19, third attempt at
@@ -127,7 +127,7 @@
    see Hero.module.css's own mobile `padding-top` for the corresponding
    spacing adjustment (scoped to the same breakpoint, so desktop's own
    spacing is untouched too). */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .nav {
     position: sticky;
     /* 16px top gap, 20px side margins on phone (2026-10-24 redesign,
@@ -136,8 +136,8 @@
        `padding-left/right` override further below, now reduced so the two
        don't stack into a 40px total gap). */
     top: var(--space-16);
-    left: var(--space-20);
-    right: var(--space-20);
+    left: var(--floating-panel-inset-inline-phone);
+    right: var(--floating-panel-inset-inline-phone);
   }
 }
 
@@ -150,7 +150,7 @@
    identically everywhere — pinning this one breakpoint's padding to a
    fixed, non-fluid value removes the last source of variance, so the
    trigger sits at the exact same offset on every phone width, every page. */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .nav {
     /* 24px, same fixed value as desktop (2026-10-24 follow-up, explicit
        user spec — matches the base `.nav` rule's padding above, overriding
@@ -159,8 +159,8 @@
        carries its own 20px margin from the viewport edge (see the
        `position: sticky` rule above), so this inner padding is
        content-to-box-edge breathing room, not viewport clearance. */
-    padding-left: var(--space-24);
-    padding-right: var(--space-24);
+    padding-left: var(--header-nav-padding-left-phone);
+    padding-right: var(--header-nav-padding-right-phone);
     /* Vertical padding tightened (2026-09-18, explicit user request — the
        header read as too tall) — `--space-18` top+bottom was sized for the
        single-line desktop wordmark; on phone `.wordmark` is a two-line
@@ -172,8 +172,8 @@
        `.nav` being `position: sticky; top: 0` with no page content above it
        to lend any extra visual clearance). Bottom stays at 12px — only the
        top edge was reported as cramped. */
-    padding-top: var(--space-16);
-    padding-bottom: var(--space-12);
+    padding-top: var(--header-nav-padding-top-phone);
+    padding-bottom: var(--header-nav-padding-bottom-phone);
   }
 }
 
@@ -195,8 +195,8 @@
      above it unclipped), so this layer needs its own matching radius
      (2026-10-24, radius-scale rollout) — without it, `.scrim`'s square
      corners poke out past `.nav`'s now-rounded `--radius-11` border. */
-  border-radius: var(--radius-11);
-  transition: border-radius var(--duration-400) var(--ease-signature);
+  border-radius: var(--radius-panel);
+  transition: border-radius var(--motion-reveal) var(--ease-signature);
   background: var(--floating-glass-background, var(--glass-background));
   /* `-webkit-` prefix before the standard property (2026-09-18) — see
      Skills.module.css's identical comment for the full reasoning: the
@@ -216,7 +216,7 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: var(--space-12);
+  gap: var(--header-topRow-gap);
 }
 
 /* Samsung Galaxy S24 (360px, narrower than the 375-411px widths this
@@ -227,7 +227,7 @@
    flush left under the name instead of staying pinned top-right. Taking the
    trigger out of flow at this breakpoint — `.wordmark`'s own width can never
    push it around again regardless of how long the tag text gets. */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .topRow {
     flex-wrap: nowrap;
     /* Live report 2026-10-25, 2nd pass (S24, 360px): `nowrap` above stopped
@@ -239,14 +239,14 @@
        tag to stay on one line here with headroom for narrower devices too,
        without touching `.nav`'s own 24px edge padding (explicit user spec
        elsewhere, see that rule's own comment). */
-    gap: var(--space-4);
+    gap: var(--header-topRow-gap-phone);
   }
 }
 
 .wordmark {
   display: flex;
   align-items: baseline;
-  gap: var(--space-14);
+  gap: var(--header-wordmark-gap);
   text-decoration: none;
   position: relative;
   z-index: 1;
@@ -256,11 +256,11 @@
    side plus all 5 nav links never fit a 375-411px viewport; user's own
    suggested fix over shrinking the font further — stack the tag under the
    name instead. `.links` moves behind MobileNavOverlay's trigger below. */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .wordmark {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-4);
+    gap: var(--header-wordmark-gap-phone);
   }
 }
 
@@ -274,7 +274,7 @@
 .tag {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--header-tag-gap);
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--color-text-secondary);
@@ -290,15 +290,15 @@
  */
 .sessionDot {
   flex-shrink: 0;
-  width: 7px;
-  height: 7px;
+  width: var(--header-sessionDot-width);
+  height: var(--header-sessionDot-height);
   border-radius: 50%;
   background: var(--color-accent);
 }
 
 .links {
   display: flex;
-  gap: var(--space-24);
+  gap: var(--header-links-gap);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   letter-spacing: var(--tracking-wide);
@@ -307,7 +307,7 @@
 }
 
 /* Phone (2026-09-17) — replaced by MobileNavOverlay's trigger, see Header.tsx. */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .links {
     display: none;
   }
@@ -330,7 +330,7 @@
      scatter-morphs between "[ menu ]" and "[ close ]", so no React children
      here. min-width in `ch` units (the longer of the two labels) keeps the
      text from visibly shifting the row mid-morph. */
-  min-width: 9.5ch;
+  min-width: var(--header-menuTrigger-min-width);
   text-align: center;
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
@@ -342,7 +342,7 @@
      docstring for why its own in-panel close button was removed); it needs
      to stay visible and clickable in place while the panel is slid in over
      the rest of the header, not get covered by it. */
-  z-index: 201;
+  z-index: var(--header-menuTrigger-z-index);
 }
 
 .menuTrigger:hover,
@@ -350,7 +350,7 @@
   color: var(--color-text-primary);
 }
 
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .menuTrigger {
     display: block;
     /* `.nav` is `align-items:center` — fine when `.wordmark` was one line,

@@ -19,7 +19,7 @@ export function About() {
   const reducedMotion = useReducedMotion();
 
   return (
-    <Section id="about" stageAnchor={1} revealId="about" asmSync asmOwn asmSpan={1.2} paddingTop={100} paddingBottom={100} style={reveal}>
+    <Section id="about" stageAnchor={1} revealId="about" asmSync asmOwn asmSpan={1.2} paddingTop="section-block" paddingBottom="section-block" style={reveal}>
       <Container size="wide" className={styles.inner}>
         <div className={styles.label}>
           <PromptSteps question="кто ты?" />

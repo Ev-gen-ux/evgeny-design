@@ -1,3 +1,4 @@
+import { breakpoints } from '../../tokens';
 import { useEffect, useRef } from 'react';
 import { Section, Text, Link } from '../../components';
 import type { CursorTracker } from '../../hooks/useCursorTracker';
@@ -25,7 +26,7 @@ export function Hero({ cursor }: HeroProps) {
   // pass — see _process_log.md) — was 760px, which already swallowed most
   // of the tablet range; the icosahedron should stay visible on tablet and
   // only disappear on phone, per explicit user decision.
-  const isNarrow = windowWidth < 640;
+  const isNarrow = windowWidth < breakpoints.phone;
   // Line break before «AI Design Pipeline» (2026-09-26/28, per user request): a real <br> element disqualifies this
   // paragraph from the assembly engine's candidate check (it requires an element's children to be ALL text nodes —
   // see useAssemblyAnimation.ts's `kids.every(n => n.nodeType === 3)` — so with a <br> the whole .sub text silently
@@ -34,7 +35,7 @@ export function Hero({ cursor }: HeroProps) {
   // untouched as a plain (non-letter) text node between the two split halves, and the browser still renders it as a
   // hard line break under `white-space: normal` — desktop only; on phone/tablet the two halves are joined by a plain
   // space and wrap naturally.
-  const subText = windowWidth >= 1025 ? hero.sub[0] + '\u2028' + hero.sub[1] : hero.sub[0] + ' ' + hero.sub[1];
+  const subText = windowWidth >= breakpoints.desktop ? hero.sub[0] + '\u2028' + hero.sub[1] : hero.sub[0] + ' ' + hero.sub[1];
   const sectionRef = useRef<HTMLElement>(null);
   // Phone (2026-10-24, per user-supplied reference of the old mobile layout):
   // Saturn now takes the in-flow slot the removed icosahedron used to occupy
@@ -116,7 +117,7 @@ export function Hero({ cursor }: HeroProps) {
 
   const spotBackground =
     spot.active && !reducedMotion
-      ? `radial-gradient(320px circle at ${spot.x}px ${spot.y}px, rgba(var(--color-accent-rgb),0.14), transparent 60%)`
+      ? `radial-gradient(var(--spot-radius) circle at ${spot.x}px ${spot.y}px, rgba(var(--color-accent-rgb),var(--spot-opacity)), transparent 60%)`
       : 'transparent';
 
   return (

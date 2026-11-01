@@ -1,3 +1,4 @@
+import { token } from '../tokens';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useLenis } from 'lenis/react';
@@ -119,7 +120,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
   }, [lenis]);
 
   const spotBackground =
-    spot.active && !reducedMotion ? `radial-gradient(320px circle at ${spot.x}px ${spot.y}px, rgba(var(--color-accent-rgb),0.14), transparent 60%)` : 'transparent';
+    spot.active && !reducedMotion ? `radial-gradient(var(--spot-radius) circle at ${spot.x}px ${spot.y}px, rgba(var(--color-accent-rgb),var(--spot-opacity)), transparent 60%)` : 'transparent';
 
   return (
     <div
@@ -132,7 +133,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
            page's base color (index.css); the gradient layer now shows
            through everywhere this div doesn't paint its own content. */
         color: 'var(--color-text-primary)',
-        minHeight: '100vh',
+        minHeight: token('case-study-layout-min-height'),
         position: 'relative',
         overflowX: 'clip',
       }}
@@ -224,7 +225,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
 
         {study.hasMatrix && (
           <>
-            <section aria-labelledby="cs-insight" className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: 112 }}>
+            <section aria-labelledby="cs-insight" className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: token('space-case-section') }}>
               <PromptSteps tag="02 · insight" question="что показал анализ рынка?" className={styles.promptStepsIndent} />
               <h2 id="cs-insight" className={styles.sectionTitle}>
                 Рынок решает анализ логов, но не управление конфигурацией
@@ -245,7 +246,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
                     const shown = Math.round(val * rowT);
                     return (
                       <div key={name} className={styles.matrixBarRow}>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: isUs ? 'var(--color-text-primary)' : 'var(--color-text-secondary)', fontWeight: isUs ? 700 : 400 }}>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: token('case-study-layout-font-size'), color: isUs ? 'var(--color-text-primary)' : 'var(--color-text-secondary)', fontWeight: isUs ? token('case-study-layout-font-weight-emphasis') : token('case-study-layout-font-weight-default') }}>
                           {name}
                         </span>
                         <span className={styles.matrixBarTrack}>
@@ -253,8 +254,8 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
                             className={styles.matrixBarFill}
                             style={{
                               width: `${val * rowT}%`,
-                              background: isUs ? 'var(--color-accent)' : 'rgba(var(--color-slate-mist-rgb), 0.5)',
-                              transition: reducedMotion ? 'none' : 'width 0.5s cubic-bezier(0.16,1,0.3,1)',
+                              background: isUs ? 'var(--color-accent)' : token('case-study-matrix-bar-fill-background-default'),
+                              transition: reducedMotion ? 'none' : token('case-study-matrix-bar-fill-transition-default'),
                             }}
                           />
                         </span>
@@ -278,10 +279,10 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
                           data-noasm="1"
                           style={{
                             fontFamily: 'var(--font-mono)',
-                            fontSize: isUs ? 18 : 13,
-                            fontWeight: isUs ? 700 : 400,
+                            fontSize: isUs ? token('case-study-layout-font-size-emphasis') : token('case-study-layout-font-size-default'),
+                            fontWeight: isUs ? token('case-study-layout-font-weight-emphasis') : token('case-study-layout-font-weight-default'),
                             color: isUs ? 'var(--color-accent)' : 'var(--color-text-secondary)',
-                            minWidth: 54,
+                            minWidth: token('case-study-layout-min-width'),
                             textAlign: 'right',
                           }}
                         >
@@ -330,7 +331,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
                               className={styles.tableCell}
                               style={{
                                 color: isUs && v === 'yes' ? 'var(--color-accent)' : CELL_COLOR[v],
-                                background: isUs ? 'rgba(var(--color-accent-rgb),0.05)' : 'transparent',
+                                background: isUs ? token('case-study-table-cell-background-emphasis') : 'transparent',
                               }}
                             >
                               {CELL_TEXT[v]}
@@ -344,15 +345,15 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
               </div>
             </section>
 
-            <section aria-labelledby="cs-personas" className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: 112 }}>
+            <section aria-labelledby="cs-personas" className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: token('space-case-section') }}>
               <PromptSteps tag="03 · who it's for" question="кто наши пользователи?" className={styles.promptStepsIndent} />
-              <h2 id="cs-personas" className={styles.sectionTitle} style={{ marginBottom: 36 }}>
+              <h2 id="cs-personas" className={styles.sectionTitle} style={{ marginBottom: token('case-study-section-title-margin-bottom') }}>
                 Три роли, один инцидент
               </h2>
               <PersonaList personas={study.personas ?? []} jtbdLabel="jtbd" fearLabel="страх" freqLabel="частота" />
             </section>
 
-            <section aria-labelledby="cs-solution" className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: 112 }}>
+            <section aria-labelledby="cs-solution" className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: token('space-case-section') }}>
               <PromptSteps tag="04 · solution" question="как это решить?" className={styles.promptStepsIndent} />
               <h2 id="cs-solution" className={styles.sectionTitle}>
                 Admin-модуль из трёх разделов
@@ -383,9 +384,9 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
               </p>
             </section>
 
-            <section aria-labelledby="cs-metrics" className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: 112 }}>
+            <section aria-labelledby="cs-metrics" className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: token('space-case-section') }}>
               <PromptSteps tag="05 · goals & metrics" question="как измерить успех?" className={styles.promptStepsIndent} />
-              <h2 id="cs-metrics" className={styles.sectionTitle} style={{ marginBottom: 32 }}>
+              <h2 id="cs-metrics" className={styles.sectionTitle} style={{ marginBottom: token('case-study-section-title-margin-bottom-32px') }}>
                 Цели и метрики
               </h2>
               <div className={styles.northStar}>
@@ -409,9 +410,9 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
         ))}
 
         {showPersonas && (
-          <section aria-labelledby="cs-personas2" className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: 112 }}>
+          <section aria-labelledby="cs-personas2" className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: token('space-case-section') }}>
             <PromptSteps tag="03 · who it's for" question="кто наши клиенты?" className={styles.promptStepsIndent} />
-            <h2 id="cs-personas2" className={styles.sectionTitle} style={{ marginBottom: 36 }}>
+            <h2 id="cs-personas2" className={styles.sectionTitle} style={{ marginBottom: token('case-study-section-title-margin-bottom') }}>
               Кто приходит на сайт
             </h2>
             <PersonaList personas={study.personas ?? []} jtbdLabel="мотивация" fearLabel="барьер" freqLabel="путь" />
@@ -422,7 +423,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
           <GenericSectionBlock key={sec.title} sec={sec} hid={`cs-sec-${sectionsBefore.length + i}`} />
         ))}
 
-        <section aria-labelledby="cs-outcome" className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: 112 }}>
+        <section aria-labelledby="cs-outcome" className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: token('space-case-section') }}>
           <PromptSteps tag={outcomeTag} question="что в итоге?" className={styles.promptStepsIndent} />
           <h2 id="cs-outcome" className={styles.sectionTitle}>
             Итог
@@ -517,8 +518,8 @@ function PersonaList({
             data-asm-sync="1"
             className={styles.personaCard}
             style={{
-              border: `1px solid ${primary ? 'rgba(var(--color-accent-rgb),0.35)' : 'rgba(var(--color-slate-mist-rgb),0.25)'}`,
-              background: primary ? 'rgba(var(--color-accent-rgb),0.05)' : 'rgba(var(--color-graphite-rgb),0.3)',
+              border: `var(--border-width-default) solid ${primary ? 'rgba(var(--color-accent-rgb),0.35)' : 'rgba(var(--color-slate-mist-rgb),0.25)'}`,
+              background: primary ? token('case-study-persona-card-background-emphasis') : token('case-study-persona-card-background-default'),
             }}
           >
             <div className={styles.personaHead}>
@@ -527,7 +528,7 @@ function PersonaList({
                 className={styles.personaBadge}
                 style={{
                   color: primary ? 'var(--color-accent)' : 'var(--color-text-secondary)',
-                  borderColor: primary ? 'rgba(var(--color-accent-rgb),0.45)' : 'rgba(var(--color-slate-mist-rgb),0.35)',
+                  borderColor: primary ? token('case-study-persona-badge-border-color-emphasis') : token('case-study-persona-badge-border-color-default'),
                 }}
               >
                 {p.rank}
@@ -550,7 +551,7 @@ function PersonaList({
 
 function GenericSectionBlock({ sec, hid }: { sec: GenericSection; hid: string }) {
   return (
-    <section aria-labelledby={hid} className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: 112 }}>
+    <section aria-labelledby={hid} className={`${styles.section} ${styles.promptSection}`} style={{ marginTop: token('space-case-section') }}>
       <PromptSteps tag={sec.tag} question={sec.promptQuestion ?? 'что здесь важно?'} className={styles.promptStepsIndent} />
       <h2 id={hid} className={styles.sectionTitle}>
         {sec.title}

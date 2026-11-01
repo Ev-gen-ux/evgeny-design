@@ -1,3 +1,5 @@
+import { breakpoints } from '../../tokens';
+import { token, runtimeTokens } from '../../tokens';
 import { useRef } from 'react';
 import type { CSSProperties } from 'react';
 import { Section, Text, AgentSessionTimeline } from '../../components';
@@ -8,7 +10,7 @@ import { pipelineHeader, pipelineStages, outcomeClaims, agentSessionSteps } from
 import styles from './Pipeline.module.css';
 
 /** Tablet-and-below — the sticky-pin frame needs real horizontal room (the source's `minmax(240px, 32%)` left column) that a phone/tablet viewport doesn't have; below this it falls back to the same static stacked layout `prefers-reduced-motion` already used. Same value as the rest of the site's new tablet breakpoint (see `_process_log.md`'s 2026-09-17 responsive-pass entry). */
-const TABLET_BREAKPOINT = 768;
+const TABLET_BREAKPOINT = breakpoints.tablet;
 
 /**
  * 1:1 with pipelineRenderVals()/plScrollState()/drivePipeline() in
@@ -32,7 +34,7 @@ const TABLET_BREAKPOINT = 768;
  * there.
  */
 /** All panels start hidden/below — the rAF loop in usePipelineScroll takes over and corrects panel 0 to visible on its first tick, right after mount. */
-const initialPanelStyle: CSSProperties = { opacity: 0, transform: 'translateY(calc(-50% + 70px))', pointerEvents: 'none' };
+const initialPanelStyle: CSSProperties = { opacity: 0, transform: token('pipeline-initial-panel-transform'), pointerEvents: 'none' };
 
 export function Pipeline() {
   const reducedMotion = useReducedMotion();
@@ -62,52 +64,52 @@ export function Pipeline() {
   // Projects/Pipeline — mirror the convention, not a new one.
   const sectionStyle: CSSProperties = stackedLayout
     ? { position: 'relative' }
-    : { position: 'relative', height: `${panelCount * 105}vh`, marginTop: '200px' };
+    : { position: 'relative', height: `${panelCount * runtimeTokens.pipeline.stageVh}vh`, marginTop: token('pipeline-section-margin-top') };
 
   const stickyStyle: CSSProperties = stackedLayout
-    ? { padding: '80px clamp(20px,6vw,80px)' }
+    ? { padding: token('pipeline-sticky-padding') }
     : {
         position: 'sticky',
         top: 0,
-        height: '100vh',
+        height: token('pipeline-sticky-height'),
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 'clamp(16px,4vh,48px) clamp(20px,5vw,64px)',
+        padding: token('pipeline-sticky-padding-desktop'),
       };
 
   const frameStyle: CSSProperties = stackedLayout
-    ? { maxWidth: 1100, margin: '0 auto' }
+    ? { maxWidth: token('pipeline-frame-max-width'), margin: '0 auto' }
     : {
         width: '100%',
-        maxWidth: 1240,
-        height: 'min(78vh, 720px)',
-        border: '1px solid rgba(var(--color-slate-mist-rgb), 0.3)',
+        maxWidth: token('pipeline-frame-max-width-desktop'),
+        height: token('pipeline-frame-height'),
+        border: token('pipeline-frame-border'),
         borderRadius: 'var(--radius-11)',
         display: 'grid',
-        gridTemplateColumns: 'minmax(240px, 32%) 1fr',
+        gridTemplateColumns: token('pipeline-frame-grid-template-columns'),
       };
 
   const leftStyle: CSSProperties = stackedLayout
-    ? { marginBottom: 48 }
+    ? { marginBottom: token('pipeline-left-margin-bottom') }
     : {
         position: 'relative',
-        zIndex: 1,
+        zIndex: token('pipeline-left-z-index'),
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: 'clamp(24px,3.4vw,44px)',
-        borderRight: '1px solid rgba(var(--color-slate-mist-rgb), 0.25)',
+        padding: token('pipeline-left-padding'),
+        borderRight: token('pipeline-left-border-right'),
       };
 
-  const rightStyle: CSSProperties = stackedLayout ? {} : { position: 'relative', zIndex: 1, overflow: 'hidden' };
+  const rightStyle: CSSProperties = stackedLayout ? {} : { position: 'relative', zIndex: token('pipeline-right-z-index'), overflow: 'hidden' };
 
   const panelBaseStyle: CSSProperties = stackedLayout
-    ? { padding: '0 0 44px 0', marginBottom: 32, borderBottom: '1px solid rgba(var(--color-slate-mist-rgb), 0.18)' }
+    ? { padding: token('pipeline-panel-base-padding'), marginBottom: token('pipeline-panel-base-margin-bottom'), borderBottom: token('pipeline-panel-base-border-bottom') }
     : {
         position: 'absolute',
-        left: 'clamp(28px,4vw,72px)',
-        right: 'clamp(28px,4vw,72px)',
+        left: token('pipeline-panel-base-left'),
+        right: token('pipeline-panel-base-right'),
         top: '50%',
         willChange: 'transform, opacity',
         display: 'flex',
@@ -122,7 +124,7 @@ export function Pipeline() {
           <div data-pl-fixed="1" style={leftStyle}>
             <div>
               <Text variant="eyebrow">{pipelineHeader.eyebrow}</Text>
-              <Text variant="pipelineHeading" as="h2" style={{ margin: '12px 0 0' }}>
+              <Text variant="pipelineHeading" as="h2" style={{ margin: token('pipeline-layout-margin') }}>
                 {pipelineHeader.title}
               </Text>
               <p className={styles.sub}>{pipelineHeader.sub}</p>

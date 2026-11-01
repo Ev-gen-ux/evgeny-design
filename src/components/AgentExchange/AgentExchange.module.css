@@ -1,15 +1,15 @@
 .exchange {
   display: flex;
   flex-direction: column;
-  gap: var(--space-14);
-  margin-bottom: var(--space-48);
-  max-width: 720px;
+  gap: var(--agent-exchange-exchange-gap);
+  margin-bottom: var(--agent-exchange-exchange-margin-bottom);
+  max-width: var(--agent-exchange-exchange-max-width);
 }
 
 .row {
   display: flex;
   align-items: center;
-  gap: var(--space-10);
+  gap: var(--agent-exchange-row-gap);
   min-width: 0;
 }
 
@@ -24,7 +24,7 @@
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--color-text-secondary);
-  min-width: 3.5em;
+  min-width: var(--agent-exchange-role-min-width);
 }
 
 .question {
@@ -35,9 +35,9 @@
 .barTrack {
   position: relative;
   flex: 1;
-  height: 1px;
-  min-width: 40px;
-  background: rgba(var(--color-slate-mist-rgb), 0.15);
+  height: var(--agent-exchange-barTrack-height);
+  min-width: var(--agent-exchange-barTrack-min-width);
+  background: var(--agent-exchange-barTrack-background);
   overflow: hidden;
 }
 
@@ -46,7 +46,7 @@
   left: 0;
   top: 0;
   bottom: 0;
-  background: linear-gradient(to right, var(--color-accent), rgba(var(--color-accent-rgb), 0));
+  background: var(--agent-exchange-barFill-background);
 }
 
 .resolved {
@@ -59,46 +59,46 @@
 
 /* 'compact' variant (2026-08-02 trial, About only) — outline only, no fill, tight max-width instead of stretching to fill the section's full column. */
 .exchangeCompact {
-  max-width: 420px;
-  padding: var(--space-18) var(--space-20);
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.25);
-  border-radius: var(--radius-9);
-  gap: var(--space-10);
-  margin-bottom: var(--space-40);
+  max-width: var(--agent-exchange-exchangeCompact-max-width);
+  padding: var(--agent-exchange-exchangeCompact-padding);
+  border: var(--agent-exchange-exchangeCompact-border);
+  border-radius: var(--radius-card);
+  gap: var(--agent-exchange-exchangeCompact-gap);
+  margin-bottom: var(--agent-exchange-exchangeCompact-margin-bottom);
 }
 
 .typing {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  transition: opacity var(--duration-200) var(--ease-standard);
+  gap: var(--agent-exchange-typing-gap);
+  transition: opacity var(--motion-control) var(--ease-standard);
 }
 
 .typingDot {
-  width: 5px;
-  height: 5px;
+  width: var(--agent-exchange-typingDot-width);
+  height: var(--agent-exchange-typingDot-height);
   border-radius: 50%;
   background: var(--color-accent);
-  animation: agentTypingBounce 1.1s ease-in-out infinite;
+  animation: var(--agent-exchange-typingDot-animation);
 }
 
 .typingDot:nth-child(2) {
-  animation-delay: 0.15s;
+  animation-delay: var(--agent-exchange-typingDot-nth-child-2-animation-delay);
 }
 
 .typingDot:nth-child(3) {
-  animation-delay: 0.3s;
+  animation-delay: var(--agent-exchange-typingDot-nth-child-3-animation-delay);
 }
 
 @keyframes agentTypingBounce {
   0%,
   60%,
   100% {
-    opacity: 0.3;
+    opacity: var(--agent-exchange-step-0-opacity);
     transform: translateY(0);
   }
   30% {
     opacity: 1;
-    transform: translateY(-2px);
+    transform: translateY(var(--motion-hover-lift));
   }
 }

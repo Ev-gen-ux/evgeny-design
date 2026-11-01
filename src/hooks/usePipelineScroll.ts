@@ -1,3 +1,4 @@
+import { runtimeTokens } from '../tokens';
 import { useEffect, type RefObject } from 'react';
 import { pipelineSync } from './pipelineSync';
 
@@ -156,21 +157,21 @@ export function usePipelineScroll(
             at = 1;
           } else {
             op = 0;
-            dy = 70;
+            dy = runtimeTokens.pipeline.panelOffset;
             at = 0;
           }
         } else if (i < active) {
           op = 0;
-          dy = -70;
+          dy = -runtimeTokens.pipeline.panelOffset;
           at = 1;
         } else if (i > active) {
           op = 0;
-          dy = 70;
+          dy = runtimeTokens.pipeline.panelOffset;
           at = 0;
         } else {
           const leave = i === N - 1 ? 0 : Math.max(0, (local - 0.84) / 0.16);
           op = 1 - leave;
-          dy = -leave * 70;
+          dy = -leave * runtimeTokens.pipeline.panelOffset;
           at = Math.max(0, Math.min(1, local / 0.42));
         }
         panelT[i] = at;

@@ -1,3 +1,4 @@
+import { breakpoints } from '../tokens';
 import { useEffect, useRef, useState } from 'react';
 import type * as ThreeNS from 'three';
 
@@ -69,7 +70,7 @@ export function useThreeScene(
         // page, which desktop-CPU devtools emulation can't reveal at all
         // (it resizes the viewport, it doesn't throttle the GPU). Desktop/
         // tablet keep antialiasing and the 1.5× cap from the previous pass.
-        const isMobile = window.innerWidth <= 768;
+        const isMobile = window.innerWidth <= breakpoints.tablet;
         renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: !isMobile });
         // Pixel ratio cap lowered from 2 to 1.5 (2026-09-18) — originally
         // tuned for the icosahedron hero figure, which used to roam the

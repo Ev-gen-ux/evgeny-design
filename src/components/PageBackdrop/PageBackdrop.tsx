@@ -1,18 +1,19 @@
+import { runtimeTokens } from '../../tokens';
 import { useRef } from 'react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useStageProgress, STAGE_HUES } from '../../hooks/useStageProgress';
 import styles from './PageBackdrop.module.css';
 
 /** 1:1 with MESH_BASE in Portfolio.dc.html. `dynAlpha` replaces the source's `color.includes('0.22') ? '0.24' : '0.14'` check — same two values, just named instead of sniffed out of a placeholder string. */
-const MESH_BASE = [
-  { top: '-8%', right: '-10%', left: undefined, size: '46vw', color: 'rgba(var(--color-accent-rgb), 0.22)', factor: 0.05, delay: '0s', dynAlpha: '0.24' },
-  { top: '32%', left: '-14%', right: undefined, size: '42vw', color: 'rgba(var(--color-slate-mist-rgb), 0.16)', factor: -0.03, delay: '-6s', dynAlpha: undefined },
-  { top: '64%', right: '-12%', left: undefined, size: '40vw', color: 'rgba(var(--color-accent-rgb), 0.13)', factor: 0.04, delay: '-11s', dynAlpha: '0.14' },
-  { top: '90%', left: '6%', right: undefined, size: '38vw', color: 'rgba(var(--color-graphite-rgb), 0.9)', factor: -0.02, delay: '-3s', dynAlpha: undefined },
-] as const;
+const MESH_BASE = runtimeTokens.legacyBackdrop.mesh.map(blob => ({
+  ...blob,
+  left: blob.left ?? undefined,
+  right: blob.right ?? undefined,
+  dynAlpha: blob.dynAlpha ?? undefined,
+}));
 
 const INITIAL_HUE = STAGE_HUES[0];
-const INITIAL_STAGE_COLOR = `oklch(0.65 0.18 ${INITIAL_HUE.toFixed(1)})`;
+const INITIAL_STAGE_COLOR = `oklch(${runtimeTokens.legacyBackdrop.lightness} ${runtimeTokens.legacyBackdrop.stageChroma} ${INITIAL_HUE.toFixed(1)})`;
 
 /**
  * Root-level ambient layers rendered once for the whole page (not scoped to
@@ -49,7 +50,7 @@ export function PageBackdrop() {
         ref={washRef}
         className={[styles.wash, !reducedMotion && styles.washAnimated].filter(Boolean).join(' ')}
         style={{
-          background: `conic-gradient(from 120deg at 30% 20%, oklch(var(--wash-l1) 0.05 ${INITIAL_HUE}) 0deg, oklch(var(--wash-l2) 0.045 ${INITIAL_HUE + 55}) 130deg, oklch(var(--wash-l3) 0.035 ${INITIAL_HUE - 65}) 250deg, oklch(var(--wash-l1) 0.05 ${INITIAL_HUE}) 360deg)`,
+          background: `conic-gradient(from 120deg at 30% 20%, oklch(var(--wash-l1) ${runtimeTokens.legacyBackdrop.washChroma[0]} ${INITIAL_HUE}) 0deg, oklch(var(--wash-l2) ${runtimeTokens.legacyBackdrop.washChroma[1]} ${INITIAL_HUE + 55}) 130deg, oklch(var(--wash-l3) ${runtimeTokens.legacyBackdrop.washChroma[2]} ${INITIAL_HUE - 65}) 250deg, oklch(var(--wash-l1) ${runtimeTokens.legacyBackdrop.washChroma[0]} ${INITIAL_HUE}) 360deg)`,
         }}
         aria-hidden="true"
       />
@@ -72,7 +73,7 @@ export function PageBackdrop() {
               data-dyn-alpha={b.dynAlpha}
               className={[styles.blobInner, !reducedMotion && styles.blobAnimated].filter(Boolean).join(' ')}
               style={{
-                background: b.dynAlpha ? `radial-gradient(circle, oklch(0.65 0.18 ${INITIAL_HUE} / ${b.dynAlpha}), transparent 70%)` : `radial-gradient(circle, ${b.color}, transparent 70%)`,
+                background: b.dynAlpha ? `radial-gradient(circle, oklch(${runtimeTokens.legacyBackdrop.lightness} ${runtimeTokens.legacyBackdrop.stageChroma} ${INITIAL_HUE} / ${b.dynAlpha}), transparent 70%)` : `radial-gradient(circle, ${b.color}, transparent 70%)`,
                 animationDelay: b.delay,
               }}
             />

@@ -6,18 +6,18 @@
  * driven fixed positioning, and the page-wide crosshair — is wired as of this step.
  */
 .section {
-  min-height: 100vh;
+  min-height: var(--hero-section-min-height);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: var(--space-140) var(--space-container-x) var(--space-100);
+  padding: var(--hero-section-padding);
   overflow: hidden;
 }
 
 /* Phone (2026-09-17, responsive pass) — the fixed --space-140 top padding
    was tuned for desktop headroom above the headline; on a short phone
    viewport it can push content toward/below the first screen. */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .section {
     /* Reduced from `--space-100` to `--space-40` (2026-09-19) — this was
        pure header-clearance for a `position: fixed`, out-of-flow `.nav`
@@ -46,7 +46,7 @@
        above it). See sections/About, SelectedWork, Projects, Experience,
        Skills, Education (index.css's mobile override) and ContactCta for
        the matching other halves of each boundary. */
-    padding-bottom: 80px;
+    padding-bottom: var(--hero-section-padding-bottom-phone);
   }
 }
 
@@ -55,14 +55,13 @@
   display: none;
   position: absolute;
   inset: 0;
-  opacity: 0.6;
-  background-image:
-    repeating-linear-gradient(0deg, rgba(var(--color-slate-mist-rgb), 0.1) 0px, rgba(var(--color-slate-mist-rgb), 0.1) 1px, transparent 1px, transparent 48px),
-    repeating-linear-gradient(90deg, rgba(var(--color-slate-mist-rgb), 0.1) 0px, rgba(var(--color-slate-mist-rgb), 0.1) 1px, transparent 1px, transparent 48px);
+  opacity: var(--hero-grid-opacity);
+  background-image:repeating-linear-gradient(0deg, rgba(var(--color-slate-mist-rgb), var(--opacity-tint-10)) var(--hero-background-image-detail-0px), rgba(var(--color-slate-mist-rgb), var(--opacity-tint-10)) var(--hero-background-image-detail-1px), transparent var(--hero-background-image-detail-1px), transparent var(--hero-background-image-detail-48px)),
+    repeating-linear-gradient(90deg, rgba(var(--color-slate-mist-rgb), var(--opacity-tint-10)) var(--hero-background-image-detail-0px), rgba(var(--color-slate-mist-rgb), var(--opacity-tint-10)) var(--hero-background-image-detail-1px), transparent var(--hero-background-image-detail-1px), transparent var(--hero-background-image-detail-48px));
 }
 
 .gridAnimated {
-  animation: driftGrid 50s linear infinite;
+  animation: var(--hero-gridAnimated-animation);
 }
 
 .spot {
@@ -90,7 +89,7 @@
 .saturnLayer {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: var(--hero-saturnLayer-z-index);
   pointer-events: none;
 }
 
@@ -104,7 +103,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 50%, transparent 32%, rgba(var(--color-graphite-rgb), 0.6) 100%);
+  background: var(--hero-saturnLayer-after-background);
   pointer-events: none;
 }
 
@@ -117,55 +116,55 @@
 .inner {
   position: relative;
   z-index: 1;
-  max-width: 1100px;
+  max-width: var(--hero-inner-max-width);
 }
 
 .eyebrow {
-  margin-bottom: var(--space-14);
+  margin-bottom: var(--hero-eyebrow-margin-bottom);
 }
 
 .tokenCounter {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--color-text-secondary);
-  height: 16px;
-  margin-bottom: var(--space-4);
-  transition: opacity 0.5s ease 0.15s;
+  height: var(--hero-tokenCounter-height);
+  margin-bottom: var(--hero-tokenCounter-margin-bottom);
+  transition: var(--hero-tokenCounter-transition);
 }
 
 .headline {
-  line-height: 0.98;
-  max-width: 17ch;
-  margin-bottom: var(--space-28);
+  line-height: var(--hero-headline-line-height);
+  max-width: var(--hero-headline-max-width);
+  margin-bottom: var(--hero-headline-margin-bottom);
 }
 
 .sub {
-  max-width: 620px;
-  margin-bottom: var(--space-36);
+  max-width: var(--hero-sub-max-width);
+  margin-bottom: var(--hero-sub-margin-bottom);
 }
 
 .ctaRow {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-28);
-  margin-bottom: var(--space-60);
+  gap: var(--hero-ctaRow-gap);
+  margin-bottom: var(--hero-ctaRow-margin-bottom);
 }
 
 .typeTags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-14);
+  gap: var(--hero-typeTags-gap);
 }
 
 .typeTag {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--color-text-secondary);
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.35);
-  border-radius: var(--radius-3);
-  padding: var(--space-6) var(--space-10);
+  border: var(--hero-typeTag-border);
+  border-radius: var(--radius-badge);
+  padding: var(--hero-typeTag-padding);
   display: inline-flex;
-  gap: var(--space-6);
+  gap: var(--hero-typeTag-gap);
 }
 
 .typeTagKey {
@@ -175,8 +174,8 @@
 /* Phone: same stacked flow as before; the goal line sits right under the headline (it used to be the tail of it). */
 .goal {
   line-height: 1;
-  max-width: 17ch;
-  margin-bottom: var(--space-28);
+  max-width: var(--hero-goal-max-width);
+  margin-bottom: var(--hero-goal-margin-bottom);
 }
 
 /*
@@ -189,11 +188,11 @@
  * tags, goal) — `order` reflows tags/goal visually without touching the DOM
  * walk the assembly animation depends on.
  */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .inner {
     display: flex;
     flex-direction: column;
-    min-height: calc(100vh - var(--space-20) - 80px);
+    min-height: var(--hero-inner-min-height-phone);
   }
 
   .tokenCounter {
@@ -237,8 +236,8 @@
        `.nav`'s rendered bottom edge. Adding `.nav`'s own sticky offset
        here compensates for exactly that, leaving the intended 20px
        visible. */
-    padding-top: calc(var(--space-16) + var(--space-20));
-    margin-bottom: var(--space-20);
+    padding-top: var(--hero-eyebrow-padding-top-phone);
+    margin-bottom: var(--hero-eyebrow-margin-bottom-phone);
   }
 
   /* Two-class selector (matches .inner .goal below, and the desktop block's
@@ -249,24 +248,24 @@
     order: 3;
     /* Shrunk (2026-10-09, explicit user request: needed to look proportionate
        against the restored centered figure + the smaller corner blocks below). */
-    font-size: clamp(26px, 8.5vw, 36px);
-    line-height: 1.05;
+    font-size: var(--hero-inner-headline-font-size-phone);
+    line-height: var(--hero-inner-headline-line-height-phone);
     max-width: none;
     width: 100%;
-    margin-bottom: var(--space-16);
+    margin-bottom: var(--hero-inner-headline-margin-bottom-phone);
   }
 
   .sub {
     order: 4;
     font-size: var(--fs-sm);
     max-width: none;
-    margin-bottom: var(--space-24);
+    margin-bottom: var(--hero-sub-margin-bottom-phone);
   }
 
   .ctaRow {
     order: 5;
     flex-wrap: nowrap;
-    gap: var(--space-16);
+    gap: var(--hero-ctaRow-gap-phone);
     margin-bottom: 0;
   }
 
@@ -292,11 +291,11 @@
        own text flow). */
     align-self: flex-end;
     text-align: left;
-    font-size: 22px;
-    line-height: 1.15;
-    max-width: 14ch;
+    font-size: var(--hero-inner-goal-font-size-phone);
+    line-height: var(--hero-inner-goal-line-height-phone);
+    max-width: var(--hero-inner-goal-max-width-phone);
     /* 32px (2026-10-09, explicit user request, mobile-only value). */
-    margin-bottom: var(--space-32);
+    margin-bottom: var(--hero-inner-goal-margin-bottom-phone);
   }
 
   /* Wraps to a second row instead of scrolling past the viewport edge
@@ -308,13 +307,13 @@
     order: 8;
     flex-wrap: wrap;
     justify-content: flex-start;
-    gap: var(--space-4);
+    gap: var(--hero-typeTags-gap-phone);
   }
 
   .typeTag {
-    font-size: clamp(8px, 2.4vw, 11px);
-    padding: var(--space-4) var(--space-6);
-    gap: var(--space-4);
+    font-size: var(--hero-typeTag-font-size-phone);
+    padding: var(--hero-typeTag-padding-phone);
+    gap: var(--hero-typeTag-gap-phone);
     white-space: nowrap;
     flex-shrink: 0;
   }
@@ -349,8 +348,8 @@
        cloud's spread or enlarging the canvas past the section). Physical
        particle positions are untouched; this only fades the rendered LAYER
        near its own edges. `-webkit-` prefix required for iOS Safari. */
-    mask-image: linear-gradient(to bottom, transparent 0, black 72px, black calc(100% - 72px), transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 72px, black calc(100% - 72px), transparent 100%);
+    mask-image: var(--hero-saturnLayer-mask-image-phone);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, black var(--hero-webkit-mask-image-detail-72px), black calc(100% - var(--hero-webkit-mask-image-detail-72px)), transparent 100%);
   }
 
   .saturnLayer::after {
@@ -368,10 +367,10 @@
        request: shrink the bust itself, nothing else (not a reorder, not a
        reflow of the surrounding text) — see usePortraitSaturnScene.ts's
        `MOBILE_ZOOM_OUT` for the matching camera-side half of this change. */
-    height: 42vh;
-    min-height: 300px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    height: var(--hero-saturnSpacer-height-phone);
+    min-height: var(--hero-saturnSpacer-min-height-phone);
+    margin-top: var(--hero-saturnSpacer-margin-top-phone);
+    margin-bottom: var(--hero-saturnSpacer-margin-bottom-phone);
   }
 
   .inner {
@@ -393,7 +392,7 @@
  * Top-left: counter + short headline + small description + links. Top-right:
  * eyebrow. Bottom-right: the type-spec tags, above the fixed chat bar (52px).
  */
-@media (min-width: 641px) {
+@media (--viewport-above-phone) {
   .section {
     justify-content: stretch;
     /* --space-120, not --space-100 (2026-10-24, header redesign) — desktop
@@ -401,8 +400,8 @@
        container), so its bottom edge sits 20px lower than before; this
        padding (fixed `.nav`'s own clearance) grows by the same 20px to
        keep the gap above Hero's content unchanged. */
-    padding-top: var(--space-120);
-    padding-bottom: calc(52px + var(--space-32));
+    padding-top: var(--hero-section-padding-top-above-phone);
+    padding-bottom: var(--hero-section-padding-bottom-above-phone);
   }
 
   .inner {
@@ -412,7 +411,7 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     grid-template-rows: auto auto auto auto 1fr;
-    column-gap: var(--space-40);
+    column-gap: var(--hero-inner-column-gap-above-phone);
   }
 
   .tokenCounter {
@@ -428,7 +427,7 @@
     /* Left-aligned lines, block pinned to the right edge (same treatment as
        .goal): the box only hugs the text if max-width matches the longest line. */
     text-align: left;
-    max-width: 11.3em; /* longest line «SENIOR PRODUCT /» ≈ 10.9em */
+    max-width: var(--hero-eyebrow-max-width-above-phone); /* longest line «SENIOR PRODUCT /» ≈ 10.9em */
     margin-bottom: 0;
   }
 
@@ -439,28 +438,28 @@
        size drops a step and the measure is in em (not ch — `ch` is the width of
        a digit, which understates capitals). */
     text-transform: uppercase;
-    font-size: clamp(24px, 3.15vw, 48px);
-    line-height: 1.08;
+    font-size: var(--hero-inner-headline-font-size-above-phone);
+    line-height: var(--hero-inner-headline-line-height-above-phone);
     /* The Text `hero` variant's -0.02em is tuned for lowercase; capitals want to
        breathe a little (approved by the user 2026-09-26: caps stay, slightly
        larger, looser). */
-    letter-spacing: 0.01em;
-    max-width: 13em;
-    margin-bottom: var(--space-20);
+    letter-spacing: var(--hero-inner-headline-letter-spacing-above-phone);
+    max-width: var(--hero-inner-headline-max-width-above-phone);
+    margin-bottom: var(--hero-inner-headline-margin-bottom-above-phone);
   }
 
   .inner .sub {
     grid-column: 1;
     grid-row: 3;
     font-size: var(--fs-sm-md);
-    max-width: 380px;
-    margin-bottom: var(--space-20);
+    max-width: var(--hero-inner-sub-max-width-above-phone);
+    margin-bottom: var(--hero-inner-sub-margin-bottom-above-phone);
   }
 
   .ctaRow {
     grid-column: 1;
     grid-row: 4;
-    gap: var(--space-24);
+    gap: var(--hero-ctaRow-gap-above-phone);
     margin-bottom: 0;
   }
 
@@ -470,7 +469,7 @@
     align-self: end;
     justify-self: start;
     justify-content: flex-start;
-    gap: var(--space-8);
+    gap: var(--hero-typeTags-gap-above-phone);
   }
 
   .inner .goal {
@@ -485,11 +484,11 @@
        margin. Re-tune if the copy changes. */
     text-align: left;
     text-transform: uppercase;
-    font-size: clamp(18px, 2.2vw, 34px);
-    line-height: 1.1;
-    letter-spacing: 0.01em;
+    font-size: var(--hero-inner-goal-font-size-above-phone);
+    line-height: var(--hero-inner-goal-line-height-above-phone);
+    letter-spacing: var(--hero-inner-goal-letter-spacing-above-phone);
     font-weight: var(--fw-semibold); /* one step down from the headline's bold (user request) */
-    max-width: 9.1em;
+    max-width: var(--hero-inner-goal-max-width-above-phone);
     margin-bottom: 0;
   }
 }

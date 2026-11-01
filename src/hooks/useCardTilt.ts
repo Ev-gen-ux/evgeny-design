@@ -1,3 +1,4 @@
+import { token, runtimeTokens } from '../tokens';
 import { useCallback, useState } from 'react';
 import type { MouseEvent as ReactMouseEvent } from 'react';
 
@@ -24,13 +25,13 @@ export function useCardTilt(reducedMotion: boolean) {
     const r = e.currentTarget.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width - 0.5;
     const py = (e.clientY - r.top) / r.height - 0.5;
-    setState({ hover: true, rx: py * -3, ry: px * 3, lx: e.clientX - r.left, ly: e.clientY - r.top });
+    setState({ hover: true, rx: py * -runtimeTokens.cardTilt.range, ry: px * runtimeTokens.cardTilt.range, lx: e.clientX - r.left, ly: e.clientY - r.top });
   }, []);
 
   const onMouseLeave = useCallback(() => setState((s) => ({ ...s, hover: false, rx: 0, ry: 0 })), []);
 
-  const transform = reducedMotion ? 'none' : `perspective(1200px) rotateX(${state.rx}deg) rotateY(${state.ry}deg)`;
-  const boxShadow = state.hover ? '0 30px 70px -30px rgba(var(--color-accent-rgb),0.35)' : '0 0 0 rgba(0,0,0,0)';
+  const transform = reducedMotion ? 'none' : `perspective(${runtimeTokens.cardTilt.perspective}px) rotateX(${state.rx}deg) rotateY(${state.ry}deg)`;
+  const boxShadow = state.hover ? token('shadow-card-hover') : token('shadow-card-rest');
   const blobOpacity = state.hover && !reducedMotion ? 1 : 0;
 
   return { onMouseEnter, onMouseMove, onMouseLeave, transform, boxShadow, lx: state.lx, ly: state.ly, blobOpacity };

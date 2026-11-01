@@ -12,7 +12,7 @@ export function Projects({ cursor }: ProjectsProps) {
   const reveal = useScrollReveal('projects');
 
   return (
-    <Section id="projects" revealId="projects" paddingTop={100} paddingBottom={100} style={reveal}>
+    <Section id="projects" revealId="projects" paddingTop="section-block" paddingBottom="section-block" style={reveal}>
       <Container size="wide">
         <PromptSteps question="что ещё есть в портфолио, кроме кейсов" />
         <Text variant="eyebrow" className={styles.eyebrow}>

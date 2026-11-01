@@ -1,3 +1,4 @@
+import { breakpoints } from '../tokens';
 import { useLayoutEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useLenis } from 'lenis/react';
@@ -77,7 +78,7 @@ export function saveScrollForReturn() {
  * later. Desktop/tablet aren't touched — this is the one thing the reported
  * bug was scoped to.
  */
-const MOBILE_MAX_WIDTH = 640;
+const MOBILE_MAX_WIDTH = breakpoints.phone;
 const WATCHDOG_MS = 700;
 const DRIFT_TOLERANCE_PX = 2;
 

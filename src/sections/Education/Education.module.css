@@ -1,9 +1,9 @@
 .header {
   display: flex;
   align-items: baseline;
-  gap: var(--space-16);
+  gap: var(--education-header-gap);
   flex-wrap: wrap;
-  margin-bottom: var(--space-32);
+  margin-bottom: var(--education-header-margin-bottom);
 }
 
 .eyebrow {
@@ -13,19 +13,19 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-20);
+  gap: var(--education-list-gap);
 }
 
 .row {
-  border-bottom: 1px solid rgba(var(--color-slate-mist-rgb), 0.15);
-  padding-bottom: var(--space-16);
+  border-bottom: var(--education-row-border-bottom);
+  padding-bottom: var(--education-row-padding-bottom);
   transition:
-    border-color var(--duration-250) var(--ease-standard),
-    transform var(--duration-250) var(--ease-standard);
+    border-color var(--motion-hover) var(--ease-standard),
+    transform var(--motion-hover) var(--ease-standard);
 }
 
 .row:focus-within {
-  border-color: rgba(var(--color-accent-rgb), 0.5);
+  border-color: var(--education-row-focus-within-border-color);
   transform: translateX(var(--space-8));
 }
 
@@ -34,7 +34,7 @@
    `(hover: hover) and (pointer: fine)`, :focus-within stays ungated. */
 @media (hover: hover) and (pointer: fine) {
   .row:hover {
-    border-color: rgba(var(--color-accent-rgb), 0.5);
+    border-color: var(--education-row-hover-border-color-hover);
     transform: translateX(var(--space-8));
   }
 }
@@ -52,10 +52,10 @@
  */
 .content {
   display: flex;
-  gap: var(--space-24);
+  gap: var(--education-content-gap);
   align-items: baseline;
   flex-wrap: wrap;
-  transition: transform var(--duration-250) var(--ease-standard);
+  transition: transform var(--motion-hover) var(--ease-standard);
 }
 
 .row:focus-within .content {
@@ -72,7 +72,7 @@
   font-family: var(--font-mono);
   font-size: var(--fs-sm-md);
   color: var(--color-text-secondary);
-  min-width: 48px;
+  min-width: var(--education-year-min-width);
 }
 
 .title {
@@ -86,12 +86,12 @@
      the screenshotted one-word-per-line rendering. A minimum keeps `.title`
      readable and lets `flex-wrap` do its normal job of pushing `.links`
      below once the row genuinely can't fit everything on one line. */
-  min-width: 200px;
+  min-width: var(--education-title-min-width);
 }
 
 .links {
   display: flex;
-  gap: var(--space-14);
+  gap: var(--education-links-gap);
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
 }
@@ -102,11 +102,11 @@
    short line far left" look. Mobile-only: stack year → title → links, each
    its own row, in that DOM order (see Education.tsx — already year/title/
    links in source order, nothing to reorder). Desktop/tablet untouched. */
-@media (max-width: 640px) {
+@media (--viewport-phone) {
   .content {
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-8);
+    gap: var(--education-content-gap-phone);
   }
 
   .title {
@@ -118,6 +118,6 @@
      above them). `.row`'s own `gap` already spaces year/title/links evenly;
      this adds on top of that gap, only for the title→links transition. */
   .links {
-    margin-top: var(--space-8);
+    margin-top: var(--education-links-margin-top-phone);
   }
 }

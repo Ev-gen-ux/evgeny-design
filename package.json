@@ -5,10 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run tokens:generate && node scripts/check-tokens.mjs && tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tokens:generate": "node scripts/generate-tokens.mjs",
+    "tokens:check": "node scripts/generate-tokens.mjs --check && node scripts/check-tokens.mjs",
+    "predev": "npm run tokens:generate",
+    "test:tokens": "node --test scripts/token-system.test.mjs",
+    "check": "npm run tokens:check && npm run test:tokens && npm run lint && npm run build"
   },
   "dependencies": {
     "lenis": "^1.3.25",

@@ -1,32 +1,42 @@
-# React + TypeScript + Vite
+# Evgeny.design
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Портфолио на React, TypeScript, Vite, CSS Modules и Three.js.
+Главная — `/`, кейсы — `/work/:id`. Контент находится в `src/content/`.
 
-Currently, two official plugins are available:
+## Локальная работа
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```sh
+npm run dev
+npm run check
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+`check` проверяет систему токенов, её тесты, ESLint и production-сборку.
+`npm run preview` показывает собранный `dist` локально.
+
+## Управление UI
+
+Все постоянные настройки UI редактируются в [design-tokens.json](design-tokens.json):
+шкалы, семантические отступы, типографика, цвета, поверхности, состояния,
+адаптивные варианты и доступные настройки фоновых/3D-эффектов.
+
+Подробная карта настроек и примеры — [src/tokens/README.md](src/tokens/README.md).
+CSS и TypeScript генерируются из одного источника. Компоненты используют
+CSS-переменные и типизированные функции `token()`/`resolveSpacing()`, Canvas/Three.js —
+`readToken()` и `runtimeTokens`. Именованные media-условия раскрывает Vite-плагин.
+
+```sh
+npm run tokens:generate
+npm run tokens:check
+npm run test:tokens
+```
+
+Сгенерированные файлы нужно сохранять вместе с источником, вручную их не править.
+В dev изменение источника автоматически обновляет генерацию и перезапускает сервер.
+Математические алгоритмы и измеряемые координаты отделены от настроек дизайна;
+граница описана в документации токенов.
+
+## Публикация
+
+Проект уже связан с Vercel, SPA-rewrite находится в `vercel.json`.
+Сборка и локальный preview ничего не публикуют. Деплой выполняется отдельно
+только по явной команде пользователя; сведения о проде — в `../PROJECT.md`.

@@ -1,3 +1,4 @@
+import { breakpoints, runtimeTokens } from '../tokens';
 import { useEffect, type RefObject } from 'react';
 import { docTop } from './asmMath';
 import { chatBar } from '../content/chatBar';
@@ -100,13 +101,13 @@ export function useChatBar(
     // request) — this JS path computes `top` directly and always wins over
     // the CSS `bottom` fallback (see the comment above), so the gap has to
     // be subtracted here too, not just set in `.bar`'s own `bottom` rule.
-    const BOTTOM_GAP = 16;
+    const BOTTOM_GAP = runtimeTokens.floatingPanel.bottomGap;
     // Side gap mirrors ChatBar.module.css's own `left`/`right` tokens
     // (`--space-40` desktop / `--space-20` ≤640px) — kept as a plain JS
     // constant pair rather than read from the stylesheet, same breakpoint
     // already used site-wide for this phone cutoff (see Hero.tsx's own
     // `isNarrow` comment).
-    const getSideGap = () => (window.innerWidth <= 640 ? 20 : 40);
+    const getSideGap = () => (window.innerWidth <= breakpoints.phone ? runtimeTokens.floatingPanel.sidePhone : runtimeTokens.floatingPanel.sideDesktop);
     // Width bug (2026-10-24, live report): same root cause class as the
     // vertical jump documented above, just on the other axis — `left`/
     // `right` in CSS resolve against the LARGE/layout viewport, which can

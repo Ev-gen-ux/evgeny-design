@@ -1,3 +1,4 @@
+import { token } from '../../tokens';
 import { useMemo, useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { MagnetLink } from '../../components';
@@ -109,9 +110,9 @@ export function WorkStack({ cases, cursor }: WorkStackProps) {
         const pos = open ? layouts[i].open : layouts[i].closed;
         const active = i === activeIndex;
         const style: CSSProperties = {
-          zIndex: active ? 80 : 50 - Math.abs(i - activeIndex),
+          zIndex: active ? token('work-stack-style-z-index-emphasis') : 50 - Math.abs(i - activeIndex),
           transform: `translate(calc(-50% + ${pos.x}px), calc(-50% + ${pos.y - (open && active ? LIFT : 0)}px)) rotate(${pos.rotation}deg) scale(${open ? 0.99 : 0.97})`,
-          transitionDuration: reducedMotion ? '0ms' : '420ms',
+          transitionDuration: reducedMotion ? token('work-stack-style-transition-duration-emphasis') : token('work-stack-style-transition-duration-default'),
         };
         return (
           <article

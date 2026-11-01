@@ -1,9 +1,9 @@
 .header {
   display: flex;
   align-items: baseline;
-  gap: var(--space-16);
+  gap: var(--experience-header-gap);
   flex-wrap: wrap;
-  margin-bottom: var(--space-48);
+  margin-bottom: var(--experience-header-margin-bottom);
 }
 
 .eyebrow {
@@ -12,19 +12,19 @@
 
 .timeline {
   position: relative;
-  padding-left: var(--space-28);
+  padding-left: var(--experience-timeline-padding-left);
 }
 
 .item {
   position: relative;
-  margin-bottom: var(--space-44);
-  padding-bottom: var(--space-20);
-  border-bottom: 1px solid rgba(var(--color-accent-rgb), 0);
-  transition: border-color var(--duration-250) var(--ease-standard);
+  margin-bottom: var(--experience-item-margin-bottom);
+  padding-bottom: var(--experience-item-padding-bottom);
+  border-bottom: var(--experience-item-border-bottom);
+  transition: border-color var(--motion-hover) var(--ease-standard);
 }
 
 .item:focus-within {
-  border-bottom-color: rgba(var(--color-accent-rgb), 0.5);
+  border-bottom-color: var(--experience-item-focus-within-border-bottom-color);
 }
 
 /* Hover/focus split (2026-10-24, review-animations audit): touch taps set
@@ -32,7 +32,7 @@
    `(hover: hover) and (pointer: fine)`, :focus-within stays ungated. */
 @media (hover: hover) and (pointer: fine) {
   .item:hover {
-    border-bottom-color: rgba(var(--color-accent-rgb), 0.5);
+    border-bottom-color: var(--experience-item-hover-border-bottom-color-hover);
   }
 }
 
@@ -46,7 +46,7 @@
  * this wrapper — it's absolutely positioned off `.item`, never shifted.
  */
 .content {
-  transition: transform var(--duration-250) var(--ease-standard);
+  transition: transform var(--motion-hover) var(--ease-standard);
 }
 
 .item:focus-within .content {
@@ -77,19 +77,19 @@
 .item:not(:last-child)::before {
   content: '';
   position: absolute;
-  left: -28.5px;
-  top: 19px;
-  bottom: calc(-1 * var(--space-44) - 2px);
-  width: 1px;
-  background: rgba(var(--color-slate-mist-rgb), 0.25);
+  left: var(--experience-item-not-last-child-before-left);
+  top: var(--experience-item-not-last-child-before-top);
+  bottom: var(--experience-item-not-last-child-before-bottom);
+  width: var(--experience-item-not-last-child-before-width);
+  background: var(--experience-item-not-last-child-before-background);
 }
 
 .dot {
   position: absolute;
-  left: -33px;
-  top: 6px;
-  width: 9px;
-  height: 9px;
+  left: var(--offset-negative-33);
+  top: var(--experience-dot-top);
+  width: var(--experience-dot-width);
+  height: var(--experience-dot-height);
   border-radius: 50%;
   background: var(--color-accent);
 }
@@ -98,19 +98,19 @@
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--experience-dates-margin-bottom);
 }
 
 .role {
   font-size: var(--fs-xl);
   font-weight: var(--fw-bold);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--experience-role-margin-bottom);
 }
 
 .company {
   font-size: var(--fs-base);
   color: var(--color-text-secondary);
-  margin-bottom: var(--space-10);
+  margin-bottom: var(--experience-company-margin-bottom);
 }
 
 .text {
@@ -118,5 +118,5 @@
   font-size: var(--fs-base);
   line-height: var(--lh-relaxed);
   color: var(--color-text-body);
-  max-width: 620px;
+  max-width: var(--experience-text-max-width);
 }

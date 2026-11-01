@@ -1,3 +1,4 @@
+import { runtimeTokens } from '../tokens';
 import { useEffect } from 'react';
 
 /** Shared controller for the footer's cursor-follow interaction. */
@@ -29,15 +30,15 @@ export function useInteractiveMagnet(enabled: boolean) {
         if (!originals.has(el)) {
           originals.set(el, { translate: el.style.translate, transition: el.style.transition });
           const existing = getComputedStyle(el).transition;
-          el.style.transition = `${existing}, translate 250ms cubic-bezier(0.22, 1, 0.36, 1)`;
+          el.style.transition = `${existing}, translate ${runtimeTokens.magnet.durationMs}ms ${runtimeTokens.magnet.easing}`;
         }
         active = el;
         bounds = el.getBoundingClientRect();
       }
       if (!bounds) return;
       // Same x/y response as useMagnetHover; cap large email/CTA targets.
-      const x = Math.max(-10, Math.min(10, (event.clientX - bounds.left - bounds.width / 2) * 0.28));
-      const y = Math.max(-8, Math.min(8, (event.clientY - bounds.top - bounds.height / 2) * 0.35));
+      const x = Math.max(-runtimeTokens.magnet.limitX, Math.min(runtimeTokens.magnet.limitX, (event.clientX - bounds.left - bounds.width / 2) * runtimeTokens.magnet.responseX));
+      const y = Math.max(-runtimeTokens.magnet.limitY, Math.min(runtimeTokens.magnet.limitY, (event.clientY - bounds.top - bounds.height / 2) * runtimeTokens.magnet.responseY));
       el.style.translate = `${x.toFixed(2)}px ${y.toFixed(2)}px`;
     };
     const onOut = (event: PointerEvent) => {
