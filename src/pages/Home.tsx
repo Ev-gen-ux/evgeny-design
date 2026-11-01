@@ -67,8 +67,8 @@ export function Home() {
         <Hero cursor={cursor} />
         <About />
         <SelectedWork cursor={cursor} />
-        <Pipeline />
         <Projects cursor={cursor} />
+        <Pipeline />
         <Experience />
         <Skills />
         <Education />

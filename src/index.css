@@ -84,6 +84,9 @@ html {
 
 body {
   margin: 0;
+  /* Clip scattered letters before they enlarge the root scrollable width;
+     unlike overflow:hidden, clip does not create a new sticky scroll root. */
+  overflow-x: clip;
   background: var(--color-bg-page);
   color: var(--color-text-primary);
   font-family: var(--font-display);

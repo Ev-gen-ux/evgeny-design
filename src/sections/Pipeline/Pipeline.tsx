@@ -46,7 +46,23 @@ export function Pipeline() {
   const panelCount = pipelineStages.length + 1;
   usePipelineScroll(sectionRef, panelRefs, stepDotRefs, stepOutcomeRefs, stepRowRefs, panelCount, !stackedLayout);
 
-  const sectionStyle: CSSProperties = stackedLayout ? { position: 'relative' } : { position: 'relative', height: `${panelCount * 105}vh` };
+  // `margin` (not `padding`) — this section's own height drives the pinned
+  // scroll math (`usePipelineScroll` reads `offsetHeight`/`docTop`); padding
+  // on the section itself would inflate that height and desync the pin.
+  // Margin sits outside the box, so it's untouched by the scroll calc.
+  // Matches the site-wide desktop convention (index.css, `@media (min-width:
+  // 1025px)`): the 200px inter-section gap is always carried entirely by the
+  // SECOND section's own top side, the first section contributes 0 at its
+  // bottom. `#pipeline` isn't in that media query's selector list (it can't
+  // take `padding-top` without inflating the pin height), so it supplies its
+  // side of the gap via `marginTop: 200px` instead — and contributes nothing
+  // at its own bottom, since `#experience`'s `padding-top: 200px !important`
+  // (from the same rule) already supplies the full gap after it. 2026-10-28,
+  // per user: gap to neighbors was inconsistent after reordering
+  // Projects/Pipeline — mirror the convention, not a new one.
+  const sectionStyle: CSSProperties = stackedLayout
+    ? { position: 'relative' }
+    : { position: 'relative', height: `${panelCount * 105}vh`, marginTop: '200px' };
 
   const stickyStyle: CSSProperties = stackedLayout
     ? { padding: '80px clamp(20px,6vw,80px)' }
@@ -103,9 +119,6 @@ export function Pipeline() {
     <Section id="pipeline" innerRef={sectionRef} style={sectionStyle}>
       <div style={stickyStyle}>
         <div style={frameStyle} className={stackedLayout ? undefined : styles.frame}>
-          {!stackedLayout && (
-            <div className={reducedMotion ? styles.glow : `${styles.glow} ${styles.glowAnimated}`} aria-hidden="true" />
-          )}
           <div data-pl-fixed="1" style={leftStyle}>
             <div>
               <Text variant="eyebrow">{pipelineHeader.eyebrow}</Text>

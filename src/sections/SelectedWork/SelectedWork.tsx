@@ -40,7 +40,7 @@ export function SelectedWork({ cursor }: SelectedWorkProps) {
         : 'list';
 
   return (
-    <Section id="work" stageAnchor={2} paddingTop={60} paddingBottom={variant === 'list' || variant === 'phone' ? 60 : undefined}>
+    <Section id="work" stageAnchor={2} paddingTop={100} paddingBottom={100}>
       <Container size="wide">
         <PromptSteps question="покажи, что ты уже сделал" />
         <div className={styles.header}>
@@ -98,7 +98,7 @@ function PhoneCaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: Curs
 
   return (
     <div data-reveal-id={cs.id} style={reveal}>
-      <Card onMouseEnter={cursor.onEnter} onMouseLeave={cursor.onLeave}>
+      <Card corners={false} onMouseEnter={cursor.onEnter} onMouseLeave={cursor.onLeave}>
         <RouterLink
           to={`/work/${cs.id}`}
           aria-label={cs.title}
@@ -171,6 +171,7 @@ function CaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: CursorTra
   return (
     <div data-reveal-id={cs.id} style={reveal}>
       <Card
+        corners={false}
         onMouseEnter={() => {
           cursor.onEnter();
           tilt.onMouseEnter();
@@ -180,7 +181,7 @@ function CaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: CursorTra
           cursor.onLeave();
           tilt.onMouseLeave();
         }}
-        style={{ transform: tilt.transform, boxShadow: tilt.boxShadow }}
+        style={{ transform: tilt.transform, boxShadow: 'var(--case-shadow, none)' }}
         behindContent={
           <div className={styles.blob} style={{ left: tilt.lx, top: tilt.ly, opacity: tilt.blobOpacity }} aria-hidden="true" />
         }

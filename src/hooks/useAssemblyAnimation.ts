@@ -364,6 +364,24 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
       const sy = window.scrollY;
       const vw = window.innerWidth;
       const atBottom = sy + vh >= document.documentElement.scrollHeight - 60;
+      // Reclaim is skipped within the last ~2 viewport heights of the page
+      // (2026-10-27, real-device report — live-caught black-bar/content-jump
+      // bug near SelectedWork's boundary with Projects, close to the page's
+      // true bottom). Root cause: `reclaimUnit`'s `textContent` swap (see
+      // below) really does change a unit's rendered height (split spans and
+      // plain text wrap differently), and a batch of units crossing the
+      // reclaim threshold together — exactly what a heavy-synced-text
+      // section boundary like SelectedWork produces — shifts
+      // `document.documentElement.scrollHeight` right as the scroll gesture
+      // is in progress, which reads to a mobile browser as the kind of
+      // layout change that triggers its own toolbar show/hide transition;
+      // that transition is what was already separately chased in
+      // `useThreeScene.ts` (resize black-flash) and `useChatBar.ts`
+      // (visualViewport remeasurement) — stacking into the reported bug.
+      // There's nothing left below the last ~2 screens to scroll into, so
+      // the lazy-split memory saving has no further benefit there anyway —
+      // simplest fix is to just stop reclaiming once this close to the end.
+      const nearBottom = document.documentElement.scrollHeight - (sy + vh) < vh * 2;
       const le = loadT * loadT * (3 - 2 * loadT);
       const mobile = vw <= 768;
       const winStart = mobile ? 1.0 : 0.95;
@@ -458,6 +476,7 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
         // `navFixed` are exempt — they're never lazy in the first place.
         if (
           lazyMobile &&
+          !nearBottom &&
           !u.hero &&
           !u.navFixed &&
           u.cur != null &&

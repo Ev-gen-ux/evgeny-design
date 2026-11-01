@@ -133,10 +133,6 @@ export function WorkStack({ cases, cursor }: WorkStackProps) {
               onClick={saveScrollForReturn}
             />
             {/* Corner brackets — same "inspector selection box" treatment as the site's own Card component (Card.module.css), ported in rather than reused directly since CSS Modules classes don't cross files. */}
-            <span className={`${styles.corner} ${styles.cornerTopLeft}`} aria-hidden="true" />
-            <span className={`${styles.corner} ${styles.cornerTopRight}`} aria-hidden="true" />
-            <span className={`${styles.corner} ${styles.cornerBottomLeft}`} aria-hidden="true" />
-            <span className={`${styles.corner} ${styles.cornerBottomRight}`} aria-hidden="true" />
             <p className={styles.cardType}>{cs.type}</p>
             <h3 className={styles.cardName}>{cs.title.split(' — ')[0]}</h3>
             <p className={styles.cardDesc}>{cs.blocks[0].text}</p>

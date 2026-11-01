@@ -12,19 +12,20 @@ export interface CursorOverlayProps {
  * useCursorTracker's 2026-10-24 comment.
  */
 export function CursorOverlay({ cursor }: CursorOverlayProps) {
-  if (!cursor.show) return null;
+  const { show, hover, ringRef, dotRef, coordRef } = cursor;
+  if (!show) return null;
 
   return (
     <>
       <div
-        ref={cursor.ringRef}
-        className={[styles.ring, cursor.hover && styles.ringHover].filter(Boolean).join(' ')}
+        ref={ringRef}
+        className={[styles.ring, hover && styles.ringHover].filter(Boolean).join(' ')}
         aria-hidden="true"
       />
-      <div ref={cursor.dotRef} className={styles.dot} aria-hidden="true" />
+      <div ref={dotRef} className={styles.dot} aria-hidden="true" />
       <div
-        ref={cursor.coordRef}
-        className={[styles.coord, cursor.hover && styles.coordHover].filter(Boolean).join(' ')}
+        ref={coordRef}
+        className={[styles.coord, hover && styles.coordHover].filter(Boolean).join(' ')}
         aria-hidden="true"
       />
     </>

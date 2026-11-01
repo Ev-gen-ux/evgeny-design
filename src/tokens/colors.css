@@ -9,6 +9,8 @@
  * git history (see PORTFOLIO-README.md for the old locked 5-color set).
  */
 :root {
+  --glass-background: rgba(var(--color-graphite-rgb), 0.22);
+  --glass-blur: blur(10px);
   /* === Design Kit ramp — source of truth, everything below derives from this. === */
   --blue-50: #f4f7f7;
   --blue-100: #e7eaea;

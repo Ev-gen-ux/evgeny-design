@@ -5,7 +5,7 @@ export const lindausugar: CaseStudyDetail = {
   title: 'LindauSugar',
   subtitle:
     'Лендинг студии сахарной депиляции в Германии — от брифа до продакшена, с собственным бренд-буком, дизайн-системой и встроенным бронированием в реальном времени.',
-  tags: ['Landing Page', 'Beauty / Local Business', 'Германия', 'Full-cycle (brief → live)'],
+  tags: ['Landing Page', 'Beauty / Local Business', 'Germany', 'Full-cycle (brief → live)'],
   meta: [
     { label: 'роль', value: 'Product designer, full-cycle — бриф, конкурентный анализ, персоны, PRD, бренд-бук, UI, публикация' },
   ],
@@ -86,7 +86,7 @@ export const lindausugar: CaseStudyDetail = {
       promptQuestion: 'что построено?',
       title: 'Что построено',
       paras: [
-        'Стек: Next.js 16 (App Router) + TypeScript, CSS Modules и CSS Variables на токенах дизайн-системы, Sanity CMS (клиент управляет контентом без доступа к коду), Twilio (SMS-напоминание за 24 часа до визита), Framer Motion и Lenis, хостинг на Vercel с ISR-ревалидацией каждые 60 секунд.',
+        'Стек: Next.js 16 (App Router) + TypeScript, CSS Modules и CSS Variables на токенах дизайн-системы, Supabase (хранение записей клиентов), Sanity CMS (клиент управляет контентом без доступа к коду), Twilio (SMS-напоминание за 24 часа до визита), Framer Motion и Lenis, хостинг на Vercel с ISR-ревалидацией каждые 60 секунд. Оба слоя — записи клиентов и контент страницы — под управлением студии: ни бронирования, ни тексты не требуют разработчика.',
       ],
       steps: [
         'Standort — выбор одного из двух адресов студии',

@@ -776,7 +776,11 @@
 /* The bare copyright-only sub-footer that used to live here is now the shared `components/Footer` (2026-08-03) — same one Contact uses, with the full contact-links row, not just copyright. */
 
 @media (max-width: 640px) {
-  .metaGrid,
+  .metaGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-24);
+  }
+
   .personaGrid,
   .solutionPart,
   .defRow,

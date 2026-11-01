@@ -1,16 +1,15 @@
 import { useRef, type RefObject } from 'react';
 import { useThreeScene, type ThreeSceneContext, type ThreeSceneHandle } from './useThreeScene';
-import { colorsNumeric } from '../tokens';
 
 /**
- * LOCAL EXPERIMENT (2026-10-27, not in prod) — the hero figure is the
+ * The hero figure is the
  * user-supplied "Particle Portrait" bust (projects/evgeny.design/
  * particle-portrait/): a dense point-cloud face/shoulders portrait, always
- * assembled, with a loose ambient mote cloud drifting around it and a
+ * assembled, with a soft lower-edge dissolve and a
  * cursor-reactive "repel void" on its own surface. Saturn's ring system
  * (originally kept alongside the bust) was explicitly removed on 2026-10-27
  * ("кольца Сатурна вообще просто выпиливай") — this file now has no
- * dependency on useSaturnThreeScene.ts at all, just the bust + ambient motes.
+ * dependency on useSaturnThreeScene.ts at all; the surrounding motes are removed.
  */
 
 // 2026-10-27, live feedback: "размер фигуры увеличить на 30%" then "+10%" —
@@ -172,58 +171,6 @@ const BUST_FRAGMENT = /* glsl */ `
   }
 `;
 
-// ---------------------------------------------------------------------------
-// Ambient mote cloud — loose particles drifting around the (always-
-// assembled) bust, idea borrowed from the referenced Storm prompt's camera-
-// attached "atmosphere" points: a thin, slow, independent drift layer that
-// reads as ambient life around the main shape, not part of it. This is now
-// the ONLY secondary element in the scene (rings removed 2026-10-27).
-// ---------------------------------------------------------------------------
-const AMBIENT_COUNT = 14300; // grown several times from an initial 3500, per live feedback
-
-function buildAmbientCloud(centerRadius: number) {
-  const position = new Float32Array(AMBIENT_COUNT * 3);
-  const seed = new Float32Array(AMBIENT_COUNT * 4);
-  for (let i = 0; i < AMBIENT_COUNT; i++) {
-    const r = centerRadius * (1.15 + Math.random() * 1.6);
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-    position[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-    position[i * 3 + 1] = r * Math.cos(phi) * 0.85;
-    position[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta) * 0.6;
-    for (let k = 0; k < 4; k++) seed[i * 4 + k] = Math.random();
-  }
-  return { position, seed };
-}
-
-const AMBIENT_VERTEX = /* glsl */ `
-  attribute vec4 aSeed;
-  uniform float uTime;
-  varying float vA;
-  void main() {
-    vec3 p = position + 0.4 * vec3(
-      sin(uTime * 0.18 * (0.6 + aSeed.y) + aSeed.z * 6.283),
-      cos(uTime * 0.14 * (0.6 + aSeed.z) + aSeed.w * 6.283),
-      sin(uTime * 0.11 * (0.6 + aSeed.w) + aSeed.y * 6.283));
-    vec4 mv = modelViewMatrix * vec4(p, 1.0);
-    gl_Position = projectionMatrix * mv;
-    float sizeJ = 0.6 + aSeed.x * 1.8;
-    gl_PointSize = 2.2 * sizeJ * (3.6 / -mv.z);
-    vA = 0.22 + 0.32 * aSeed.x;
-  }
-`;
-
-const AMBIENT_FRAGMENT = /* glsl */ `
-  uniform vec3 uColor;
-  varying float vA;
-  void main() {
-    float d = length(gl_PointCoord - 0.5);
-    if (d > 0.5) discard;
-    float a = smoothstep(0.5, 0.1, d) * vA;
-    gl_FragColor = vec4(uColor, a);
-  }
-`;
-
 function readPixelRatio() {
   const isMobile = window.innerWidth <= 768;
   return isMobile ? 1 : Math.min(1.5, window.devicePixelRatio || 1);
@@ -265,7 +212,7 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
       bustGeometry.setAttribute('aNormal', new THREE.BufferAttribute(normal0, 3));
       bustGeometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 5);
 
-      const bustGlowColor = new THREE.Color(colorsNumeric.glow);
+      const bustGlowColor = new THREE.Color(0xd4d4dc);
       const bustUniforms = {
         uTime: { value: 0 },
         uAssemble: { value: 0 },
@@ -338,27 +285,6 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
       bustGroup.scale.setScalar(BUST_FIT_RADIUS / 1.4);
       compositionRoot.add(bustGroup);
 
-      // ---------- ambient mote cloud (sibling of the bust, not rotated with it) ----------
-      const ambientGeometry = new THREE.BufferGeometry();
-      const ambientCloud = buildAmbientCloud(BUST_FIT_RADIUS);
-      ambientGeometry.setAttribute('position', new THREE.BufferAttribute(ambientCloud.position, 3));
-      ambientGeometry.setAttribute('aSeed', new THREE.BufferAttribute(ambientCloud.seed, 4));
-      const ambientMaterial = new THREE.ShaderMaterial({
-        vertexShader: AMBIENT_VERTEX,
-        fragmentShader: AMBIENT_FRAGMENT,
-        uniforms: {
-          uTime: { value: 0 },
-          uColor: { value: bustGlowColor.clone() },
-        },
-        transparent: true,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-        depthTest: false,
-      });
-      const ambientPoints = new THREE.Points(ambientGeometry, ambientMaterial);
-      ambientPoints.frustumCulled = false;
-      compositionRoot.add(ambientPoints);
-
       let bustLoaded = false;
       fetch(BUST_POINTS_URL)
         .then((res) => {
@@ -367,6 +293,30 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
         })
         .then((buf) => {
           const d = decodeBustPoints(buf, wantN);
+          {
+            // Dissolve only the lowest 20% of the original geometry. Work
+            // on decoded GPU attributes, leaving the production .bin intact.
+            let minY = Infinity;
+            let maxY = -Infinity;
+            for (let i = 0; i < d.count; i++) {
+              const y = d.target[i * 3 + 1];
+              minY = Math.min(minY, y);
+              maxY = Math.max(maxY, y);
+            }
+            const fadeHeight = Math.max(0.001, (maxY - minY) * 0.2);
+            let randomState = 1337;
+            for (let i = 0; i < d.count; i++) {
+              // Fixed per-index noise: no dependence on time, cursor, or
+              // Math.random(), so the dissolve never crawls or flickers.
+              randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0;
+              const noise = randomState / 4294967296;
+              const height = Math.max(0, Math.min(1, (d.target[i * 3 + 1] - minY) / fadeHeight));
+              const envelope = height * height * (3 - 2 * height);
+              const keep = Math.max(0, Math.min(1, (envelope - noise) / 0.12));
+              const softKeep = keep * keep * (3 - 2 * keep);
+              d.bright[i] *= envelope * softKeep;
+            }
+          }
           bustGeometry.setAttribute('position', new THREE.BufferAttribute(d.target, 3));
           bustGeometry.setAttribute('aNormal', new THREE.BufferAttribute(d.normal, 3));
           bustGeometry.setAttribute('aBright', new THREE.BufferAttribute(d.bright, 1));
@@ -406,7 +356,7 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
       // baseline was a workaround for the same "looks like a blob" complaint,
       // superseded by this). What cursor proximity now drives is only a
       // subtle head-turn (`turnAmount` below), not the assembly amount —
-      // ambient life instead comes from the loose mote cloud above and the
+      // ambient life comes from the
       // per-particle shimmer in BUST_VERTEX, both inspired by the referenced
       // Storm prompt's drifting atmosphere + per-point wobble (not ported
       // verbatim — that scene is unrelated bloom/composer plumbing; only the
@@ -492,7 +442,7 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
         // 2026-10-27: this used to widen on narrow/portrait aspects
         // (`span / aspect`), meaning the camera showed MORE vertical world-
         // space — effectively zoomed OUT — the narrower the box got. On a
-        // tall, narrow canvas that made the bust and ambient cloud both read
+        // tall, narrow canvas that made the bust read
         // smaller and more "contained" than on desktop, the opposite of
         // "точно такой же, как на десктопе" (explicit live feedback). A
         // fixed vertical span, independent of aspect, keeps the same
@@ -631,7 +581,6 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
             bustUniforms.uCursor.value.copy(cursorLocal);
           }
 
-          ambientMaterial.uniforms.uTime.value = bustUniforms.uTime.value;
         },
         onResize: (width: number, height: number) => {
           updateCamera(width, height);
@@ -640,8 +589,6 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
         dispose: () => {
           bustGeometry.dispose();
           bustMaterial.dispose();
-          ambientGeometry.dispose();
-          ambientMaterial.dispose();
         },
       };
     },

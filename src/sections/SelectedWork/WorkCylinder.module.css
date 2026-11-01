@@ -6,8 +6,11 @@
   position: sticky;
   top: 0;
   height: 100vh;
-  /* Clips the sides and the bottom (cards outside the pin) but NOT the top: the card now sits only 40px below the pin's top edge, so its tilted upper edge would otherwise be cut off flat. */
-  clip-path: inset(-300px 0 0 0);
+  /* clip-path creates a backdrop root: faces then cannot blur the page
+     background outside this transparent subtree. Overflow clipping keeps
+     the backdrop available; the margin leaves room for tilted cards. */
+  overflow: clip;
+  overflow-clip-margin: 300px;
 }
 
 .scene {
@@ -40,7 +43,7 @@
   position: absolute;
   inset: 0;
   border-radius: var(--radius-9);
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.35);
+  border: none;
 }
 
 /* Background copied 1:1 from Skills.module.css's .card (2026-10-24). Glass
@@ -54,10 +57,10 @@
   inset: 0;
   border-radius: var(--radius-9);
   backface-visibility: hidden;
-  border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
-  background: rgba(var(--color-graphite-rgb), 0.45);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  border: 1px solid var(--case-border-color, rgba(var(--color-slate-mist-rgb), 0.3));
+  background: var(--case-glass-background, rgba(var(--color-graphite-rgb), 0.45));
+  -webkit-backdrop-filter: var(--case-glass-blur, blur(6px));
+  backdrop-filter: var(--case-glass-blur, blur(6px));
 }
 
 .front {
@@ -69,9 +72,9 @@
 }
 
 .back {
-  background: rgba(var(--color-graphite-rgb), 0.45);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  background: var(--case-glass-background, rgba(var(--color-graphite-rgb), 0.45));
+  -webkit-backdrop-filter: var(--case-glass-blur, blur(6px));
+  backdrop-filter: var(--case-glass-blur, blur(6px));
   transform: translateZ(-1.5px) rotateX(180deg);
   display: flex;
   flex-direction: column;
@@ -83,8 +86,8 @@
 /* Only the card sitting at the center is interactive — the rest are tilted / backfacing. */
 .card[data-live='true'] .front {
   pointer-events: auto;
-  border-color: var(--color-accent);
-  box-shadow: 0 30px 70px -30px rgba(var(--color-accent-rgb), 0.35);
+  border-color: var(--case-border-color, var(--color-accent));
+  box-shadow: var(--case-shadow, none);
 }
 
 .card[data-live='true'] .corner {

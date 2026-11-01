@@ -1,6 +1,5 @@
 import type { ReactNode, MouseEvent } from 'react';
 import { Link, type LinkVariant } from './Link';
-import { useMagnetHover } from '../../hooks/useMagnetHover';
 
 export interface MagnetLinkProps {
   href: string;
@@ -13,29 +12,19 @@ export interface MagnetLinkProps {
   children: ReactNode;
 }
 
-/**
- * Link + useMagnetHover wired together — own component (not inlined at each call
- * site) so every usage gets its own hook instance without breaking rules-of-hooks
- * inside a .map(). Used wherever the source drives a link with magnetHandlers():
- * the contact email, and each case card's footer links.
- */
-export function MagnetLink({ href, variant, external, reducedMotion, onMouseEnter, onMouseLeave, onClick, children }: MagnetLinkProps) {
-  const magnet = useMagnetHover(reducedMotion);
+/** Links share the app-level useInteractiveMagnet controller. */
+export function MagnetLink({ href, variant, external, onMouseEnter, onMouseLeave, onClick, children }: MagnetLinkProps) {
 
   return (
     <Link
       href={href}
       variant={variant}
       external={external}
-      style={{ transform: magnet.transform }}
       onMouseEnter={() => {
         onMouseEnter?.();
-        magnet.onMouseEnter();
       }}
-      onMouseMove={magnet.onMouseMove}
       onMouseLeave={() => {
         onMouseLeave?.();
-        magnet.onMouseLeave();
       }}
       onClick={onClick}
     >

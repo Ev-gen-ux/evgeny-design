@@ -6,7 +6,6 @@ import { Header } from '../sections/Header';
 import type { CursorTracker } from '../hooks/useCursorTracker';
 import { useCursorTracker } from '../hooks/useCursorTracker';
 import { useReducedMotion } from '../hooks/useReducedMotion';
-import { useMagnetHover } from '../hooks/useMagnetHover';
 import { useCaseStudyAssembly } from '../hooks/useCaseStudyAssembly';
 import { useMatrixReveal } from '../hooks/useMatrixReveal';
 import { useCaseTimelineDrive } from '../hooks/useCaseTimelineDrive';
@@ -52,7 +51,6 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
   const reducedMotion = useReducedMotion();
   const cursor = useCursorTracker();
   const { spot, onMove: onSpotMove, onLeave: onSpotLeave } = useSpotGlow();
-  const backLinkMagnet = useMagnetHover(reducedMotion);
   const lenis = useLenis();
   const matrixRef = useRef<HTMLDivElement>(null);
   const matrixRows = useMatrixReveal(matrixRef, reducedMotion, matrix.cols.length);
@@ -156,15 +154,11 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
           <RouterLink
             to="/#work"
             className={styles.backLink}
-            style={{ transform: backLinkMagnet.transform }}
             onMouseEnter={() => {
               cursor.onEnter();
-              backLinkMagnet.onMouseEnter();
             }}
-            onMouseMove={backLinkMagnet.onMouseMove}
             onMouseLeave={() => {
               cursor.onLeave();
-              backLinkMagnet.onMouseLeave();
             }}
           >
             <span aria-hidden="true">←</span>
@@ -179,6 +173,23 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
           </div>
           <h1 className={styles.title}>{study.title}</h1>
           <p className={styles.subtitle}>{study.subtitle}</p>
+          {!!study.links.length && (
+            <div className={styles.outcomeLinks}>
+              {study.links.map((l) => (
+                <MagnetLink
+                  key={l.url}
+                  href={l.url}
+                  variant="underline"
+                  external
+                  reducedMotion={reducedMotion}
+                  onMouseEnter={cursor.onEnter}
+                  onMouseLeave={cursor.onLeave}
+                >
+                  {l.label} ↗
+                </MagnetLink>
+              ))}
+            </div>
+          )}
           <dl className={styles.metaGrid}>
             {study.meta.map((m) => (
               <div key={m.label}>
@@ -467,22 +478,17 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
   );
 }
 
-/** Own component (not inlined in the .map() above) so useMagnetHover can be called per-link without breaking rules-of-hooks — same magnet-follow displacement as the contact email link, per user request (2026-08-02). */
-function SiblingLink({ href, label, reducedMotion, cursor }: { href: string; label: string; reducedMotion: boolean; cursor: CursorTracker }) {
-  const magnet = useMagnetHover(reducedMotion);
+/** Sibling navigation uses the shared app-level magnetic hover. */
+function SiblingLink({ href, label, cursor }: { href: string; label: string; reducedMotion: boolean; cursor: CursorTracker }) {
   return (
     <RouterLink
       to={href}
       className={styles.siblingLink}
-      style={{ transform: magnet.transform }}
       onMouseEnter={() => {
         cursor.onEnter();
-        magnet.onMouseEnter();
       }}
-      onMouseMove={magnet.onMouseMove}
       onMouseLeave={() => {
         cursor.onLeave();
-        magnet.onMouseLeave();
       }}
     >
       {label} →

@@ -4,6 +4,7 @@ import { Home } from './pages/Home';
 import { CaseStudyRoute } from './pages/CaseStudyRoute';
 import { useReducedMotion } from './hooks/useReducedMotion';
 import { GrainGradient } from './components';
+import { useInteractiveMagnet } from './hooks/useInteractiveMagnet';
 
 /**
  * One GrainGradient instance for the whole SPA lifetime (2026-10-24 redesign),
@@ -87,6 +88,7 @@ const routes = (
  * this CSS toggle at all.
  */
 export default function App() {
+  useInteractiveMagnet(true);
   const reducedMotion = useReducedMotion();
   if (reducedMotion) return routes;
   return (

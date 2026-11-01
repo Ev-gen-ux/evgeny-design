@@ -21,8 +21,8 @@ export interface LinkProps
  * layered onto the contact row's own resting color, per explicit user request —
  * a deliberate deviation from source's contactBase (which never grows a border).
  * `underline`/`accent`/`plain`/`email` are the static base for links the source also
- * drives with a small cursor-magnet displacement (see useMagnetHover) — that's wired
- * in by the caller via onMouseMove + a `style.transform`, not built into this primitive.
+ * drives with a small cursor-magnet displacement; useInteractiveMagnet now
+ * applies that interaction consistently at the app level.
  *
  * Internal routes (href starting with "/", not external) render via React Router's
  * <Link> for client-side SPA navigation — the source is a real multi-page site

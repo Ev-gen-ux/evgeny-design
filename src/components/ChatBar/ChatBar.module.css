@@ -41,13 +41,13 @@
   padding: var(--space-18) var(--space-24);
   /* Same glass-surface values as Header's `.scrim` (2026-10-24) — tint/blur
      bumped from the old edge-to-edge bar's 0.18/6px to match. */
-  background: rgba(var(--color-graphite-rgb), 0.22);
+  background: var(--floating-glass-background, rgba(var(--color-graphite-rgb), 0.22));
   /* `-webkit-` prefix before the standard property (2026-09-18) — see
      Skills.module.css's identical comment for the full reasoning: the
      production build's minifier was dropping whichever declaration came
      first as a "duplicate," silently killing the blur site-wide. */
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: var(--chatbar-glass-blur, blur(10px));
+  backdrop-filter: var(--chatbar-glass-blur, blur(10px));
   /* All four sides now (2026-10-24) — was `border-top` only when this was
      an edge-to-edge bar; now a boxed floating container like `.nav`, same
      border token on every side. */

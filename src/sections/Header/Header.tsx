@@ -102,7 +102,7 @@ export function Header({ cursor }: HeaderProps) {
               onMouseEnter={cursor.onEnter}
               onMouseLeave={cursor.onLeave}
             >
-              {l.label}
+              /{l.label}
             </Link>
           ))}
         </div>

@@ -1,8 +1,8 @@
 /** 1:1 with Site Header.dc.html — ITEMS/ANCHOR. */
 export const navLinks = [
   { label: 'work', href: '#work' },
-  { label: 'experience', href: '#experience' },
   { label: 'process', href: '#pipeline' },
+  { label: 'experience', href: '#experience' },
   { label: 'skills', href: '#skills' },
   { label: 'contact', href: '#contact' },
 ] as const;

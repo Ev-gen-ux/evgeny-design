@@ -232,10 +232,6 @@ export function WorkCylinder({ cases, cursor }: WorkCylinderProps) {
                     className={styles.overlayLink}
                     onClick={saveScrollForReturn}
                   />
-                  <span className={`${styles.corner} ${styles.cornerTopLeft}`} aria-hidden="true" />
-                  <span className={`${styles.corner} ${styles.cornerTopRight}`} aria-hidden="true" />
-                  <span className={`${styles.corner} ${styles.cornerBottomLeft}`} aria-hidden="true" />
-                  <span className={`${styles.corner} ${styles.cornerBottomRight}`} aria-hidden="true" />
                   <div className={styles.top}>
                     <div className={styles.tagGroup}>
                       <span data-ag="0" data-ak="b">

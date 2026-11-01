@@ -83,9 +83,9 @@
   bottom: -1px;
   border-radius: var(--radius-11);
   border: 1px solid rgba(var(--color-slate-mist-rgb), 0.28);
-  background: rgba(var(--color-graphite-rgb), 0.22);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  background: var(--floating-glass-background, var(--glass-background));
+  -webkit-backdrop-filter: var(--header-glass-blur, var(--glass-blur));
+  backdrop-filter: var(--header-glass-blur, var(--glass-blur));
   pointer-events: none;
   transition: bottom var(--duration-400) var(--ease-signature);
 }
@@ -197,13 +197,13 @@
      corners poke out past `.nav`'s now-rounded `--radius-11` border. */
   border-radius: var(--radius-11);
   transition: border-radius var(--duration-400) var(--ease-signature);
-  background: rgba(var(--color-graphite-rgb), 0.22);
+  background: var(--floating-glass-background, var(--glass-background));
   /* `-webkit-` prefix before the standard property (2026-09-18) — see
      Skills.module.css's identical comment for the full reasoning: the
      production build's minifier was dropping whichever declaration came
      first as a "duplicate," silently killing the blur site-wide. */
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: var(--header-glass-blur, var(--glass-blur));
+  backdrop-filter: var(--header-glass-blur, var(--glass-blur));
   pointer-events: none;
 }
 

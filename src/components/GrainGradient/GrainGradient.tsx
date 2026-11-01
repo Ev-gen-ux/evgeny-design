@@ -1,5 +1,6 @@
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import styles from './GrainGradient.module.css';
+import { HarmonicBackdrop } from './HarmonicBackdrop';
 
 export interface GrainGradientProps {
   /** Stronger, more saturated streak + heavier grain — home page only. */
@@ -30,6 +31,8 @@ export interface GrainGradientProps {
  */
 export function GrainGradient({ intense = false, flip = false, withBackground = true }: GrainGradientProps) {
   const reducedMotion = useReducedMotion();
+
+  if (withBackground) return <HarmonicBackdrop />;
 
   return (
     <div
