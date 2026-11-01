@@ -270,7 +270,7 @@ export function WorkCylinder({ cases, cursor }: WorkCylinderProps) {
                   </p>
                   <div className={styles.footer}>
                     <span data-ag="4" data-ak="b">
-                      <MagnetLink
+                      <MagnetLink icon="arrow-right"
                         href={`/work/${cs.id}`}
                         variant="underline"
                         reducedMotion={reducedMotion}
@@ -278,12 +278,12 @@ export function WorkCylinder({ cases, cursor }: WorkCylinderProps) {
                         onMouseLeave={cursor.onLeave}
                         onClick={saveScrollForReturn}
                       >
-                        open case →
+                        open case
                       </MagnetLink>
                     </span>
                     {cs.links.map((l) => (
                       <span key={l.url} data-ag="4" data-ak="b">
-                        <MagnetLink
+                        <MagnetLink icon="arrow-up-right"
                           href={l.url}
                           variant="underline"
                           external
@@ -291,7 +291,7 @@ export function WorkCylinder({ cases, cursor }: WorkCylinderProps) {
                           onMouseEnter={cursor.onEnter}
                           onMouseLeave={cursor.onLeave}
                         >
-                          {l.label} ↗
+                          {l.label}
                         </MagnetLink>
                       </span>
                     ))}

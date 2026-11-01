@@ -140,7 +140,7 @@ export function WorkStack({ cases, cursor }: WorkStackProps) {
 
             <div className={styles.cardFooter}>
               <div className={styles.cardLinks}>
-                <MagnetLink
+                <MagnetLink icon="arrow-right"
                   href={`/work/${cs.id}`}
                   variant="underline"
                   reducedMotion={reducedMotion}
@@ -148,10 +148,10 @@ export function WorkStack({ cases, cursor }: WorkStackProps) {
                   onMouseLeave={cursor.onLeave}
                   onClick={saveScrollForReturn}
                 >
-                  Открыть кейс →
+                  Открыть кейс
                 </MagnetLink>
                 {cs.links.map((l) => (
-                  <MagnetLink
+                  <MagnetLink icon="arrow-up-right"
                     key={l.url}
                     href={l.url}
                     variant="underline"
@@ -160,7 +160,7 @@ export function WorkStack({ cases, cursor }: WorkStackProps) {
                     onMouseEnter={cursor.onEnter}
                     onMouseLeave={cursor.onLeave}
                   >
-                    {l.label} ↗
+                    {l.label}
                   </MagnetLink>
                 ))}
               </div>

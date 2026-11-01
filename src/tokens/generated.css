@@ -1003,6 +1003,10 @@
   --global-animation-wash-shimmer: washShimmer;
   --global-animation-blob-drift: blobDrift;
   --global-animation-grain-shift: grainShift;
+  --icon-size-control: 1em;
+  --icon-stroke-width: 1.75;
+  --icon-label-gap: var(--space-inline-sm);
+  --icon-baseline-offset: -0.125em;
 }
 
 :root[data-portfolio-theme='monochrome'] ::selection {

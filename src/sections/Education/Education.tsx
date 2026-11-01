@@ -26,8 +26,8 @@ export function Education() {
                 <span className={styles.title}>{ed.title}</span>
                 <div className={styles.links}>
                   {ed.links.map((l) => (
-                    <Link key={l.url} href={l.url} variant="ghost" external>
-                      {l.label} ↗
+                    <Link icon="arrow-up-right" key={l.url} href={l.url} variant="ghost" external>
+                      {l.label}
                     </Link>
                   ))}
                 </div>

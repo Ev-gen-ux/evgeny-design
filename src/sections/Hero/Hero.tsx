@@ -181,6 +181,7 @@ export function Hero({ cursor }: HeroProps) {
             <Link
               key={cta.id}
               href={cta.url}
+              icon="arrow-right"
               variant="underline"
               external={cta.external}
               onMouseEnter={cursor.onEnter}

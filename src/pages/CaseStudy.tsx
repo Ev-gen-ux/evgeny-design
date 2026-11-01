@@ -1,3 +1,4 @@
+import { Icon, IconLabel } from '../components/Icon';
 import { token } from '../tokens';
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
@@ -162,7 +163,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
               cursor.onLeave();
             }}
           >
-            <span aria-hidden="true">←</span>
+            <Icon name="arrow-left" />
             <span>Вернуться к кейсам</span>
           </RouterLink>
           <div className={styles.tagsRow}>
@@ -177,7 +178,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
           {!!study.links.length && (
             <div className={styles.outcomeLinks}>
               {study.links.map((l) => (
-                <MagnetLink
+                <MagnetLink icon="arrow-up-right"
                   key={l.url}
                   href={l.url}
                   variant="underline"
@@ -186,7 +187,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
                   onMouseEnter={cursor.onEnter}
                   onMouseLeave={cursor.onLeave}
                 >
-                  {l.label} ↗
+                  {l.label}
                 </MagnetLink>
               ))}
             </div>
@@ -443,7 +444,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
           {!!study.links.length && (
             <div className={styles.outcomeLinks}>
               {study.links.map((l) => (
-                <MagnetLink
+                <MagnetLink icon="arrow-up-right"
                   key={l.url}
                   href={l.url}
                   variant="underline"
@@ -452,7 +453,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
                   onMouseEnter={cursor.onEnter}
                   onMouseLeave={cursor.onLeave}
                 >
-                  {l.label} ↗
+                  {l.label}
                 </MagnetLink>
               ))}
             </div>
@@ -492,7 +493,7 @@ function SiblingLink({ href, label, cursor }: { href: string; label: string; red
         cursor.onLeave();
       }}
     >
-      {label} →
+      <IconLabel icon="arrow-right">{label}</IconLabel>
     </RouterLink>
   );
 }

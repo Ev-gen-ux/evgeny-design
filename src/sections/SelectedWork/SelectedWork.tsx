@@ -134,7 +134,7 @@ function PhoneCaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: Curs
         <p className={styles.phoneTeaser}>{cs.teaser}</p>
 
         <div className={styles.phoneFooter}>
-          <MagnetLink
+          <MagnetLink icon="arrow-right"
             href={`/work/${cs.id}`}
             variant="underline"
             reducedMotion={reducedMotion}
@@ -142,10 +142,10 @@ function PhoneCaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: Curs
             onMouseLeave={cursor.onLeave}
             onClick={saveScrollForReturn}
           >
-            open case →
+            open case
           </MagnetLink>
           {cs.links.map((l) => (
-            <MagnetLink
+            <MagnetLink icon="arrow-up-right"
               key={l.url}
               href={l.url}
               variant="underline"
@@ -154,7 +154,7 @@ function PhoneCaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: Curs
               onMouseEnter={cursor.onEnter}
               onMouseLeave={cursor.onLeave}
             >
-              {l.label} ↗
+              {l.label}
             </MagnetLink>
           ))}
         </div>
@@ -231,7 +231,7 @@ function CaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: CursorTra
         </div>
 
         <div className={styles.footerLinks}>
-          <MagnetLink
+          <MagnetLink icon="arrow-right"
             href={`/work/${cs.id}`}
             variant="underline"
             reducedMotion={reducedMotion}
@@ -239,10 +239,10 @@ function CaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: CursorTra
             onMouseLeave={cursor.onLeave}
             onClick={saveScrollForReturn}
           >
-            Открыть кейс →
+            Открыть кейс
           </MagnetLink>
           {cs.links.map((l) => (
-            <MagnetLink
+            <MagnetLink icon="arrow-up-right"
               key={l.url}
               href={l.url}
               variant="underline"
@@ -251,7 +251,7 @@ function CaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: CursorTra
               onMouseEnter={cursor.onEnter}
               onMouseLeave={cursor.onLeave}
             >
-              {l.label} ↗
+              {l.label}
             </MagnetLink>
           ))}
         </div>

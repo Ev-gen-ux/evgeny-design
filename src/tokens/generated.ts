@@ -1002,7 +1002,11 @@ export const tokenValues = {
   "global-animation-drift-grid": "driftGrid",
   "global-animation-wash-shimmer": "washShimmer",
   "global-animation-blob-drift": "blobDrift",
-  "global-animation-grain-shift": "grainShift"
+  "global-animation-grain-shift": "grainShift",
+  "icon-size-control": "1em",
+  "icon-stroke-width": "1.75",
+  "icon-label-gap": "8px",
+  "icon-baseline-offset": "-0.125em"
 } as const;
 
 export type TokenName = keyof typeof tokenValues;

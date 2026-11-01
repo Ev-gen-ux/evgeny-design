@@ -36,8 +36,8 @@ export function ContactFooter({ reducedMotion }: ContactFooterProps) {
             <div key={col.head} className={styles.col}>
               <span className={styles.colHead}>{col.head}</span>
               {col.links.map((l) => (
-                <MagnetLink key={l.id} href={l.url} variant="contactNav" external={l.external} reducedMotion={reducedMotion}>
-                  {l.label} →
+                <MagnetLink icon="arrow-right" key={l.id} href={l.url} variant="contactNav" external={l.external} reducedMotion={reducedMotion}>
+                  {l.label}
                 </MagnetLink>
               ))}
             </div>

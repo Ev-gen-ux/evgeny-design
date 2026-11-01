@@ -25,8 +25,8 @@ export function Projects({ cursor }: ProjectsProps) {
               <div className={styles.desc}>{p.desc}</div>
               <div className={styles.links}>
                 {p.links.map((l) => (
-                  <Link key={l.url} href={l.url} variant="ghost" external>
-                    {l.label} ↗
+                  <Link icon="arrow-up-right" key={l.url} href={l.url} variant="ghost" external>
+                    {l.label}
                   </Link>
                 ))}
               </div>

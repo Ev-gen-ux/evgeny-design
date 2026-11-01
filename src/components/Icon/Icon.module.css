@@ -1,0 +1,15 @@
+.icon {
+  display: inline-block;
+  flex-shrink: 0;
+  width: var(--icon-size-control);
+  height: var(--icon-size-control);
+  stroke-width: var(--icon-stroke-width);
+  vertical-align: var(--icon-baseline-offset);
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--icon-label-gap);
+  vertical-align: baseline;
+}

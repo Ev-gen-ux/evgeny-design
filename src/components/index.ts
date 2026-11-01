@@ -5,6 +5,7 @@ export * from './Typography';
 export * from './Tag';
 export * from './Card';
 export * from './Link';
+export * from './Icon';
 export * from './CodeBlock';
 export * from './AgentExchange';
 export * from './AgentSessionTimeline';

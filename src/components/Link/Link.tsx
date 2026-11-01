@@ -1,6 +1,7 @@
 import type { AnchorHTMLAttributes, CSSProperties, ReactNode } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import styles from './Link.module.css';
+import { IconLabel, type IconName } from '../Icon';
 
 export type LinkVariant = 'nav' | 'underline' | 'accent' | 'plain' | 'ghost' | 'email' | 'contactNav';
 
@@ -13,6 +14,7 @@ export interface LinkProps
   className?: string;
   style?: CSSProperties;
   children: ReactNode;
+  icon?: IconName;
 }
 
 /**
@@ -31,14 +33,15 @@ export interface LinkProps
  * that for React Router instead, so this isn't a 1:1 port, it's the approved
  * architecture change.
  */
-export function Link({ href, variant = 'underline', external, className, style, children, ...handlers }: LinkProps) {
+export function Link({ href, variant = 'underline', external, className, style, children, icon, ...handlers }: LinkProps) {
   const classNames = [styles.link, styles[variant], className].filter(Boolean).join(' ');
   const isInternal = !external && href.startsWith('/');
+  const content = icon ? <IconLabel icon={icon}>{children}</IconLabel> : children;
 
   if (isInternal) {
     return (
       <RouterLink to={href} className={classNames} style={style} {...handlers}>
-        {children}
+        {content}
       </RouterLink>
     );
   }
@@ -52,7 +55,7 @@ export function Link({ href, variant = 'underline', external, className, style, 
       style={style}
       {...handlers}
     >
-      {children}
+      {content}
     </a>
   );
 }
