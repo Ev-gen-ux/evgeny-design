@@ -178,7 +178,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
           {!!study.links.length && (
             <div className={styles.outcomeLinks}>
               {study.links.map((l, index) => (
-                <MagnetLink icon="arrow-up-right"
+                <MagnetLink icon={l.icon}
                   key={l.url}
                   href={l.url}
                   variant={index === 0 ? 'primary' : 'secondary'}
@@ -444,7 +444,7 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
           {!!study.links.length && (
             <div className={styles.outcomeLinks}>
               {study.links.map((l, index) => (
-                <MagnetLink icon="arrow-up-right"
+                <MagnetLink icon={l.icon}
                   key={l.url}
                   href={l.url}
                   variant={index === 0 ? 'primary' : 'secondary'}

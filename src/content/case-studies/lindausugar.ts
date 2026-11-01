@@ -159,7 +159,7 @@ export const lindausugar: CaseStudyDetail = {
   hasMatrix: false,
   hasNda: false,
   links: [
-    { label: 'live site', url: 'https://lindausugar.vercel.app' },
-    { label: 'PRD', url: 'https://volcano-cerise-e05.notion.site/LindauSugar-PRD-v4-0-3623555dc077810db5cde235024f730f' },
+    { label: 'live site', icon: 'globe', url: 'https://lindausugar.vercel.app' },
+    { label: 'PRD', icon: 'document', url: 'https://volcano-cerise-e05.notion.site/LindauSugar-PRD-v4-0-3623555dc077810db5cde235024f730f' },
   ],
 };

@@ -146,3 +146,7 @@ padding, border and keyboard focus. `icon-stroke-width` sets a shared Lucide wei
 including these buttons; `button-icon-stroke-width` aliases the same token. Layout follows shadcn default/outline
 patterns without adding Tailwind or Radix dependencies. To revert the concept,
 restore `variant="underline"` in Hero and both CaseStudy link maps.
+
+Primary/secondary CTA icons appear before their labels. Icon choices live in
+`heroCtas` and each typed `CaseLink.icon`; other link variants retain trailing
+arrows. `IconLabel.position` supports `start`/`end` without changing SVG styling.

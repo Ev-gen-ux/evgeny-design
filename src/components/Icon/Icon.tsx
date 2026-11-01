@@ -1,9 +1,16 @@
 import type { ReactNode } from 'react';
-import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Send, Mail, PanelsTopLeft, FileText, CodeXml, PenTool, Globe } from 'lucide-react';
 import styles from './Icon.module.css';
 
 // Explicit imports keep the bundle limited to the icons used by the UI.
 const icons = {
+  send: Send,
+  mail: Mail,
+  prototype: PanelsTopLeft,
+  document: FileText,
+  code: CodeXml,
+  design: PenTool,
+  globe: Globe,
   'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
   'arrow-up-right': ArrowUpRight,
@@ -18,9 +25,10 @@ export function Icon({ name }: { name: IconName }) {
 }
 
 /** Keep text in its own span so letter-assembly never rewrites the SVG. */
-export function IconLabel({ icon, children }: { icon: IconName; children: ReactNode }) {
+export function IconLabel({ icon, children, position = 'end' }: { icon: IconName; children: ReactNode; position?: 'start' | 'end' }) {
   return <span className={styles.label}>
+    {position === 'start' && <Icon name={icon} />}
     <span>{children}</span>
-    <Icon name={icon} />
+    {position === 'end' && <Icon name={icon} />}
   </span>;
 }

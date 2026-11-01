@@ -181,7 +181,7 @@ export function Hero({ cursor }: HeroProps) {
             <Link
               key={cta.id}
               href={cta.url}
-              icon="arrow-right"
+              icon={cta.icon}
               variant={index === 0 ? 'primary' : 'secondary'}
               external={cta.external}
               onMouseEnter={cursor.onEnter}

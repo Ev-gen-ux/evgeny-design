@@ -1,3 +1,5 @@
+import type { IconName } from '../../components/Icon';
+
 /**
  * 1:1 with the STUDIES shape in Case Study.dc.html. Two content shapes share
  * one type: `hasMatrix` studies (currently only log-service) get the fixed
@@ -54,6 +56,7 @@ export interface MetricItem {
 }
 
 export interface CaseLink {
+  icon: IconName;
   label: string;
   url: string;
 }

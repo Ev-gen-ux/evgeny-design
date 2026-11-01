@@ -153,7 +153,7 @@ export const aiPdpDs: CaseStudyDetail = {
   hasMatrix: false,
   hasNda: false,
   links: [
-    { label: 'github', url: 'https://github.com/Ev-gen-ux/AI-PDP-DS' },
-    { label: 'figma', url: 'https://www.figma.com/design/i7T3ru2M0SyXgJeTda8f43/AI-PDP-DS' },
+    { label: 'github', icon: 'code', url: 'https://github.com/Ev-gen-ux/AI-PDP-DS' },
+    { label: 'figma', icon: 'design', url: 'https://www.figma.com/design/i7T3ru2M0SyXgJeTda8f43/AI-PDP-DS' },
   ],
 };

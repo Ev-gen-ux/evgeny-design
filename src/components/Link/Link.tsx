@@ -36,7 +36,7 @@ export interface LinkProps
 export function Link({ href, variant = 'underline', external, className, style, children, icon, ...handlers }: LinkProps) {
   const classNames = [styles.link, styles[variant], className].filter(Boolean).join(' ');
   const isInternal = !external && href.startsWith('/');
-  const content = icon ? <IconLabel icon={icon}>{children}</IconLabel> : children;
+  const content = icon ? <IconLabel icon={icon} position={variant === 'primary' || variant === 'secondary' ? 'start' : 'end'}>{children}</IconLabel> : children;
 
   if (isInternal) {
     return (

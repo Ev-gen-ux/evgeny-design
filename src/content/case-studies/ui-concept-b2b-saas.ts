@@ -162,6 +162,6 @@ export const uiConceptB2bSaas: CaseStudyDetail = {
   hasMatrix: false,
   hasNda: false,
   links: [
-    { label: 'prototype', url: 'https://ui-concept-b2b-saas.vercel.app' },
+    { label: 'prototype', icon: 'prototype', url: 'https://ui-concept-b2b-saas.vercel.app' },
   ],
 };

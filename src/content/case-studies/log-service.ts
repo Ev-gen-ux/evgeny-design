@@ -110,8 +110,8 @@ export const logService: CaseStudyDetail = {
   hasMatrix: true,
   hasNda: false,
   links: [
-    { label: 'prototype', url: 'https://log-service-ten.vercel.app/log-settings' },
-    { label: 'PRD', url: 'https://volcano-cerise-e05.notion.site/PRD-v1-0-3473555dc07781f19d32fc372a0f51d2' },
+    { label: 'prototype', icon: 'prototype', url: 'https://log-service-ten.vercel.app/log-settings' },
+    { label: 'PRD', icon: 'document', url: 'https://volcano-cerise-e05.notion.site/PRD-v1-0-3473555dc07781f19d32fc372a0f51d2' },
   ],
 };
 
