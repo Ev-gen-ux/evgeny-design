@@ -177,12 +177,12 @@ export function Hero({ cursor }: HeroProps) {
           {subText}
         </Text>
         <div className={styles.ctaRow}>
-          {heroCtas.map((cta) => (
+          {heroCtas.map((cta, index) => (
             <Link
               key={cta.id}
               href={cta.url}
               icon="arrow-right"
-              variant="underline"
+              variant={index === 0 ? 'primary' : 'secondary'}
               external={cta.external}
               onMouseEnter={cursor.onEnter}
               onMouseLeave={cursor.onLeave}

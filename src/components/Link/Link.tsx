@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import styles from './Link.module.css';
 import { IconLabel, type IconName } from '../Icon';
 
-export type LinkVariant = 'nav' | 'underline' | 'accent' | 'plain' | 'ghost' | 'email' | 'contactNav';
+export type LinkVariant = 'nav' | 'underline' | 'accent' | 'plain' | 'ghost' | 'email' | 'contactNav' | 'primary' | 'secondary';
 
 export interface LinkProps
   extends Pick<AnchorHTMLAttributes<HTMLAnchorElement>, 'onMouseEnter' | 'onMouseMove' | 'onMouseLeave' | 'onClick' | 'aria-label'> {

@@ -177,11 +177,11 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
           <p className={styles.subtitle}>{study.subtitle}</p>
           {!!study.links.length && (
             <div className={styles.outcomeLinks}>
-              {study.links.map((l) => (
+              {study.links.map((l, index) => (
                 <MagnetLink icon="arrow-up-right"
                   key={l.url}
                   href={l.url}
-                  variant="underline"
+                  variant={index === 0 ? 'primary' : 'secondary'}
                   external
                   reducedMotion={reducedMotion}
                   onMouseEnter={cursor.onEnter}
@@ -443,11 +443,11 @@ export function CaseStudy({ slug }: CaseStudyPageProps) {
           )}
           {!!study.links.length && (
             <div className={styles.outcomeLinks}>
-              {study.links.map((l) => (
+              {study.links.map((l, index) => (
                 <MagnetLink icon="arrow-up-right"
                   key={l.url}
                   href={l.url}
-                  variant="underline"
+                  variant={index === 0 ? 'primary' : 'secondary'}
                   external
                   reducedMotion={reducedMotion}
                   onMouseEnter={cursor.onEnter}

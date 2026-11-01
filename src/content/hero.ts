@@ -31,8 +31,8 @@ export const hero = {
 } as const;
 
 export const heroCtas = [
-  { id: 'hero-email', label: 'email', url: 'mailto:evgeniyakovenko84@gmail.com', external: false },
   { id: 'hero-telegram', label: 'telegram', url: 'https://t.me/EvgeniYakovenko84', external: true },
+  { id: 'hero-email', label: 'email', url: 'mailto:evgeniyakovenko84@gmail.com', external: false },
 ] as const;
 
 /** Type-spec tags rendered like a Figma inspect-panel annotation next to the headline. */

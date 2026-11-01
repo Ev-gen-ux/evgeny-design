@@ -121,7 +121,7 @@ export function MobileNavOverlay({ links, onHome, reducedMotion, open, onClose, 
             className={styles.link}
             onClick={onClose}
           >
-            <span data-menu-asm="1">/{l.label}</span>
+            <span data-menu-asm="1">{l.label}</span>
           </a>
         ))}
       </div>

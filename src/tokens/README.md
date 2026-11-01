@@ -135,3 +135,14 @@ scroll-progress и вычисленные размеры DOM не являютс
 от скринридера. Текст и SVG находятся в отдельных узлах, поэтому анимация
 букв не перезаписывает разметку иконки. Символы в обычном контенте и текстовые
 метки терминального интерфейса не заменяются иконками автоматически.
+
+### Primary and secondary CTA links
+
+`Link` and `MagnetLink` accept `primary` (filled) and `secondary` (outline).
+Hero uses email/telegram; both case-study action groups use first/rest ordering.
+They remain native links, preserving hrefs, Lucide icons, and magnetic hover.
+`button-*` tokens control their colors, 32px minimum height, 12px group gap, pill radius (`button-radius` → `radius-pill`, 999px),
+padding, border and keyboard focus. `icon-stroke-width` sets a shared Lucide weight of 2.25 across all controls,
+including these buttons; `button-icon-stroke-width` aliases the same token. Layout follows shadcn default/outline
+patterns without adding Tailwind or Radix dependencies. To revert the concept,
+restore `variant="underline"` in Hero and both CaseStudy link maps.

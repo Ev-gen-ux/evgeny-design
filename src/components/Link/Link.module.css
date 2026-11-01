@@ -158,3 +158,53 @@
    audit): touch taps set :hover and it sticks until another tap elsewhere —
    :hover now gated behind `(hover: hover) and (pointer: fine)`, :focus-visible
    stays ungated so keyboard nav keeps working everywhere. */
+
+/* Filled and outline actions preserve native link semantics. */
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-height: var(--button-height);
+  padding: 0 var(--button-padding-inline);
+  border: var(--button-border-width) solid transparent;
+  border-radius: var(--button-radius);
+  font-weight: var(--button-font-weight);
+  line-height: var(--lh-tight);
+  white-space: nowrap;
+  transition:
+    background-color var(--motion-control) var(--ease-standard),
+    color var(--motion-control) var(--ease-standard),
+    border-color var(--motion-control) var(--ease-standard),
+    transform var(--motion-hover) var(--ease-signature);
+}
+
+.primary {
+  background: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+}
+
+.secondary {
+  background: var(--button-secondary-background);
+  color: var(--button-secondary-foreground);
+  border-color: var(--button-secondary-border);
+}
+
+.primary:focus-visible,
+.secondary:focus-visible {
+  outline: var(--button-focus-outline);
+  outline-offset: var(--button-focus-offset);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .primary:hover {
+    background: var(--button-primary-background-hover);
+  }
+
+  .secondary:hover {
+    background: var(--button-secondary-background-hover);
+    color: var(--color-interactive-hover);
+    border-color: var(--button-secondary-border-hover);
+  }
+}
