@@ -41,3 +41,30 @@ test('shared hover duration controls the magnetic effect in milliseconds',()=>{
  const source=copy();source.tokens['motion-hover']='0.4s';const result=compileTokens(source);
  assert.equal(result.runtime.magnet.durationMs,400);
 });
+
+test('CSS Modules keyframes keep matching their animation declarations after compilation', async()=>{
+ const {preprocessCSS,resolveConfig}=await import('vite');
+ const {readdirSync}=await import('node:fs');
+ const {resolve}=await import('node:path');
+ const config=await resolveConfig({configFile:false,logLevel:'silent'},'build');
+ function* modules(dir){for(const item of readdirSync(dir,{withFileTypes:true})){const path=dir+'/'+item.name;if(item.isDirectory())yield*modules(path);else if(path.endsWith('.module.css'))yield path;}}
+ const globalNames=[...readFileSync('src/index.css','utf8').matchAll(/@keyframes\s+([\w-]+)/g)].map(match=>match[1]);
+ const tokenValues=compileTokens(original).resolvedValues;
+ let checked=0;
+ for(const path of modules('src')){
+  const input=readFileSync(path,'utf8');
+  if(!/@keyframes\s|animation(?:-name)?\s*:/.test(input))continue;
+  const result=await preprocessCSS(input,resolve(path),config);
+  const names=[...result.code.matchAll(/@keyframes\s+([\w-]+)/g)].map(match=>match[1]);
+  const declarations=[...result.code.matchAll(/(?:^|[;{\n])\s*animation(?:-name)?\s*:\s*([^;]+)/g)].map(match=>match[1]).join(' ');
+  for(const name of names)assert.ok(declarations.includes(name),`${path}: compiled keyframes ${name} are not referenced by animation; keep the name local and tokenize only duration/easing`);
+  const declaredNames=new Set([...globalNames,...names]);
+  for(const match of result.code.matchAll(/(?:^|[;{\n])\s*animation(?:-name)?\s*:\s*([^;]+)/g)){
+   const value=match[1].replace(/var\(--([\w-]+)\)/g,(_match,token)=>tokenValues[token]??`var(--${token})`).trim();
+   const name=value.split(/\s+/)[0];
+   if(name!=='none')assert.ok(declaredNames.has(name),`${path}: animation ${name} has no matching local/global keyframes`);
+  }
+  checked++;
+ }
+ assert.ok(checked>=5);
+});

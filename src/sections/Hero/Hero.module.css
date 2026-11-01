@@ -61,7 +61,7 @@
 }
 
 .gridAnimated {
-  animation: var(--hero-gridAnimated-animation);
+  animation: var(--global-animation-drift-grid) var(--hero-gridAnimated-animation-duration) linear infinite;
 }
 
 .spot {

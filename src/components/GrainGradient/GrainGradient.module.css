@@ -39,7 +39,7 @@
 }
 
 .streakAnimated {
-  animation: var(--grain-gradient-streakAnimated-animation);
+  animation: streakDrift var(--grain-gradient-streakAnimated-animation-duration) ease-in-out infinite;
 }
 
 @keyframes streakDrift {

@@ -62,7 +62,7 @@
   display: inline-block;
   white-space: pre;
   opacity: 0;
-  animation: var(--about-dialog-letter-animation);
+  animation: letterIn var(--about-dialog-letter-animation-duration) var(--ease-signature) forwards;
 }
 
 @keyframes letterIn {
@@ -186,7 +186,7 @@
   height: var(--about-dialog-track-height);
   background: var(--about-dialog-track-background);
   opacity: 0;
-  animation: var(--about-dialog-track-animation);
+  animation: trackIn var(--about-dialog-track-animation-duration) var(--ease-standard) forwards;
 }
 
 @keyframes trackIn {

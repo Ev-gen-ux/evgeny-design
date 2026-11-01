@@ -79,7 +79,7 @@
   height: var(--agent-exchange-typingDot-height);
   border-radius: 50%;
   background: var(--color-accent);
-  animation: var(--agent-exchange-typingDot-animation);
+  animation: agentTypingBounce var(--agent-exchange-typingDot-animation-duration) ease-in-out infinite;
 }
 
 .typingDot:nth-child(2) {

@@ -15,6 +15,7 @@ for(const path of paths){
  const text=readFileSync(path,'utf8').replace(/\/\*[\s\S]*?\*\//g,'').replace(/^\s*\/\/.*$/gm,'');
  for(const m of text.matchAll(/var\(--([\w-]+)/g))if(!definitions.has(m[1]))errors.push(`${path}: undefined CSS variable --${m[1]}`);
  if(path.endsWith('.css')){
+  if(path.endsWith('.module.css') && /animation\s*:\s*var\(--[\w-]+\)\s*;/.test(text)) errors.push(`${path}: keep keyframe names local to CSS Modules; tokenize duration/easing, not the whole animation shorthand`);
   const css=text.replace(/url\((?:"[^"]*"|'[^']*'|[^)])*\)/g,'');
   for(const [i,line]of css.split('\n').entries()){
    if(/@media/.test(line)){

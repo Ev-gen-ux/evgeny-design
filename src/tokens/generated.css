@@ -267,7 +267,6 @@
   --about-dialog-answer-max-width: 42ch;
   --about-dialog-note-line-height: 1.5;
   --about-dialog-note-max-width: 46ch;
-  --about-dialog-letter-animation: letterIn 500ms var(--ease-signature) forwards;
   --about-dialog-sr-width: 1px;
   --about-dialog-sr-height: 1px;
   --about-dialog-tabs-gap: var(--space-8) var(--space-stack-xl);
@@ -283,7 +282,6 @@
   --about-dialog-indicator-height: 1px;
   --about-dialog-track-height: 1px;
   --about-dialog-track-background: rgba(var(--color-slate-mist-rgb), 0.3);
-  --about-dialog-track-animation: trackIn 500ms var(--ease-standard) forwards;
   --about-dialog-fill-height: 1px;
   --about-reel-root-gap: var(--space-8);
   --about-reel-window-font-size: clamp(22px, 2.6vw, 38px);
@@ -292,7 +290,6 @@
   --about-reel-item-top: 1.35em;
   --about-reel-item-height: 1.35em;
   --about-reel-item-line-height: 1.35em;
-  --about-reel-letter-animation: reelIn 700ms var(--ease-signature) forwards;
   --about-reel-from-transform-length-27: 1em;
   --about-reel-from-transform-length-50: 1em;
   --about-reel-from-transform-length-79: 1deg;
@@ -300,7 +297,6 @@
   --about-reel-text-min-height: calc(1.45em * 2);
   --about-reel-text-font-size: clamp(15px, 1.15vw, 18px);
   --about-reel-text-line-height: 1.45;
-  --about-reel-word-animation: wordIn 600ms var(--ease-signature) forwards;
   --about-reel-from-transform: translateY(0.5em);
   --about-reel-staticList-gap: var(--space-stack-sm);
   --about-reel-staticItem-line-height: 1.5;
@@ -451,7 +447,6 @@
   --hero-section-padding: var(--space-140) var(--space-container-x) var(--space-100);
   --hero-section-padding-bottom-phone: var(--space-section-mobile);
   --hero-grid-opacity: 0.6;
-  --hero-gridAnimated-animation: driftGrid 50s linear infinite;
   --hero-saturnLayer-z-index: -1;
   --hero-saturnLayer-after-background: radial-gradient(circle at 50% 50%, transparent 32%, rgba(var(--color-graphite-rgb), 0.6) 100%);
   --hero-inner-max-width: 1100px;
@@ -552,18 +547,14 @@
   --agent-exchange-typing-gap: var(--space-5);
   --agent-exchange-typingDot-width: 5px;
   --agent-exchange-typingDot-height: 5px;
-  --agent-exchange-typingDot-animation: agentTypingBounce 1.1s ease-in-out infinite;
   --agent-exchange-typingDot-nth-child-2-animation-delay: 0.15s;
   --agent-exchange-typingDot-nth-child-3-animation-delay: 0.3s;
   --agent-exchange-step-0-opacity: 0.3;
-  --page-backdrop-washAnimated-animation: washShimmer 26s ease-in-out infinite;
   --page-backdrop-blobInner-filter: blur(90px);
   --page-backdrop-blobInner-opacity-tablet: 0.5;
-  --page-backdrop-blobAnimated-animation: blobDrift 20s ease-in-out infinite;
   --page-backdrop-grain-z-index: 120;
   --page-backdrop-grain-opacity: 0.09;
   --page-backdrop-grain-background-size: 120px 120px;
-  --page-backdrop-grainAnimated-animation: grainShift 1.4s steps(6) infinite;
   --page-backdrop-progressTrack-height: 2px;
   --page-backdrop-progressTrack-background: rgba(var(--color-slate-mist-rgb), 0.15);
   --page-backdrop-progressTrack-z-index: 101;
@@ -604,7 +595,6 @@
   --chat-bar-cursor-width: 2px;
   --chat-bar-cursor-height: 1em;
   --chat-bar-cursor-margin-left: var(--space-2);
-  --chat-bar-cursor-animation: blink 1s step-end infinite;
   --chat-bar-status-gap: var(--space-8);
   --chat-bar-statusDot-width: 6px;
   --chat-bar-statusDot-height: 6px;
@@ -704,7 +694,6 @@
   --grain-gradient-streak-filter: blur(40px) saturate(110%);
   --grain-gradient-streak-opacity: 0.6;
   --grain-gradient-intense-streak-opacity: 0.85;
-  --grain-gradient-streakAnimated-animation: streakDrift 30s ease-in-out infinite;
   --grain-gradient-noise-opacity: 0.16;
   --grain-gradient-noise-background-size: 200px 200px;
   --grain-gradient-intense-noise-opacity: 0.22;
@@ -999,6 +988,21 @@
   --syntax-boolean-color: rgb(255, 88, 116);
   --syntax-property-color: rgb(128, 203, 196);
   --syntax-namespace-color: rgb(178, 204, 214);
+  --about-dialog-letter-animation-duration: 500ms;
+  --about-dialog-track-animation-duration: 500ms;
+  --about-reel-letter-animation-duration: 700ms;
+  --about-reel-word-animation-duration: 600ms;
+  --hero-gridAnimated-animation-duration: 50s;
+  --agent-exchange-typingDot-animation-duration: 1.1s;
+  --page-backdrop-washAnimated-animation-duration: 26s;
+  --page-backdrop-blobAnimated-animation-duration: 20s;
+  --page-backdrop-grainAnimated-animation-duration: 1.4s;
+  --chat-bar-cursor-animation-duration: 1s;
+  --grain-gradient-streakAnimated-animation-duration: 30s;
+  --global-animation-drift-grid: driftGrid;
+  --global-animation-wash-shimmer: washShimmer;
+  --global-animation-blob-drift: blobDrift;
+  --global-animation-grain-shift: grainShift;
 }
 
 :root[data-portfolio-theme='monochrome'] ::selection {

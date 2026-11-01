@@ -66,6 +66,13 @@ scroll-driven анимации, добавлять к ней padding вмест�
 Именованные media-условия раскрывает Vite-плагин из тех же `breakpoints`, которые
 использует TypeScript. Нативные CSS-переменные внутри обычного `@media` не работают.
 
+Имена локальных `@keyframes` должны оставаться в CSS-модуле. В токены выносятся
+длительность, задержка и easing, но не весь shorthand `animation`: CSS Modules
+не переименовывает имя анимации внутри значения глобальной CSS-переменной.
+Компиляционный тест проверяет соответствие имён после обработки Vite.
+Глобальные keyframes из `index.css` подключаются через `global-animation-*`,
+чтобы CSS Modules не превратил ссылку на глобальную анимацию в локальное имя.
+
 ```tsx
 import { token, breakpoints } from './tokens';
 <Section paddingTop="section-block" paddingBottom="section-block">…</Section>

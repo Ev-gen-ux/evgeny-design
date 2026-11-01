@@ -119,7 +119,7 @@
   height: var(--chat-bar-cursor-height);
   margin-left: var(--chat-bar-cursor-margin-left);
   background: var(--color-text-primary);
-  animation: var(--chat-bar-cursor-animation);
+  animation: blink var(--chat-bar-cursor-animation-duration) step-end infinite;
 }
 
 @keyframes blink {

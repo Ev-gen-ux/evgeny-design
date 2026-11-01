@@ -11,7 +11,7 @@
 }
 
 .washAnimated {
-  animation: var(--page-backdrop-washAnimated-animation);
+  animation: var(--global-animation-wash-shimmer) var(--page-backdrop-washAnimated-animation-duration) ease-in-out infinite;
 }
 
 .blobOuter {
@@ -45,7 +45,7 @@
 }
 
 .blobAnimated {
-  animation: var(--page-backdrop-blobAnimated-animation);
+  animation: var(--global-animation-blob-drift) var(--page-backdrop-blobAnimated-animation-duration) ease-in-out infinite;
 }
 
 .grain {
@@ -64,7 +64,7 @@
 }
 
 .grainAnimated {
-  animation: var(--page-backdrop-grainAnimated-animation);
+  animation: var(--global-animation-grain-shift) var(--page-backdrop-grainAnimated-animation-duration) steps(6) infinite;
 }
 
 .progressTrack {
