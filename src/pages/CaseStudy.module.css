@@ -391,10 +391,15 @@
 
 .personaGrid {
   display: grid;
-  grid-template-columns: var(--case-study-personaGrid-grid-template-columns);
-  gap: var(--case-study-personaGrid-gap);
+  gap: var(--case-study-persona-block-gap);
   font-size: var(--fs-md);
   line-height: var(--lh-relaxed-md);
+}
+
+.personaField {
+  display: grid;
+  grid-template-columns: var(--case-study-personaGrid-grid-template-columns);
+  gap: var(--case-study-personaGrid-gap);
 }
 
 .personaGridLabel {
@@ -780,7 +785,7 @@
     gap: var(--case-study-metaGrid-gap-phone);
   }
 
-  .personaGrid,
+  .personaField,
   .solutionPart,
   .defRow,
   .pairsHead,

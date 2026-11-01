@@ -536,12 +536,18 @@ function PersonaList({
               </span>
             </div>
             <div className={styles.personaGrid}>
-              <span className={styles.personaGridLabel}>{jtbdLabel}</span>
-              <span className={styles.personaGridValue}>{p.jtbd}</span>
-              <span className={styles.personaGridLabel}>{freqLabel}</span>
-              <span className={styles.personaGridValue}>{p.frequency}</span>
-              <span className={styles.personaGridLabel}>{fearLabel}</span>
-              <span className={styles.personaGridValue}>{p.fear}</span>
+              <div className={styles.personaField}>
+                <span className={styles.personaGridLabel}>{jtbdLabel}</span>
+                <span className={styles.personaGridValue}>{p.jtbd}</span>
+              </div>
+              <div className={styles.personaField}>
+                <span className={styles.personaGridLabel}>{freqLabel}</span>
+                <span className={styles.personaGridValue}>{p.frequency}</span>
+              </div>
+              <div className={styles.personaField}>
+                <span className={styles.personaGridLabel}>{fearLabel}</span>
+                <span className={styles.personaGridValue}>{p.fear}</span>
+              </div>
             </div>
           </article>
         );

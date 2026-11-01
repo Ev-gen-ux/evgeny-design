@@ -764,6 +764,7 @@
   --case-study-personaBadge-padding: var(--space-4) var(--space-8);
   --case-study-personaBadge-border: 1px solid transparent;
   --case-study-personaGrid-grid-template-columns: minmax(80px, 120px) 1fr;
+  --case-study-persona-block-gap: var(--space-stack-md);
   --case-study-personaGrid-gap: var(--space-14) var(--space-20);
   --case-study-personaGridLabel-padding-top: var(--space-3);
   --case-study-solutionParts-gap: var(--space-18);

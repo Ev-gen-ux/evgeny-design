@@ -778,6 +778,7 @@ export const tokenValues = {
   "case-study-personaBadge-padding": "4px 8px",
   "case-study-personaBadge-border": "1px solid transparent",
   "case-study-personaGrid-grid-template-columns": "minmax(80px, 120px) 1fr",
+  "case-study-persona-block-gap": "16px",
   "case-study-personaGrid-gap": "14px 20px",
   "case-study-personaGridLabel-padding-top": "3px",
   "case-study-solutionParts-gap": "18px",
