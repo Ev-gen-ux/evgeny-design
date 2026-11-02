@@ -493,3 +493,21 @@
   }
 }
 
+
+/* Pipeline occupies the existing desktop grid slot and mobile content width. */
+.typeTags.pipelinePreview {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (--viewport-phone) {
+  .inner .goal.pipelineGoal {
+    margin-bottom: var(--hero-pipeline-goal-gap-phone);
+  }
+
+  .typeTags.pipelinePreview {
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
+    box-sizing: border-box;
+  }
+}

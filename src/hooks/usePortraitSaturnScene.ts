@@ -1,5 +1,5 @@
 import { breakpoints } from '../tokens';
-import { readToken, runtimeTokens } from '../tokens';
+import { readToken, readTokenNumber, runtimeTokens } from '../tokens';
 import { useRef, type RefObject } from 'react';
 import { useThreeScene, type ThreeSceneContext, type ThreeSceneHandle } from './useThreeScene';
 
@@ -520,6 +520,10 @@ export function usePortraitSaturnScene(enabled: boolean, mobileAnchorRef?: RefOb
             const targetPixelY = anchorRect.top + anchorRect.height / 2 - canvasRect.top + VISUAL_CENTER_OFFSET_PX;
             shiftWorldY = (height / 2 - targetPixelY) * worldPerPx;
           }
+        }
+        // Reversible framing adjustment in CSS pixels; phone/tablet stay unchanged.
+        if (window.innerWidth >= breakpoints.desktop) {
+          shiftWorldY -= readTokenNumber('hero-bust-offset-y-desktop') * worldPerPx;
         }
         compositionRoot.position.y = shiftWorldY;
       };

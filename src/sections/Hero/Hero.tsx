@@ -12,6 +12,10 @@ import { useWindowWidth } from '../../hooks/useWindowWidth';
 import { useTokenCounter } from '../../hooks/useTokenCounter';
 import { hero, heroCtas, typeTags } from '../../content/hero';
 import styles from './Hero.module.css';
+import { HeroPipelinePreview } from './HeroPipelinePreview';
+
+// Set false to restore the original technical badges.
+const showPipelinePreview = true;
 
 export interface HeroProps {
   cursor: CursorTracker;
@@ -191,15 +195,17 @@ export function Hero({ cursor }: HeroProps) {
             </Link>
           ))}
         </div>
-        <div className={styles.typeTags}>
+        <div className={`${styles.typeTags} ${showPipelinePreview ? styles.pipelinePreview : ''}`}>
+          {showPipelinePreview ? <HeroPipelinePreview /> : <>
           {typeTags.map((t) => (
             <span key={t.k} className={styles.typeTag}>
               <span className={styles.typeTagKey}>{t.k}:</span>
               {t.v}
             </span>
           ))}
+          </>}
         </div>
-        <Text variant="hero" as="p" className={styles.goal}>
+        <Text variant="hero" as="p" className={`${styles.goal} ${showPipelinePreview ? styles.pipelineGoal : ''}`}>
           {hero.goal}
         </Text>
       </div>
