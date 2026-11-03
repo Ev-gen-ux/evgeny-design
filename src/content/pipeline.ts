@@ -5,7 +5,7 @@ export const pipelineHeader = {
   sub: 'Как размытый бриф превращается в живой прототип, который тестируют реальные пользователи.',
 } as const;
 
-/** `metric` per stage — added 2026-08-02 per user request ("у нас любят метрики все"). Illustrative/placeholder figures, not measured data — adjust to real numbers if/when known. */
+/** `metric` per stage — added 2026-08-02 per user request ("у нас любят метрики все"). The owner confirmed these as valid averaged figures on 2026-11-02; preserve their current presentation. */
 export const pipelineStages = [
   {
     tag: 'discovery',

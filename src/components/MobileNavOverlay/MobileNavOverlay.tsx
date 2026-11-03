@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import { useMenuAssembly } from '../../hooks/useMenuAssembly';
 import styles from './MobileNavOverlay.module.css';
 
@@ -17,6 +17,7 @@ export interface MobileNavOverlayProps {
   onClose: () => void;
   /** Referenced by Header's `.menuTrigger` via `aria-controls`. */
   panelId: string;
+  triggerRef: RefObject<HTMLButtonElement | null>;
 }
 
 /**
@@ -53,7 +54,7 @@ export interface MobileNavOverlayProps {
  * of 0. `useMenuAssembly` re-splits/re-scatters the link labels every time
  * `open` flips true (see that hook's own docstring).
  */
-export function MobileNavOverlay({ links, onHome, reducedMotion, open, onClose, panelId }: MobileNavOverlayProps) {
+export function MobileNavOverlay({ links, onHome, reducedMotion, open, onClose, panelId, triggerRef }: MobileNavOverlayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
   useMenuAssembly(containerRef, reducedMotion, open);
@@ -101,17 +102,20 @@ export function MobileNavOverlay({ links, onHome, reducedMotion, open, onClose, 
     firstLinkRef.current?.focus({ preventScroll: true });
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+        triggerRef.current?.focus({ preventScroll: true });
+      }
     };
     window.addEventListener('keydown', onKeyDown);
 
     return () => {
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [open, onClose]);
+  }, [open, onClose, triggerRef]);
 
   return (
-    <div id={panelId} className={styles.overlay} data-open={open ? '1' : '0'} aria-hidden={!open}>
+    <div id={panelId} className={styles.overlay} data-open={open ? '1' : '0'} aria-hidden={!open} inert={!open}>
       <div ref={containerRef} className={styles.links}>
         {links.map((l, i) => (
           <a

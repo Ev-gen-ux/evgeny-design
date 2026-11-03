@@ -362,3 +362,12 @@
     align-self: flex-start;
   }
 }
+
+/* Extend the mobile hit target without moving the label or header. */
+@media (--viewport-phone) {
+  .menuTrigger::before {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--touch-target-outset-block)) 0;
+  }
+}

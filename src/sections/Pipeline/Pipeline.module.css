@@ -117,6 +117,14 @@
   color: var(--color-text-primary);
 }
 
+@media (--viewport-desktop) {
+  .claims {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--pipeline-claims-column-gap-desktop);
+    row-gap: var(--pipeline-claims-row-gap-desktop);
+  }
+}
+
 .loopLabel {
   font-family: var(--font-mono);
   font-size: var(--fs-tiny);

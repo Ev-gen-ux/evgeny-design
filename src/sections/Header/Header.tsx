@@ -132,6 +132,7 @@ export function Header({ cursor }: HeaderProps) {
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
         panelId={menuPanelId}
+        triggerRef={menuTriggerRef}
       />
     </nav>
   );

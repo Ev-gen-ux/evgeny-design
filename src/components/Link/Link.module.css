@@ -208,3 +208,16 @@
     border-color: var(--button-secondary-border-hover);
   }
 }
+
+/* Vertical hit-area only: adjacent links keep distinct horizontal targets. */
+@media (--viewport-phone) {
+  .underline {
+    position: relative;
+  }
+
+  .underline::before {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--touch-target-outset-block)) 0;
+  }
+}

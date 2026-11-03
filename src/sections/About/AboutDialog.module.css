@@ -225,3 +225,21 @@
 .hidden .fill {
   animation-play-state: paused;
 }
+
+@media (--viewport-phone) {
+  /* Reserve clip-safe hit area above the scrollable tabs, net layout change 0. */
+  .tabs {
+    padding-top: var(--touch-target-outset-block);
+    margin-top: calc(-1 * var(--touch-target-outset-block));
+  }
+
+  .tab {
+    position: relative;
+  }
+
+  .tab::before {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * var(--touch-target-outset-block)) 0;
+  }
+}

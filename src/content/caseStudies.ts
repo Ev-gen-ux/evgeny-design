@@ -97,7 +97,7 @@ export const caseStudies: CaseStudySummary[] = [
     tag: 'live product · DE market',
     type: 'landing page · full-cycle',
     title: 'LindauSugar — лендинг салона сахарной депиляции',
-    teaser: 'Сайт салона в Германии с онлайн-записью через Treatwell на немецком языке. Контент правится через CMS, разработчик не нужен, cookie-баннер и Impressum соответствуют GDPR.',
+    teaser: 'Сайт салона в Германии с собственным виджетом записи на немецком языке. Контент правится через CMS, разработчик не нужен, cookie-баннер и Impressum соответствуют GDPR.',
     metrics: [
       { label: 'content update', value: '~60 сек' },
       { label: 'target bookings', value: '30+/мес' },
@@ -106,7 +106,7 @@ export const caseStudies: CaseStudySummary[] = [
     blocks: [
       {
         label: 'problem',
-        text: 'У салона (Wangen im Allgäu, Германия) нет сайта и онлайн-записи. Нужен запуск за 1–2 недели, немецкий язык, соответствие GDPR, интеграция с Treatwell — и управление контентом без разработчика.',
+        text: 'У салона (Wangen im Allgäu, Германия) нет сайта и онлайн-записи. Нужен запуск за 1–2 недели, немецкий язык, соответствие GDPR, онлайн-запись — и управление контентом без разработчика.',
       },
       {
         label: 'process',
@@ -114,7 +114,7 @@ export const caseStudies: CaseStudySummary[] = [
       },
       {
         label: 'solution',
-        text: 'Next.js (App Router, SSR + ISR) на Vercel + Sanity CMS как headless-редактор контента. Светлый тёплый фон, serif-заголовки (Cormorant Garamond/Playfair Display), sans-serif текст. Интеграция Treatwell-виджета, cookie-banner и Impressum по требованиям DE.',
+        text: 'Next.js (App Router, SSR + ISR) на Vercel + Sanity CMS как headless-редактор контента. Светлый тёплый фон, serif-заголовки (Cormorant Garamond/Playfair Display), sans-serif текст. Собственный виджет онлайн-записи, cookie-banner и Impressum по требованиям DE.',
       },
       {
         label: 'result',
