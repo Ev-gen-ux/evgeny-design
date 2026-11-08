@@ -67,27 +67,27 @@ export const caseStudies: CaseStudySummary[] = [
     tag: 'design system from zero',
     type: 'дизайн-система · инструмент',
     title: 'AI-PDP-DS — дизайн-система с AI-agent контрактом',
-    teaser: 'Библиотека компонентов остаётся согласованной, даже когда код пишут AI-агенты: перед работой они проходят обязательные проверки, а каждый компонент подключён через Code Connect.',
+    teaser: 'React-библиотека с семантическими токенами, публичным Storybook и контрактом для AI-агентов. Поставка проверена в отдельном приложении.',
     metrics: [
-      { label: 'ai gate-checks', value: '4' },
-      { label: 'components shipped', value: '8+' },
-      { label: 'sync', value: 'figma ↔ code 1:1' },
+      { label: 'components', value: '62' },
+      { label: 'themes', value: '2' },
     ],
     blocks: [
       {
         label: 'problem',
-        text: 'Построить production-ready дизайн-систему — единый источник правды для дизайна и кода, — которая остаётся согласованной, даже когда компоненты создают AI-агенты (Claude Code, Cursor, Copilot) без постоянного контроля человека.',
+        text: 'Сделать путь от макета до React-компонента проверяемым: связать варианты, состояния и токены и сократить число произвольных решений при работе с AI.',
       },
       {
         label: 'solution',
-        text: 'Token-first React-библиотека (TypeScript, styled-components, Storybook) с жёстким контрактом для AI-агентов: обязательные gate-проверки перед написанием кода (Variant Matrix, Numeric Map, State Token Matrix, Hard Constraints), синхронизация имён токенов 1:1 между Figma и кодом, Code Connect для каждого компонента, версионирование через Changesets, CI с lint/typecheck/test/visual regression.',
+        text: 'React, TypeScript, styled-components и Storybook: спецификация до кода, семантические токены, светлая и тёмная темы, проверки поведения и версионирование через Changesets. Code Connect опубликован для Button; остальные сопоставления развиваются отдельно.',
       },
       {
         label: 'result',
-        text: 'Растущая, полностью типизированная библиотека компонентов (Button, InputText, Select, Multiselect, Stepper, Toggle, ProgressBar, InlineMessage и др.) с задокументированным процессом добавления новых компонентов — воспроизводимым любым агентом без потери качества.',
+        text: '62 компонента в публичном API, включая табличные элементы и примитивы компоновки; светлая и тёмная темы. Проверены упаковка библиотеки, типы, стили, серверный рендер и подключение в отдельном Vite-приложении.',
       },
     ],
     links: [
+      { label: 'storybook', url: 'https://main--69f08a5c57bcf2747e61c70d.chromatic.com/' },
       { label: 'github', url: 'https://github.com/Ev-gen-ux/AI-PDP-DS' },
       { label: 'figma', url: 'https://www.figma.com/design/i7T3ru2M0SyXgJeTda8f43/AI-PDP-DS' },
     ],

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { ArrowLeft, ArrowRight, ArrowUpRight, Send, Mail, PanelsTopLeft, FileText, CodeXml, PenTool, Globe } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUpRight, Send, Mail, PanelsTopLeft, FileText, CodeXml, PenTool, Globe, BookOpen } from 'lucide-react';
 import styles from './Icon.module.css';
 
 // Explicit imports keep the bundle limited to the icons used by the UI.
@@ -11,6 +11,7 @@ const icons = {
   code: CodeXml,
   design: PenTool,
   globe: Globe,
+  book: BookOpen,
   'arrow-left': ArrowLeft,
   'arrow-right': ArrowRight,
   'arrow-up-right': ArrowUpRight,

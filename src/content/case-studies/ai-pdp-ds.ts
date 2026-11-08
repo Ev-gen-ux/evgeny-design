@@ -1,16 +1,16 @@
 import type { CaseStudyDetail } from './types';
 
-/** 1:1 with STUDIES['ai-pdp-ds'] in Case Study.dc.html. */
+/** Updated from the project README and published Storybook Introduction, 2026-11-08. */
 export const aiPdpDs: CaseStudyDetail = {
   title: 'AI-PDP-DS',
   subtitle:
-    'Дизайн-система с явным контрактом для AI-агентов — токен-first React-библиотека, которая не теряет согласованность с Figma, даже когда компоненты пишут разные AI-агенты без постоянного контроля человека.',
+    'Открытая React-библиотека и процесс разработки с AI: от мастер-компонента Figma и семантических токенов до интерактивной документации, проверок и подключения к приложению.',
   tags: ['Design System', 'Open Source', 'React + TypeScript', 'Personal Project'],
   meta: [{ label: 'роль', value: 'Автор и владелец системы — архитектура контракта, токены, компоненты, governance' }],
   problemTitle: 'Дизайн-системы деградируют, когда их пишет больше одного автора',
   problem: [
     'Дизайн-системы обычно деградируют, когда их пишет больше одного человека без жёсткой дисциплины: хардкод-значения вместо токенов, размеры «на глаз» вместо чисел из Figma, разъезжающиеся имена токенов между дизайном и кодом.',
-    'С приходом AI-агентов (Claude Code, Cursor, Copilot) риск вырастает на порядок.',
+    'При работе с AI-агентами появляется дополнительный риск: агент может правдоподобно воспроизвести внешний вид, но придумать размеры, свойства или поведение, которых нет в исходном компоненте.',
   ],
   problemSteps: [
     'Агенту говорят «сделай компонент X»',
@@ -22,19 +22,33 @@ export const aiPdpDs: CaseStudyDetail = {
     {
       tag: '01 · market',
       promptQuestion: 'это уже где-то решено?',
-      title: 'Разрыв между дизайном и кодом — рыночный, не частный',
+      title: 'Откуда берётся разрыв между дизайном и кодом',
       paras: [
-        'Перед тем как закладывать протокол, я проверил рынок: ищутся ли готовые дизайн-системы, где Figma Code Connect используется не как витрина сниппета, а как инструмент сверки — где состояние/вариант компонента в Figma гарантированно совпадает с тем, что реально есть в коде. Готовых решений с таким явным сопоставлением я не нашёл — Code Connect почти везде используется только для вставки примера кода в Dev Mode, а не для проверки соответствия.',
+        'В проекте я связал визуальные требования, токены и публичный API компонента общим процессом. Задача — сделать решения прослеживаемыми: от конкретного мастер-узла Figma до реализации и примера в Storybook.',
         'Боль за этим — известная и воспроизводимая: архитектура компонента живёт в дизайне своей жизнью (слой называется «норма», «вкл»), а в коде — своей (enabled, default, как буквально записано в CSS-классах). Для разработчика это означает двойной перевод на каждый компонент и источник расхождений, которые всплывают только в проде.',
       ],
       note: 'Подтверждено собственными логами проекта: в сессии Modal (dx-friction-2026-05-02, находка U3) код использовал слоты beforeTitle/afterTitle, а Figma — contentBefore/contentAfter — разработчику казалось, что нужных слотов в компоненте просто нет. Это тот самый разрыв «два разных мира», не абстрактный пример, а зафиксированный инцидент.',
     },
     {
+      tag: '02 · process',
+      promptQuestion: 'как создаётся компонент?',
+      title: 'От макета до выпуска — один процесс',
+      steps: [
+        'Figma: определить мастер-компонент, варианты, состояния и критерии готовности.',
+        'Спецификация: зафиксировать Variant Matrix, Numeric Map, State Token Matrix и Hard Constraints.',
+        'Реализация: описать типизированный API, поведение и стили на семантических токенах.',
+        'Storybook: подготовить Controls и примеры вариантов, состояний и тем.',
+        'Проверки: выполнить автоматические команды и сверить результат с макетом.',
+        'Review и выпуск: провести изменения через PR, описать изменения публичного API в Changeset и опубликовать Storybook.',
+      ],
+      note: 'Для визуальных изменений нужна сверка с Figma и просмотр сценариев. Матрицы состояний не создаются формально для каждой правки документации.',
+    },
+    {
       tag: '03 · insight',
       promptQuestion: 'как это решить системно?',
-      title: 'Контракт, который блокирует код до фиксации данных',
+      title: 'Контракт: сначала данные, затем реализация',
       paras: [
-        'Проблему нельзя решить только инструментами (линтеры, Storybook, CI) — она решается явным протоколом, который блокирует написание кода до тех пор, пока не зафиксированы все необходимые данные.',
+        'В CLAUDE.md закреплён порядок работы: перед реализацией определить источник в Figma, варианты, точные значения и токены состояний. Контракт сокращает число решений на усмотрение агента; TypeScript, тесты и CI проверяют часть требований, а соответствие макету и качество состояний требуют review.',
       ],
       defs: [
         { name: 'Variant Matrix Gate', text: 'Полная матрица вариантов компонента фиксируется до начала работы.' },
@@ -53,7 +67,7 @@ export const aiPdpDs: CaseStudyDetail = {
           text: 'Изменения публичного API проходят через Changesets с явным patch / minor / major.',
         },
       ],
-      note: 'Всё фиксируется в едином артефакте Component Spec Document на компонент.',
+      note: 'Данные фиксируются в Component Spec Document. Контракт задаёт требования к процессу, но его прочтение не является технической гарантией соблюдения каждого правила.',
     },
     {
       tag: '04 · proven effect',
@@ -75,30 +89,33 @@ export const aiPdpDs: CaseStudyDetail = {
       promptQuestion: 'что уже собрано?',
       title: 'Что собрано',
       paras: [
-        'Стек: React 18 · TypeScript 5 · Vite 5 · styled-components 6 · Storybook 8, токены как W3C DTCG JSON, синхронизированные с Figma Variables.',
+        'Библиотека находится в активной разработке. Стек: React 19 · TypeScript 5 · Vite 6 · styled-components 6 · Storybook 8. Публичный каталог показывает реализованные компоненты и их доступные свойства.',
       ],
       groups: [
         {
-          name: 'atoms',
-          items: ['Icon', 'Button', 'Spinner', 'Label', 'InputText', 'InlineMessage', 'Select', 'Multiselect', 'InputTel', 'ProgressBar'],
+          name: 'основные элементы',
+          items: ['Button', 'ButtonIcon', 'ButtonLink', 'Icon', 'Avatar', 'Label', 'Divider'],
         },
-        { name: 'molecules', items: ['Stepper', 'StepperGroup', 'Toggle'] },
-        { name: 'layout primitives (в работе)', items: ['Stack', 'Cluster', 'Grid', 'Sidebar', 'Container', 'Center', 'Switcher'] },
+        { name: 'формы и выбор', items: ['InputText', 'InputSearch', 'InputEmail', 'InputTel', 'InputDate', 'DatePicker', 'Checkbox', 'Radio', 'Toggle', 'Select', 'Multiselect', 'SelectButton', 'FileUpload', 'InputFile'] },
+        { name: 'навигация', items: ['Breadcrumbs', 'Sidebar', 'SidebarNavigationItem', 'TabGroup', 'TabItem', 'Accordion', 'Pagination', 'Stepper', 'StepperGroup'] },
+        { name: 'обратная связь', items: ['InlineMessage', 'NotificationSnackbar', 'StatusLabel', 'StatusMark', 'Counter', 'Spinner', 'ProgressBar'] },
+        { name: 'составные элементы и таблицы', items: ['Modal', 'ModalDialog', 'BenefitCard', 'SplitButton', 'ToggleButton', 'Chips', 'TableRow', 'TableColumn', 'TableCell'] },
+        { name: 'компоновка', items: ['Stack', 'Cluster', 'Grid'] },
       ],
-      note: 'Toggle переименован из Switcher — управляемое breaking-изменение через Changesets. Каждый компонент — это 4 файла: Component.tsx · Component.stories.tsx · Component.figma.tsx · index.ts.',
+      note: 'Полнота состояний и проверок различается по компонентам. В Storybook можно менять свойства через Controls, исследовать поведение и переключать тему; Foundation/ThemeCheck помогает сравнивать компоненты вместе.',
     },
     {
       tag: '06 · architecture',
       promptQuestion: 'как это устроено?',
       title: 'Как это устроено под капотом',
       paras: [
-        'Структура репозитория: tokens/ (примитивы — palette, spacers, typographyBase; семантика — colors.light/dark, typography.xl/md/xs, spacing, borderRadius), src/theme/ (генерируется Style Dictionary: tokens.ts для ThemeProvider, variables.css как CSS Custom Properties, styled.d.ts для типов темы), а также src/components/, src/patterns/, src/layouts/, src/templates/.',
-        'Одна команда npm run tokens:build превращает единственный источник токенов одновременно в TS-объект темы, CSS Custom Properties и типы styled-components.',
+        'Мастер-компоненты Figma задают визуальные требования. В tokens/primitives/ хранятся базовые значения, в tokens/semantic/ — значения с назначением. Сохранённые JSON позволяют воспроизвести тему без обращения к Figma при каждой сборке.',
+        'Команда npm run tokens:build запускает Style Dictionary: генерирует объект theme и его TypeScript-тип, CSS-переменные светлой темы и цветовые переопределения тёмной. Сгенерированные файлы не редактируются вручную.',
         'Именование зеркалит Figma 1:1 и меняет только разделитель: button/primary/background/hover в Figma → theme.colors.button.primary.background.hover в коде → var(--color-button-primary-background-hover) в CSS.',
-        'Цвета следуют схеме <element>/<role>/<property>/<state>. Отступы разделены по смыслу использования (inner — внутри компонента, outer — между компонентами, paddings — паддинг контейнера, height — фиксированные высоты), а не по абстрактной шкале. Радиусы следуют глубине вложенности: componentInner (4px) → componentBase (8px) → sectionInner (12px) → containerBase (16px) → sectionBase (24px) → rounded (999px).',
+        'Изменение в Figma не обновляет библиотеку автоматически: токены нужно получить через интеграцию или согласованный перенос, проверить diff, пересобрать тему и проверить компоненты.',
       ],
       code: 'const appearanceStyles = {\n  primary: css`\n    &:enabled {\n      background-color: ${({ theme }) => theme.colors.button.primary.background.enabled};\n      color: ${({ theme }) => theme.colors.button.primary.label.enabled};\n    }\n    &:hover:enabled {\n      background-color: ${({ theme }) => theme.colors.button.primary.background.hover};\n    }\n  `,\n  outline: css`/* ... */`,\n  flat: css`/* ... */`,\n} as const;\n\nconst StyledButton = styled.button`\n  border-radius: ${({ theme }) => theme.borderRadius.componentBase};\n  &:focus-visible { box-shadow: ${({ theme }) => theme.focus}; }\n  ${({ $appearance }) => appearanceStyles[$appearance]}\n  ${({ $size }) => sizeStyles[$size]};\n`;',
-      note: 'Жёсткое правило: компоненты никогда не обращаются к сырой палитре напрямую (palette.blue.500) — только к семантическим токенам. Литералов нет нигде: меняешь theme.colors.button.primary.background.hover в одном месте — кнопка обновляется во всём приложении.',
+      note: 'Контракт требует использовать семантические токены вместо обращения к сырой палитре. Правильность выбора токена проверяется отдельно: успешная сборка сама по себе не подтверждает соответствие макету.',
     },
     {
       tag: '07 · reuse',
@@ -107,11 +124,11 @@ export const aiPdpDs: CaseStudyDetail = {
       defs: [
         {
           name: 'Светлая и тёмная тема',
-          text: 'Обёртка в <ThemeProvider theme={lightTheme}> или {darkTheme} мгновенно меняет все цвета во всех компонентах сразу, потому что каждый компонент ссылается на токен внутри активной темы, а не на сырой цвет.',
+          text: 'ThemeProvider получает общий объект theme, который ссылается на CSS-переменные. Светлая и тёмная темы переключаются атрибутом data-theme. В приложении нужно подключить theme/variables.css: он содержит обе темы и шрифты.',
         },
         {
           name: 'Адаптивная типографика без re-render',
-          text: 'Размеры шрифта переопределяются через CSS Custom Properties на брейкпоинтах (--font-size-heading-h1: 48px на XL, 40px на MD, 32px на XS); компоненты всегда читают var(...), поэтому пересчёт делает браузер без участия JS.',
+          text: 'Типографика предусматривает режимы XL, MD и XS с CSS-переопределениями на ширинах 1280 и 768px. Значения пересчитывает браузер; адаптивность конкретных сценариев проверяется отдельно.',
         },
         {
           name: 'Внешнее управление видом',
@@ -124,36 +141,60 @@ export const aiPdpDs: CaseStudyDetail = {
       tag: '08 · figma ↔ code',
       promptQuestion: 'как связаны figma и код?',
       title: 'Связь через Code Connect',
+      paras: [
+        'Для Button шаблон Code Connect подготовлен, протестирован и опубликован через CLI. Остальные сопоставления развиваются отдельно: наличие mapping-файла ещё не подтверждает опубликованную связь.',
+      ],
       code: "figma.connect(Button, 'https://www.figma.com/design/.../?node-id=3001-15051', {\n  props: {\n    appearance: figma.enum('Appearance', { Primary: 'primary', Outline: 'outline', Flat: 'flat' }),\n    size: figma.enum('Size', { Large: 'large', Medium: 'medium' }),\n    text: figma.string('Label'),\n    disabled: figma.boolean('Disabled'),\n  },\n  example: ({ appearance, size, text, disabled }) => (\n    <Button appearance={appearance} size={size} text={text} disabled={disabled} />\n  ),\n});",
-      note: 'Имена вариантов в figma.enum точно совпадают с именами вариантов Figma-компонента — расхождение здесь физически невозможно без явного изменения обеих сторон.',
+      note: 'Пример показывает явное сопоставление вариантов Figma со свойствами React. Его актуальность нужно поддерживать при изменениях компонента. Доступность Code Connect и Variables API зависит от плана и прав Figma.',
     },
     {
       tag: '09 · governance',
       promptQuestion: 'как система живёт дальше?',
-      title: 'Как система остаётся надёжной со временем',
+      title: 'Как проверяются изменения',
+      paras: [
+        'В документации зафиксирован прогон на Node 20: 175 успешных тестов компонентов в 51 файле и 17 тестов инструментов. Это результат конкретного аудита; он не означает, что все состояния, темы и сценарии уже проверены полностью.',
+      ],
       defs: [
         {
-          name: 'Branch protection',
-          text: 'На main нет прямых пушей: PR и минимум один аппрув, зелёный CI (lint, typecheck, test, build, Chromatic visual regression).',
+          name: 'Автоматические проверки',
+          text: 'TypeScript проверяет типы, ESLint и Prettier — код и форматирование, Vitest и Testing Library — описанные сценарии поведения. addon-a11y помогает находить часть проблем доступности.',
         },
-        { name: 'CODEOWNERS', text: 'Каждый PR требует ревью владельца системы.' },
         {
           name: 'Changesets',
           text: 'Версии библиотеки поднимаются через явный журнал изменений на уровне компонента, а не молча накопленными правками.',
         },
         {
           name: 'ThemeCheck',
-          text: 'Отдельный сценарий Storybook, к которому обязан подключиться каждый новый или изменённый компонент — для визуальной сверки светлой и тёмной темы.',
+          text: 'Общий сценарий Storybook для просмотра светлой и тёмной тем. Контракт требует обновлять его при добавлении компонентов и изменении интерактивного поведения.',
+        },
+        {
+          name: 'Chromatic',
+          text: 'Сравнивает снимки stories. В текущей конфигурации визуальные отличия не блокируют CI, а изменения main автоматически принимаются как baseline; зелёный статус не заменяет просмотр изменений.',
+        },
+        {
+          name: 'Отчёт качества',
+          text: 'Команда quality:report собирает результаты проверок, покрытие и журналы. GitHub Actions сохраняет Summary и артефакты отчёта для разбора ошибок.',
         },
       ],
     },
+    {
+      tag: '10 · delivery',
+      promptQuestion: 'можно подключить к приложению?',
+      title: 'Библиотека проверена за пределами Storybook',
+      paras: [
+        'Пакет @evgeni_design_84/ai-pdp-ds можно установить через npm или собрать архив командой npm pack. В поставку включены код, типы, CSS обеих тем и шрифты.',
+        'Проверка package:check устанавливает архив в отдельный проект и проверяет импорты, типы, серверный рендер и сборку Vite. Проверены ESM/CJS-экспорты; полная матрица совместимости версий React требует отдельных прогонов.',
+      ],
+      note: 'Исходники и публичный Storybook доступны для изучения. Проект продолжает развиваться: следующие задачи — расширять сопоставления Figma, проверку состояний, тем и адаптивности.',
+    },
   ],
   outcome:
-    'Работающая, версионируемая open-source дизайн-система, которая растёт за счёт вклада и людей, и AI-агентов, не теряя согласованности между Figma и кодом — потому что согласованность здесь не результат аккуратности, а результат обязательного протокола, который делает иное физически невозможным.',
+    'Я разработал открытую библиотеку компонентов и процесс её развития с AI: спецификации до реализации, семантические токены, интерактивная документация и проверки изменений. Библиотеку можно исследовать в Storybook и подключить к отдельному приложению. Проект находится в активной разработке; контракт и автоматические проверки дополняются сверкой с Figma и review.',
   hasMatrix: false,
   hasNda: false,
   links: [
     { label: 'github', icon: 'code', url: 'https://github.com/Ev-gen-ux/AI-PDP-DS' },
+    { label: 'storybook', icon: 'book', url: 'https://main--69f08a5c57bcf2747e61c70d.chromatic.com/' },
     { label: 'figma', icon: 'design', url: 'https://www.figma.com/design/i7T3ru2M0SyXgJeTda8f43/AI-PDP-DS' },
   ],
 };
