@@ -5,6 +5,7 @@ import type { CSSProperties } from 'react';
 import { Section, Text, AgentSessionTimeline } from '../../components';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useWindowWidth } from '../../hooks/useWindowWidth';
+import { useMobilePipelineSticky } from '../../hooks/useMobilePipelineSticky';
 import { usePipelineScroll } from '../../hooks/usePipelineScroll';
 import { pipelineHeader, pipelineStages, outcomeClaims, agentSessionSteps } from '../../content/pipeline';
 import styles from './Pipeline.module.css';
@@ -39,6 +40,7 @@ const initialPanelStyle: CSSProperties = { opacity: 0, transform: token('pipelin
 export function Pipeline() {
   const reducedMotion = useReducedMotion();
   const windowWidth = useWindowWidth();
+  const mobileLayout = windowWidth <= breakpoints.phone;
   const stackedLayout = reducedMotion || windowWidth <= TABLET_BREAKPOINT;
   const sectionRef = useRef<HTMLElement>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -47,6 +49,8 @@ export function Pipeline() {
   const stepRowRefs = useRef<(HTMLElement | null)[]>([]);
   const panelCount = pipelineStages.length + 1;
   usePipelineScroll(sectionRef, panelRefs, stepDotRefs, stepOutcomeRefs, stepRowRefs, panelCount, !stackedLayout);
+
+  useMobilePipelineSticky(sectionRef, mobileLayout && !reducedMotion);
 
   // `margin` (not `padding`) — this section's own height drives the pinned
   // scroll math (`usePipelineScroll` reads `offsetHeight`/`docTop`); padding
@@ -118,10 +122,10 @@ export function Pipeline() {
       };
 
   return (
-    <Section id="pipeline" innerRef={sectionRef} style={sectionStyle}>
+    <Section id="pipeline" innerRef={sectionRef} style={sectionStyle} className={mobileLayout ? styles.mobile : undefined}>
       <div style={stickyStyle}>
         <div style={frameStyle} className={stackedLayout ? undefined : styles.frame}>
-          <div data-pl-fixed="1" style={leftStyle}>
+          <div data-pl-fixed="1" data-mobile-pipeline-heading={mobileLayout ? "1" : undefined} style={leftStyle}>
             <div>
               <Text variant="eyebrow">{pipelineHeader.eyebrow}</Text>
               <Text variant="pipelineHeading" as="h2" style={{ margin: token('pipeline-layout-margin') }}>
@@ -134,7 +138,7 @@ export function Pipeline() {
             )}
           </div>
 
-          <div style={rightStyle}>
+          <div data-mobile-pipeline-panels={mobileLayout ? "1" : undefined} style={rightStyle}>
             {pipelineStages.map((st, i) => (
               <div
                 key={st.tag}

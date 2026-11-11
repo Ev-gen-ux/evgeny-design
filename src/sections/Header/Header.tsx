@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import { HeaderLogo } from './HeaderLogo';
 import { DesktopInlineMenu } from './DesktopInlineMenu';
 import { useMenuInputMode } from '../../hooks/useMenuInputMode';
@@ -9,7 +10,6 @@ import { MobileNavOverlay } from '../../components';
 import type { CursorTracker } from '../../hooks/useCursorTracker';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useSessionDotPulse } from '../../hooks/useSessionDotPulse';
-import { useLabelMorph } from '../../hooks/useLabelMorph';
 import { useStableViewportWidth } from '../../hooks/useStableViewportWidth';
 import { navLinks } from '../../content/nav';
 import styles from './Header.module.css';
@@ -41,7 +41,6 @@ export function Header({ cursor }: HeaderProps) {
   useSessionDotPulse(sessionDotRef, !reducedMotion);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuTriggerRef = useRef<HTMLButtonElement>(null);
-  useLabelMorph(menuTriggerRef, menuOpen ? '[ close ]' : '[ menu ]', reducedMotion);
   // JS-measured width, not a CSS `right: <margin>` (2026-09-18, extended
   // 2026-10-24 for the floating-container redesign) — see
   // useStableViewportWidth's own docstring for the full "menu trigger's
@@ -104,7 +103,12 @@ export function Header({ cursor }: HeaderProps) {
           onClick={() => setMenuOpen((v) => !v)}
           aria-controls={menuPanelId}
           aria-expanded={menuOpen}
-        />
+          aria-label={menuOpen ? 'Закрыть меню' : 'Открыть меню'}
+          data-noasm="1"
+        >
+          <span className={styles.menuLabel} aria-hidden="true">[ menu ]</span>
+          <X className={styles.menuCloseIcon} aria-hidden="true" focusable="false" />
+        </button>
       </div>
       {/* Link panel — still inside `<nav>`, not a sibling (2026-09-19 fix,
           see git history) — `.nav`'s `isolation: isolate` scopes

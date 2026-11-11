@@ -1,5 +1,6 @@
 import { runtimeTokens } from '../tokens';
 import { useEffect, type RefObject } from 'react';
+import { updateAgentStepProgress } from './agentStepVisual';
 import { pipelineSync } from './pipelineSync';
 
 function docTop(el: HTMLElement): number {
@@ -239,13 +240,8 @@ export function usePipelineScroll(
         // (the smooth per-letter-reveal value), not just on discrete
         // pending→active→done transitions.
         const dot = dots[i];
-        if (dot) {
-          const scale = (0.35 + t * 0.65).toFixed(3);
-          dot.style.transform = `scale(${scale})`;
-          dot.style.opacity = (0.35 + t * 0.65).toFixed(3);
-        }
         const row = rows[i];
-        if (row) row.style.setProperty('--agent-line-progress', t.toFixed(3));
+        updateAgentStepProgress(dot, row, t);
 
         if (lastStepState[i] === state) continue;
         lastStepState[i] = state;

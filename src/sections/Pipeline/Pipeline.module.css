@@ -151,3 +151,50 @@
 .loopCycle {
   color: var(--color-accent);
 }
+
+/* Phone: reuse the production heading and stage styles, with Experience's sticky
+   heading and flow underneath. No enclosing card, extra padding or new type scale. */
+.mobile [data-mobile-pipeline-heading] {
+  display: flow-root;
+  z-index: 2;
+}
+.mobile[data-pipeline-sticky='true'] [data-mobile-pipeline-heading] {
+  position: sticky;
+  top: var(--mobile-pipeline-top);
+}
+.mobile [data-mobile-pipeline-panels][data-overlap='true'] {
+  -webkit-mask-image: linear-gradient(to bottom, transparent var(--mobile-pipeline-mask-edge), black calc(var(--mobile-pipeline-mask-edge) + var(--space-24)));
+  mask-image: linear-gradient(to bottom, transparent var(--mobile-pipeline-mask-edge), black calc(var(--mobile-pipeline-mask-edge) + var(--space-24)));
+}
+.mobile [data-mobile-pipeline-heading] > div:last-child > div:last-child {
+  display: grid;
+}
+.mobile [data-pl-step] {
+  grid-area: 1 / 1;
+  flex-direction: column;
+  gap: var(--agent-session-timeline-agentStep-gap);
+  padding-bottom: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.mobile [data-pl-step]:first-child { visibility: visible; }
+.mobile [data-pl-step][data-current='false'] { visibility: hidden; }
+.mobile [data-pl-step][data-current='true'] { visibility: visible; pointer-events: auto; }
+.mobile [data-pl-step]::before,
+.mobile [data-pl-step]:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--agent-session-timeline-agentStepDot-width) * var(--agent-dot-scale, 1) + var(--space-2));
+  right: 0;
+  top: calc(var(--agent-session-timeline-agentStepDot-margin-top) + (var(--agent-session-timeline-agentStepDot-height) - var(--agent-session-timeline-agentStep-not-last-child-before-width)) / 2);
+  width: auto;
+  height: var(--agent-session-timeline-agentStep-not-last-child-before-width);
+  bottom: auto;
+  background: var(--agent-session-timeline-agentStep-not-last-child-before-background);
+  transform-origin: left center;
+  transform: scaleX(var(--agent-line-progress, 0));
+}
+.mobile [data-pl-step] > span {
+  z-index: 1;
+  transform-origin: left center;
+}

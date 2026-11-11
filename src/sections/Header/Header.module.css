@@ -326,10 +326,7 @@
   border-radius: 0;
   background: none;
   padding: 0;
-  /* Text content is owned entirely by useLabelMorph (see Header.tsx) — it
-     scatter-morphs between "[ menu ]" and "[ close ]", so no React children
-     here. min-width in `ch` units (the longer of the two labels) keeps the
-     text from visibly shifting the row mid-morph. */
+  /* Keep the trigger width stable when the menu label changes to the X icon. */
   min-width: var(--header-menuTrigger-min-width);
   text-align: center;
   font-family: var(--font-mono);
@@ -370,4 +367,26 @@
     position: absolute;
     inset: calc(-1 * var(--touch-target-outset-block)) 0;
   }
+}
+
+.menuLabel {
+  opacity: 1;
+  transition: opacity var(--duration-150) var(--ease-standard);
+}
+.menuCloseIcon {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--space-16);
+  height: var(--space-16);
+  stroke-width: var(--icon-stroke-width);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-150) var(--ease-standard);
+}
+.menuTrigger[aria-expanded='true'] .menuLabel { opacity: 0; }
+.menuTrigger[aria-expanded='true'] .menuCloseIcon { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .menuLabel, .menuCloseIcon { transition: none; }
 }

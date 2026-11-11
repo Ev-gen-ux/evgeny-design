@@ -73,6 +73,8 @@ interface AsmUnit {
    * viewport — the most awkward moment for it to still be unreadable.
    */
   syncEl: HTMLElement | null;
+  /** Phone Experience reveals each text at its own position, not the whole entry together. */
+  experience: boolean;
   /**
    * Inside a `[data-asm-own]` subtree (2026-09-26, the Contact footer): on
    * desktop it opts OUT of `syncEl` and uses the normal per-element position
@@ -234,7 +236,7 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
       const syncEl = el.closest('[data-asm-sync]') as HTMLElement | null;
       const own = !!el.closest('[data-asm-own]');
       const spanK = Number((el.closest('[data-asm-span]') as HTMLElement | null)?.dataset.asmSpan) || 1;
-      unitsRef.current.push({ el, spans, hero, navFixed, panel, step, latch, syncEl, own, spanK, t: -1, top: docTop(el) });
+      unitsRef.current.push({ el, spans, hero, navFixed, panel, step, latch, syncEl, experience: sec.id === 'experience', own, spanK, t: -1, top: docTop(el) });
     };
 
     // Reverts an already-split unit back to plain text (its spans'
@@ -436,7 +438,7 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
       for (const u of unitsRef.current) {
         if (!u.el.isConnected) continue;
         let t: number;
-        if (u.syncEl && !(u.own && !mobile)) {
+        if (u.syncEl && !(u.own && !mobile) && !(u.experience && vw <= breakpoints.phone)) {
           const r = u.syncEl.getBoundingClientRect();
           const raw = (vh * winStart - r.top) / (vh * winSpan);
           t = Math.max(0, Math.min(1, raw));
@@ -459,7 +461,12 @@ export function useAssemblyAnimation(rootRef: RefObject<HTMLElement | null>, ena
           // / (vh * 0.5)))`.
           t = le;
         } else {
-          const raw = (sy + vh * winStart - u.top) / (vh * winSpan * (mobile ? 1 : u.spanK));
+          // Long phone Experience descriptions need their full height to pass
+          // through the reveal window, rather than settling at the paragraph's top.
+          const phoneExperience = u.experience && vw <= breakpoints.phone;
+          const windowDistance = vh * winSpan * (mobile ? 1 : u.spanK)
+            + (phoneExperience ? u.el.offsetHeight : 0);
+          const raw = (sy + vh * winStart - u.top) / windowDistance;
           t = Math.max(0, Math.min(1, raw));
           if (atBottom) t = 1;
         }
