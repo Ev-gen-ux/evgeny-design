@@ -318,6 +318,27 @@
   --work-wheel-itemDot-width: 10px;
   --work-wheel-itemDot-height: 10px;
   --work-cylinder-sticky-height: 100vh;
+  --work-cylinder-phone-viewport-height: 100svh;
+  --work-cylinder-phone-card-height: 480px;
+  --work-cylinder-phone-face-height: var(--work-cylinder-phone-card-height);
+  --work-cylinder-phone-exit-trim: 0px;
+  --work-cylinder-phone-pin-top: max(0px, calc((var(--work-cylinder-phone-viewport-height) - var(--work-cylinder-phone-card-height)) / 2));
+  --work-cylinder-phone-padding: var(--space-28);
+  --work-cylinder-phone-padding-bottom: var(--space-16);
+  --work-cylinder-phone-title-line-height: 26px;
+  --work-cylinder-phone-body-line-height: 24px;
+  --work-cylinder-phone-metric-line-height: 24px;
+  --work-cylinder-phone-caption-line-height: 16px;
+  --work-cylinder-phone-link-line-height: 20px;
+  --work-cylinder-phone-content-gap: var(--space-16);
+  --work-cylinder-phone-badge-title-gap: var(--space-28);
+  --work-cylinder-phone-label-size: var(--fs-sm);
+  --work-cylinder-phone-title-size: var(--fs-xxl);
+  --work-cylinder-phone-metric-size: 18px;
+  --work-cylinder-phone-body-size: var(--fs-base);
+  --work-cylinder-phone-description-height: calc(3 * var(--work-cylinder-phone-body-size) * var(--lh-normal));
+  --work-cylinder-phone-link-size: var(--fs-base);
+  --work-cylinder-phone-link-height: 44px;
   --work-cylinder-sticky-overflow-clip-margin: 300px;
   --work-cylinder-scene-perspective: var(--case-carousel-perspective);
   --work-cylinder-scene-padding-top: var(--space-120);
@@ -728,7 +749,7 @@
   --case-study-timelineRail-max-height: calc(100vh - 160px);
   --case-study-main-max-width: 840px;
   --case-study-main-padding: var(--space-140) var(--space-container-x) var(--space-120);
-  --case-study-main-padding-top-phone: var(--space-24);
+  --case-study-main-padding-top-phone: calc(var(--space-16) + var(--case-study-backLink-margin-bottom) - var(--offset-border-overlap));
   --case-study-backLink-gap: var(--space-10);
   --case-study-backLink-margin-bottom: var(--space-28);
   --case-study-tagsRow-gap: var(--space-10);
@@ -1049,6 +1070,9 @@
   --icon-stroke-width: 2.25;
   --icon-label-gap: var(--space-inline-sm);
   --icon-baseline-offset: -0.125em;
+  --header-logo-gap: var(--space-8);
+  --header-status-dot-offset-y: 1px;
+  --desktop-menu-width: 0px;
 }
 
 :root[data-portfolio-theme='monochrome'] ::selection {
@@ -1057,8 +1081,8 @@
 }
 
 :root[data-portfolio-theme='monochrome'] #work {
-  --case-glass-background: var(--case-card-background);
-  --case-glass-blur: var(--case-card-backdrop-filter);
+  --case-glass-background: var(--floating-glass-background, var(--glass-background));
+  --case-glass-blur: var(--header-glass-blur, var(--glass-blur));
 }
 
 :root[data-portfolio-theme='monochrome'] :is(a[href], button, [role='button']) {
@@ -1100,4 +1124,9 @@
 :root[data-portfolio-theme='monochrome'] #work {
   --case-border-color: var(--case-card-border-color);
   --case-shadow: var(--case-card-shadow);
+}
+
+:root body #work {
+  --case-glass-background: var(--floating-glass-background, var(--glass-background));
+  --case-glass-blur: var(--header-glass-blur, var(--glass-blur));
 }

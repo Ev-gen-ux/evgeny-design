@@ -1,12 +1,15 @@
+import { useExperienceSticky } from '../../hooks/useExperienceSticky';
+import './experience-sticky.css';
 import { Section, Container, Text, PromptSteps } from '../../components';
 import { experience } from '../../content/experience';
 import styles from './Experience.module.css';
 
 export function Experience() {
+  useExperienceSticky();
   return (
     <Section id="experience" paddingTop="section-block" paddingBottom="section-block">
       <Container size="narrow">
-        <PromptSteps question="какой у тебя опыт работы" />
+        <div className="experienceStickyHeading"><PromptSteps question="какой у тебя опыт работы" />
         <div className={styles.header}>
           <Text variant="sectionHeading" as="h2">
             Опыт работы
@@ -15,7 +18,7 @@ export function Experience() {
             experience.log
           </Text>
         </div>
-        <div className={styles.timeline}>
+        </div><div data-experience-mask="1" className="experienceTimelineMask"><div data-experience-timeline="1" className={styles.timeline}>
           {experience.map((e, i) => (
             <div key={i} data-asm-sync="1" className={styles.item}>
               <span className={styles.dot} />
@@ -27,7 +30,7 @@ export function Experience() {
               </div>
             </div>
           ))}
-        </div>
+        </div></div>
       </Container>
     </Section>
   );

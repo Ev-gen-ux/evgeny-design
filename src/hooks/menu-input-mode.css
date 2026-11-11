@@ -1,0 +1,5 @@
+/* Mouse/touch opening may focus the first link programmatically.
+   Preserve the site's normal :focus-visible ring for actual keyboard navigation. */
+nav[data-menu-input='pointer'] :is(a, button):focus {
+  outline: none;
+}

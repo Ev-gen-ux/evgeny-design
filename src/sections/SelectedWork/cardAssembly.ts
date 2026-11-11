@@ -62,7 +62,7 @@ const BLOCK_SPAN = 0.5;
 const LETTER_SWEEP = 0.25;
 const LETTER_SPAN = 0.45;
 
-export function createCardAssembly(root: HTMLElement, seedKey: string): CardAssembly {
+export function createCardAssembly(root: HTMLElement, seedKey: string, keepWordsTogether = false): CardAssembly {
   const rand = rng(hash(seedKey));
   const pieces: Piece[] = [];
   const restores: Array<() => void> = [];
@@ -87,9 +87,11 @@ export function createCardAssembly(root: HTMLElement, seedKey: string): CardAsse
     const parts = kind === 'l' ? Array.from(text) : text.split(/(\s+)/).filter(Boolean);
     const frag = document.createDocumentFragment();
     const own: HTMLElement[] = [];
+    let word: HTMLSpanElement | null = null;
     parts.forEach((part) => {
       if (/^\s+$/.test(part)) {
         frag.appendChild(document.createTextNode(part));
+        word = null;
         return;
       }
       const sp = document.createElement('span');
@@ -97,7 +99,17 @@ export function createCardAssembly(root: HTMLElement, seedKey: string): CardAsse
       sp.style.display = 'inline-block';
       sp.style.whiteSpace = 'pre';
       own.push(sp);
-      frag.appendChild(sp);
+      if (keepWordsTogether && kind === 'l') {
+        if (!word) {
+          word = document.createElement('span');
+          word.style.display = 'inline-block';
+          word.style.whiteSpace = 'nowrap';
+          frag.appendChild(word);
+        }
+        word.appendChild(sp);
+      } else {
+        frag.appendChild(sp);
+      }
     });
     if (!own.length) return;
 

@@ -1,0 +1,61 @@
+.root { display: none; }
+
+@media (--viewport-above-phone) {
+  .root {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    margin-left: auto;
+    max-width: 100%;
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm-md);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .reveal {
+    width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: width var(--duration-350) var(--ease-signature), opacity var(--duration-200) var(--ease-standard);
+  }
+
+  .list { display: flex; align-items: center; gap: var(--space-16); width: max-content; }
+  .links { display: flex; align-items: center; gap: var(--header-links-gap); }
+  .bracket { color: var(--color-text-secondary); }
+  .itemLink { opacity: 0; transition: opacity var(--duration-150) var(--ease-standard); }
+  .root[data-open='true'] .itemLink { opacity: 1; transition-delay: calc(var(--duration-150) * var(--desktop-link-index) / 4); }
+
+  .trigger {
+    position: relative;
+    flex-shrink: 0;
+    display: inline-grid;
+    grid-template-columns: minmax(0, 1fr);
+    place-items: center;
+    width: var(--header-menuTrigger-min-width);
+    min-width: 0;
+    min-height: var(--space-32);
+    border: none;
+    padding: 0;
+    background: none;
+    font: inherit;
+    letter-spacing: inherit;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: width var(--duration-350) var(--ease-signature), margin-left var(--duration-350) var(--ease-signature), color var(--motion-hover) var(--ease-standard);
+  }
+
+  .label { grid-area: 1 / 1; white-space: nowrap; opacity: 1; pointer-events: none; transition: opacity var(--duration-150) var(--ease-standard); }
+  .closeIcon { grid-area: 1 / 1; width: var(--space-16); height: var(--space-16); stroke-width: var(--icon-stroke-width); opacity: 0; transition: opacity var(--duration-150) var(--ease-standard); }
+
+  .root[data-open='true'] .reveal { width: var(--desktop-menu-width); opacity: 1; }
+  /* 24px to the hit area + 8px inside its 32px box = 32px to the X glyph. */
+  .root[data-open='true'] .trigger { width: var(--space-32); margin-left: var(--space-24); }
+  .root[data-open='true'] .label { opacity: 0; }
+  .root[data-open='true'] .closeIcon { opacity: 1; transition-delay: var(--duration-150); }
+  .trigger:hover, .trigger:focus-visible { color: var(--color-text-primary); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .trigger, .label, .closeIcon, .itemLink { transition: none; }
+}

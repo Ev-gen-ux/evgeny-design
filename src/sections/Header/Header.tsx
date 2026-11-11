@@ -1,14 +1,17 @@
+import { HeaderLogo } from './HeaderLogo';
+import { DesktopInlineMenu } from './DesktopInlineMenu';
+import { useMenuInputMode } from '../../hooks/useMenuInputMode';
 import { breakpoints, runtimeTokens } from '../../tokens';
 import { useRef, useState } from 'react';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
 import { useLenis } from 'lenis/react';
-import { Link, MobileNavOverlay } from '../../components';
+import { MobileNavOverlay } from '../../components';
 import type { CursorTracker } from '../../hooks/useCursorTracker';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useSessionDotPulse } from '../../hooks/useSessionDotPulse';
 import { useLabelMorph } from '../../hooks/useLabelMorph';
 import { useStableViewportWidth } from '../../hooks/useStableViewportWidth';
-import { navLinks, wordmark } from '../../content/nav';
+import { navLinks } from '../../content/nav';
 import styles from './Header.module.css';
 
 export interface HeaderProps {
@@ -29,6 +32,7 @@ export interface HeaderProps {
  * back to Home, which then scrolls to the hash on mount (see Home.tsx).
  */
 export function Header({ cursor }: HeaderProps) {
+  useMenuInputMode();
   const { pathname } = useLocation();
   const onHome = pathname === '/';
   const lenis = useLenis();
@@ -52,19 +56,16 @@ export function Header({ cursor }: HeaderProps) {
 
   const tagContent = (
     <span className={styles.tag}>
-      <span ref={sessionDotRef} className={styles.sessionDot} aria-hidden="true" />
-      {wordmark.tag}
+      <span ref={sessionDotRef} className={styles.sessionDot} data-header-status-dot="1" aria-hidden="true" />
+      agent-built
     </span>
   );
 
   return (
     <nav className={styles.nav} style={navStyle} data-menu-open={menuOpen ? '1' : undefined}>
       <div className={styles.surface} aria-hidden="true" />
-      {/* Collapsed row — name/tag, desktop links, trigger (2026-10-24
-          redesign) — wrapped in its own row so Header.module.css can give
-          `.nav` a clean single flow child; see that file's `.nav`/`.topRow`
-          comments. */}
-      <div className={styles.topRow}>
+      {/* One brand row: status, centered logo and responsive menu. */}
+      <div className={styles.topRow} data-header-brand-row="1">
         {onHome ? (
           <a
             href="#hero"
@@ -85,28 +86,17 @@ export function Header({ cursor }: HeaderProps) {
               else el.scrollIntoView();
             }}
           >
-            <span className={styles.name}>{wordmark.name}</span>
+
             {tagContent}
           </a>
         ) : (
           <RouterLink to="/#hero" className={styles.wordmark}>
-            <span className={styles.name}>{wordmark.name}</span>
+
             {tagContent}
           </RouterLink>
         )}
-        <div className={styles.links}>
-          {navLinks.map((l) => (
-            <Link
-              key={l.href}
-              href={onHome ? l.href : `/${l.href}`}
-              variant="nav"
-              onMouseEnter={cursor.onEnter}
-              onMouseLeave={cursor.onLeave}
-            >
-              {l.label}
-            </Link>
-          ))}
-        </div>
+        <HeaderLogo onHome={onHome} />
+        <DesktopInlineMenu cursor={cursor} />
         <button
           ref={menuTriggerRef}
           type="button"

@@ -34,8 +34,10 @@ export function useWorkWheelScroll(sectionRef: RefObject<HTMLElement | null>, co
       last = now;
       const sec = sectionRef.current;
       if (sec) {
-        const vh = window.innerHeight;
-        const top = docTop(sec);
+        const viewport = sec.querySelector<HTMLElement>('[data-work-viewport]');
+        const vh = viewport?.clientHeight || window.innerHeight;
+        const pinTop = viewport ? parseFloat(getComputedStyle(viewport).top) || 0 : 0;
+        const top = docTop(sec) - pinTop;
         const scrollable = Math.max(1, sec.offsetHeight - vh);
         const p = Math.max(0, Math.min(1, (window.scrollY - top) / scrollable));
         const rawT = p * (count - 1);

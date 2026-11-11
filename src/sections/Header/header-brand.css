@@ -1,0 +1,60 @@
+@font-face {
+  font-family: 'Portfolio Montserrat';
+  src: url('../../assets/fonts/Montserrat-variable.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+[data-header-brand-row='1'] {
+  position: relative;
+  min-height: var(--space-32);
+}
+
+.headerBrandLogo {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: var(--space-16);
+  transform: translate(-50%, -50%);
+  font-family: 'Portfolio Montserrat', sans-serif;
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  letter-spacing: 0;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.headerBrandLogoLetters {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--header-logo-gap);
+}
+
+/* Preserve the existing status typography; its former two-line name is gone. */
+[data-header-brand-row='1'] > a:first-child {
+  flex-direction: row;
+  align-items: center;
+}
+
+@media (--viewport-above-phone) and (--viewport-nav-compact) {
+  [data-header-brand-row='1']:has([data-desktop-menu='1'][data-open='true']) {
+    padding-top: var(--space-32);
+  }
+  [data-header-brand-row='1']:has([data-desktop-menu='1'][data-open='true']) > a:first-child {
+    position: absolute;
+    top: 0;
+    min-height: var(--space-32);
+  }
+}
+
+@media (--viewport-phone) {
+  [data-header-brand-row='1'] > button { align-self: center; }
+}
+
+/* Optical alignment with the visible glyphs rather than the font line box. */
+[data-header-status-dot="1"] {
+  transform: translateY(var(--header-status-dot-offset-y));
+}

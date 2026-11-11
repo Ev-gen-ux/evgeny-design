@@ -1,3 +1,4 @@
+import { MobileMenuContacts } from './MobileMenuContacts';
 import { useEffect, useRef, type RefObject } from 'react';
 import { useMenuAssembly } from '../../hooks/useMenuAssembly';
 import styles from './MobileNavOverlay.module.css';
@@ -116,8 +117,8 @@ export function MobileNavOverlay({ links, onHome, reducedMotion, open, onClose, 
 
   return (
     <div id={panelId} className={styles.overlay} data-open={open ? '1' : '0'} aria-hidden={!open} inert={!open}>
-      <div ref={containerRef} className={styles.links}>
-        {links.map((l, i) => (
+      <div ref={containerRef} className={styles.links} data-mobile-menu-content="1">
+        <div className="mobileMenuNavigation">{links.map((l, i) => (
           <a
             key={l.href}
             ref={i === 0 ? firstLinkRef : undefined}
@@ -127,7 +128,8 @@ export function MobileNavOverlay({ links, onHome, reducedMotion, open, onClose, 
           >
             <span data-menu-asm="1">{l.label}</span>
           </a>
-        ))}
+        ))}</div>
+        <MobileMenuContacts reducedMotion={reducedMotion} onClose={onClose} />
       </div>
     </div>
   );

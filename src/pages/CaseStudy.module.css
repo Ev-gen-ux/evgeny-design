@@ -81,11 +81,7 @@
   padding: var(--case-study-main-padding);
 }
 
-/* Phone (2026-10-09): the desktop 120px top padding (tuned to clear the
-   fixed Header + leave breathing room above the content column) reads as a
-   huge dead gap between the sticky header and "← Вернуться к кейсам" on a
-   phone screen — shrunk to a fixed 24px per explicit user request, on every
-   case-study page (this file is shared across all of them). */
+/* Match the space above/below the back link, including the sticky header offset. */
 @media (--viewport-phone) {
   .main {
     padding-top: var(--case-study-main-padding-top-phone);
@@ -102,6 +98,13 @@
   color: var(--color-text-secondary);
   margin-bottom: var(--case-study-backLink-margin-bottom);
   transition: color var(--motion-hover) var(--ease-standard);
+}
+
+@media (--viewport-phone) {
+  .backLink {
+    display: flex;
+    width: fit-content;
+  }
 }
 
 .backLink:hover,

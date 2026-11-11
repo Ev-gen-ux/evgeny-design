@@ -1,0 +1,15 @@
+.contacts { display: none; }
+
+:global(.mobileMenuNavigation) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mobile-nav-overlay-links-gap);
+}
+
+@media (--viewport-phone) {
+  :global(#mobile-nav-panel [data-mobile-menu-content='1']) { gap: 0; }
+  .contacts {
+    display: flex;
+    margin-top: var(--space-28);
+  }
+}

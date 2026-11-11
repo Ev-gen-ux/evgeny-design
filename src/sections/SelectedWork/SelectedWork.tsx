@@ -20,28 +20,25 @@ export interface SelectedWorkProps {
 /** Same breakpoint Pipeline uses for its sticky-pin fallback — both animated prototypes need the same horizontal room. */
 const TABLET_BREAKPOINT = breakpoints.tablet;
 
-/** The site's one phone breakpoint — below this, the cylinder's 3D/scroll-pin rig is replaced by a static card (see PhoneCaseStudyCard) that mirrors its face visually, not its mechanics. */
+/** Phones share the cylinder mechanics; reduced motion keeps the static phone cards. */
 const PHONE_BREAKPOINT = breakpoints.phone;
 
-/** Prototype switch (2026-09-23, not committed to prod) — flip to compare the two animation candidates against the plain list; 'list' is the current prod behavior. */
+/** Shared full-motion carousel; tablets retain the list layout. */
 const VARIANT: 'wheel' | 'stack' | 'cylinder' | 'list' = 'cylinder';
 
 export function SelectedWork({ cursor }: SelectedWorkProps) {
   const reducedMotion = useReducedMotion();
   const windowWidth = useWindowWidth();
-  // Both prototypes need real desktop width + full motion; plain card list
-  // on tablet; phone (2026-10-09, explicit user request: cards should look
-  // like the desktop cylinder's face, scaled down) gets its own static variant
-  // instead of falling through to the list.
+  // Keep the tablet list and the static fallback for reduced motion.
   const variant =
-    !reducedMotion && windowWidth > TABLET_BREAKPOINT
+    !reducedMotion && (windowWidth > TABLET_BREAKPOINT || windowWidth <= PHONE_BREAKPOINT)
       ? VARIANT
       : windowWidth <= PHONE_BREAKPOINT
         ? 'phone'
         : 'list';
 
   return (
-    <Section id="work" stageAnchor={2} paddingTop="section-block" paddingBottom="section-block">
+    <Section id="work" className={variant === 'cylinder' && windowWidth <= PHONE_BREAKPOINT ? styles.mobileCylinder : undefined} stageAnchor={2} paddingTop="section-block" paddingBottom="section-block">
       <Container size="wide">
         <PromptSteps question="покажи, что ты уже сделал" />
         <div className={styles.header}>
@@ -55,7 +52,7 @@ export function SelectedWork({ cursor }: SelectedWorkProps) {
       </Container>
 
       {variant === 'wheel' && <WorkWheel cases={caseStudies} />}
-      {variant === 'cylinder' && <WorkCylinder cases={caseStudies} cursor={cursor} />}
+      {variant === 'cylinder' && <WorkCylinder cases={caseStudies} cursor={cursor} phone={windowWidth <= PHONE_BREAKPOINT} />}
       {variant === 'stack' && (
         <Container size="wide">
           <WorkStack cases={caseStudies} cursor={cursor} />
@@ -83,23 +80,14 @@ export function SelectedWork({ cursor }: SelectedWorkProps) {
   );
 }
 
-/**
- * Phone-only (≤640px, see PHONE_BREAKPOINT), static replica of WorkCylinder's
- * card face (2026-10-09, explicit user request: "карточки на мобилке должны
- * визуально выглядеть так же, как и на десктопе... только уменьшенной
- * версией") — same anatomy (tag+type, title with subtitle dropped after the
- * em-dash, metrics, teaser, "open case →" footer), none of the 3D/scroll-pin
- * rig (that's desktop-only, fixed at 440×300 and tuned for perspective —
- * see WorkCylinder.tsx/.module.css). Sizes here are tuned fresh for a
- * ~330px-wide phone card, not copied from the 440×300 desktop values.
- */
+/** Static phone cards retained for prefers-reduced-motion. */
 function PhoneCaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: CursorTracker }) {
   const reveal = useScrollReveal(cs.id);
   const reducedMotion = useReducedMotion();
 
   return (
     <div data-reveal-id={cs.id} style={reveal}>
-      <Card corners={false} onMouseEnter={cursor.onEnter} onMouseLeave={cursor.onLeave}>
+      <Card className={styles.phoneStaticCard} corners={false} onMouseEnter={cursor.onEnter} onMouseLeave={cursor.onLeave}>
         <RouterLink
           to={`/work/${cs.id}`}
           aria-label={cs.title}
@@ -136,7 +124,7 @@ function PhoneCaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: Curs
         <div className={styles.phoneFooter}>
           <MagnetLink icon="arrow-right"
             href={`/work/${cs.id}`}
-            variant="underline"
+            variant="plain"
             reducedMotion={reducedMotion}
             onMouseEnter={cursor.onEnter}
             onMouseLeave={cursor.onLeave}
@@ -144,19 +132,6 @@ function PhoneCaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: Curs
           >
             open case
           </MagnetLink>
-          {cs.links.map((l) => (
-            <MagnetLink icon="arrow-up-right"
-              key={l.url}
-              href={l.url}
-              variant="underline"
-              external
-              reducedMotion={reducedMotion}
-              onMouseEnter={cursor.onEnter}
-              onMouseLeave={cursor.onLeave}
-            >
-              {l.label}
-            </MagnetLink>
-          ))}
         </div>
       </Card>
     </div>
@@ -233,27 +208,14 @@ function CaseStudyCard({ cs, cursor }: { cs: CaseStudySummary; cursor: CursorTra
         <div className={styles.footerLinks}>
           <MagnetLink icon="arrow-right"
             href={`/work/${cs.id}`}
-            variant="underline"
+            variant="plain"
             reducedMotion={reducedMotion}
             onMouseEnter={cursor.onEnter}
             onMouseLeave={cursor.onLeave}
             onClick={saveScrollForReturn}
           >
-            Открыть кейс
+            open case
           </MagnetLink>
-          {cs.links.map((l) => (
-            <MagnetLink icon="arrow-up-right"
-              key={l.url}
-              href={l.url}
-              variant="underline"
-              external
-              reducedMotion={reducedMotion}
-              onMouseEnter={cursor.onEnter}
-              onMouseLeave={cursor.onLeave}
-            >
-              {l.label}
-            </MagnetLink>
-          ))}
         </div>
       </Card>
     </div>

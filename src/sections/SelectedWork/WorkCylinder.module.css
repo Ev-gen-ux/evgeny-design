@@ -156,6 +156,7 @@
 }
 
 .teaser {
+  white-space: normal;
   position: relative;
   z-index: var(--work-cylinder-teaser-z-index);
   margin: var(--work-cylinder-teaser-margin);
@@ -293,4 +294,164 @@
   border-right-width: var(--work-cylinder-cornerBottomRight-border-right-width);
   border-right-style: solid;
   border-bottom-right-radius: var(--radius-card);
+}
+
+.content {
+  display: contents;
+}
+
+/* Native mobile typography and content-sized faces share the desktop motion. */
+.phone {
+  overflow: clip;
+  margin-bottom: calc(-1 * var(--work-cylinder-phone-exit-trim));
+}
+
+.phone .sticky {
+  top: var(--work-cylinder-phone-pin-top);
+  height: var(--work-cylinder-phone-card-height);
+  overflow: visible;
+}
+
+.phone .scene {
+  padding-top: 0;
+}
+
+.phone .rig {
+  flex-shrink: 0;
+  width: calc(100% - 2 * var(--space-page-gutter));
+  height: 100%;
+}
+
+.phone .card {
+  width: 100%;
+  height: var(--work-cylinder-phone-face-height);
+}
+
+.phone .front {
+  transform: translateZ(0);
+  padding: var(--work-cylinder-phone-padding);
+  padding-bottom: var(--work-cylinder-phone-padding-bottom);
+}
+
+.phone .content {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 0;
+}
+
+.phone .back {
+  padding: var(--work-cylinder-phone-padding);
+  padding-bottom: var(--work-cylinder-phone-padding-bottom);
+}
+
+.phone .top {
+  margin-bottom: var(--work-cylinder-phone-badge-title-gap);
+  align-items: flex-start;
+  gap: var(--space-12);
+}
+
+.phone .tag,
+.phone .type,
+.phone .metricLabel {
+  font-size: var(--work-cylinder-phone-label-size);
+}
+
+.phone .tag,
+.phone .type {
+  line-height: var(--work-cylinder-phone-caption-line-height);
+}
+
+.phone .name {
+  text-box-trim: trim-start;
+  text-box-edge: cap alphabetic;
+  margin: 0 0 var(--work-cylinder-phone-badge-title-gap);
+  font-size: var(--work-cylinder-phone-title-size);
+  font-family: inherit;
+  font-weight: var(--fw-semibold);
+  letter-spacing: normal;
+  line-height: var(--work-cylinder-phone-title-line-height);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.phone .facts {
+  margin: 0 0 var(--space-24);
+}
+
+.phone .metrics {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--work-cylinder-metrics-gap);
+}
+
+.phone .metrics > div {
+  min-width: 0;
+}
+
+.phone .metricValue {
+  font-size: var(--work-cylinder-phone-metric-size);
+  font-weight: var(--fw-semibold);
+  line-height: var(--work-cylinder-phone-metric-line-height);
+}
+
+.phone .teaser {
+  white-space: normal;
+  margin: 0;
+  font-size: var(--work-cylinder-phone-body-size);
+  font-family: inherit;
+  font-weight: var(--fw-regular);
+  letter-spacing: normal;
+  line-height: var(--work-cylinder-phone-body-line-height);
+  color: var(--color-text-secondary);
+}
+
+.phone .footer {
+  position: absolute;
+  left: var(--work-cylinder-phone-padding);
+  right: var(--work-cylinder-phone-padding);
+  bottom: var(--work-cylinder-phone-padding-bottom);
+  margin-top: var(--space-24);
+  gap: var(--space-16);
+  padding-top: var(--space-16);
+}
+
+.phone .footer a {
+  font-size: var(--work-cylinder-phone-link-size);
+  line-height: var(--work-cylinder-phone-link-line-height);
+  min-height: var(--work-cylinder-phone-link-height);
+  display: inline-flex;
+  align-items: center;
+}
+
+
+.phone .metricLabel {
+  font-size: var(--fs-xs);
+  line-height: var(--work-cylinder-phone-caption-line-height);
+  margin-bottom: var(--space-3);
+}
+
+/* Fade card surfaces without animating the number on the reverse side. */
+.phone .face,
+.phone .slab {
+  opacity: var(--work-cylinder-mobile-face-opacity, 1);
+}
+
+.phone .backTag {
+  margin-top: auto;
+}
+
+.phone .indexFace {
+  position: absolute;
+  inset: 0;
+  padding: var(--work-cylinder-phone-padding);
+  padding-bottom: var(--work-cylinder-phone-padding-bottom);
+  border: var(--work-cylinder-face-border-length-0) solid transparent;
+  transform: var(--work-cylinder-back-transform);
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+
+.phone .card[data-index-visible='false'] .indexFace {
+  visibility: hidden;
 }

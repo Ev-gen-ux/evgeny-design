@@ -1,0 +1,32 @@
+/* Keep the existing prompt, typography, margins and timeline intact.
+   The original narrow Container bounds sticky positioning at the end of experience. */
+#experience {
+  --experience-sticky-header-gap: var(--space-24);
+  --experience-sticky-release-gap: var(--space-24);
+}
+
+@media (--viewport-phone) {
+  #experience {
+    --experience-sticky-header-gap: var(--space-16);
+  }
+}
+
+#experience .experienceStickyHeading {
+  position: sticky;
+  top: var(--experience-sticky-top, var(--space-100));
+  z-index: 2;
+  display: flow-root;
+}
+
+/* Extra mask space includes dots/lines protruding left of the timeline.
+   Equal negative margins and padding preserve the original content positions. */
+#experience .experienceTimelineMask {
+  display: flow-root;
+  margin-inline: calc(-1 * var(--space-16));
+  padding-inline: var(--space-16);
+}
+
+#experience [data-experience-mask][data-heading-overlap='true'] {
+  -webkit-mask-image: linear-gradient(to bottom, transparent var(--experience-mask-edge), black calc(var(--experience-mask-edge) + var(--space-24)));
+  mask-image: linear-gradient(to bottom, transparent var(--experience-mask-edge), black calc(var(--experience-mask-edge) + var(--space-24)));
+}
