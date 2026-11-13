@@ -92,7 +92,7 @@ const BUST_VERTEX = /* glsl */ `
   // works directly against the raw per-particle positions.
   uniform vec3 uCursor;
   uniform float uRepelRadius, uRepelStrength, uActivity;
-  varying vec3 vColor; varying float vB; varying float vSoft;
+  varying vec3 vColor; varying float vB;
   float ease(float t) { return t < 0.5 ? 4.0*t*t*t : 1.0 - pow(-2.0*t + 2.0, 3.0) * 0.5; }
   float hash(float n) { return fract(sin(n * 91.345) * 47453.5); }
   void main() {
@@ -129,45 +129,30 @@ const BUST_VERTEX = /* glsl */ `
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     gl_Position = projectionMatrix * mv;
 
-    // (3) texture — broaden the base size spread, rare bright sparkles, a few
-    // large soft foreground points (bokeh-like) instead of uniform "sand".
+    // Fine particle texture only: no enlarged sparkle or foreground bokeh.
     float jitter = 0.6 + hash(aSeed.x * 133.0 + aSeed.y * 71.0) * 0.9;
-    float sparkle = step(0.986, hash(aSeed.z * 211.0));
-    float big = step(0.995, hash(aSeed.w * 311.0));
-    float sizeMul = mix(jitter, 2.8, sparkle);
-    sizeMul = mix(sizeMul, 4.4, big);
-    gl_PointSize = uSize * aScale * sizeMul * uPR * (3.6 / -mv.z);
+    gl_PointSize = uSize * aScale * jitter * uPR * (3.6 / -mv.z);
 
-    vSoft = big;
     vec3 nv = normalize(normalMatrix * aNormal);
     float facing = mix(0.03, 1.0, smoothstep(-0.25, 0.3, nv.z));
     float depthCue = mix(1.1, 0.7, smoothstep(4.7, 6.1, -mv.z));
-    float sparkleFlicker = 1.0 + sparkle * (0.6 + 0.6 * sin(uTime * 6.0 + aSeed.x * 60.0));
     // "текстура бюста" shimmer — a slow, low-amplitude per-particle breathing
     // of brightness across the whole surface (not position, so the face stays
     // sharp/recognizable), so the always-assembled figure still reads as
     // alive rather than a static render. 2026-10-27, per Storm-reference ask.
     float shimmer = 1.0 + 0.12 * sin(uTime * 0.5 + aSeed.y * 18.0 + aSeed.z * 7.0);
-    float assembled = aBright * uAsmBright * facing * depthCue * lowFade * sparkleFlicker * shimmer;
+    float assembled = aBright * uAsmBright * facing * depthCue * lowFade * shimmer;
     vB = mix(uIdleBright * (0.55 + 0.45 * aSeed.y), assembled, e);
-    // 2026-10-25 follow-up: full-figure color is now uColor (set to the same
-    // warm token the ring system used to use, kept for continuity even after
-    // the rings themselves were removed) — sparkle/big points just mix in a
-    // touch of white for a hot highlight.
-    vColor = mix(uColor, vec3(1.0), sparkle * 0.25 + big * 0.15);
+    vColor = uColor;
   }
 `;
 
 const BUST_FRAGMENT = /* glsl */ `
-  varying vec3 vColor; varying float vB; varying float vSoft;
+  varying vec3 vColor; varying float vB;
   void main() {
     float d = length(gl_PointCoord - 0.5);
-    // 2026-10-27, live feedback: "уменьшить прозрачность, чтобы более заметен
-    // был бюст" — narrower soft edge (was 0.12..0.46, diffuse points read as
-    // half-empty) and a lighter dimming on big/soft points (was ×0.5).
-    float edge = mix(0.12, 0.3, vSoft);
     if (d > 0.5) discard;
-    float alpha = smoothstep(0.5, edge, d) * vB * mix(1.0, 0.8, vSoft);
+    float alpha = smoothstep(0.5, 0.12, d) * vB;
     // 2026-10-27: "+15% заметности" on top of the previous ×1.3 boost.
     gl_FragColor = vec4(vColor, clamp(alpha * 1.5, 0.0, 1.0));
   }

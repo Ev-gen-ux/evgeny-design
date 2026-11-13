@@ -1097,7 +1097,9 @@
     "icon-baseline-offset": "-0.125em",
     "header-logo-gap": "var(--space-8)",
     "header-status-dot-offset-y": "1px",
-    "desktop-menu-width": "0px"
+    "desktop-menu-width": "0px",
+    "selected-work-card-background": "transparent",
+    "selected-work-card-backdrop-filter": "none"
   },
   "contexts": [
     {
@@ -1113,8 +1115,8 @@
       "selector": ":root[data-portfolio-theme='monochrome'] #work",
       "media": [],
       "declarations": {
-        "--case-glass-background": "var(--floating-glass-background, var(--glass-background))",
-        "--case-glass-blur": "var(--header-glass-blur, var(--glass-blur))"
+        "--case-glass-background": "var(--selected-work-card-background)",
+        "--case-glass-blur": "var(--selected-work-card-backdrop-filter)"
       },
       "name": "case-cards-2"
     },
@@ -1187,8 +1189,8 @@
       "selector": ":root body #work",
       "media": [],
       "declarations": {
-        "--case-glass-background": "var(--floating-glass-background, var(--glass-background))",
-        "--case-glass-blur": "var(--header-glass-blur, var(--glass-blur))"
+        "--case-glass-background": "var(--selected-work-card-background)",
+        "--case-glass-blur": "var(--selected-work-card-backdrop-filter)"
       },
       "name": "selected-work-shared-header-glass"
     }

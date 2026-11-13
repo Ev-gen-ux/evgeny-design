@@ -1073,6 +1073,8 @@
   --header-logo-gap: var(--space-8);
   --header-status-dot-offset-y: 1px;
   --desktop-menu-width: 0px;
+  --selected-work-card-background: transparent;
+  --selected-work-card-backdrop-filter: none;
 }
 
 :root[data-portfolio-theme='monochrome'] ::selection {
@@ -1081,8 +1083,8 @@
 }
 
 :root[data-portfolio-theme='monochrome'] #work {
-  --case-glass-background: var(--floating-glass-background, var(--glass-background));
-  --case-glass-blur: var(--header-glass-blur, var(--glass-blur));
+  --case-glass-background: var(--selected-work-card-background);
+  --case-glass-blur: var(--selected-work-card-backdrop-filter);
 }
 
 :root[data-portfolio-theme='monochrome'] :is(a[href], button, [role='button']) {
@@ -1127,6 +1129,6 @@
 }
 
 :root body #work {
-  --case-glass-background: var(--floating-glass-background, var(--glass-background));
-  --case-glass-blur: var(--header-glass-blur, var(--glass-blur));
+  --case-glass-background: var(--selected-work-card-background);
+  --case-glass-blur: var(--selected-work-card-backdrop-filter);
 }
