@@ -4,8 +4,7 @@ import { DesktopInlineMenu } from './DesktopInlineMenu';
 import { useMenuInputMode } from '../../hooks/useMenuInputMode';
 import { breakpoints, runtimeTokens } from '../../tokens';
 import { useRef, useState } from 'react';
-import { useLocation, Link as RouterLink } from 'react-router-dom';
-import { useLenis } from 'lenis/react';
+import { useLocation } from 'react-router-dom';
 import { MobileNavOverlay } from '../../components';
 import type { CursorTracker } from '../../hooks/useCursorTracker';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
@@ -35,7 +34,6 @@ export function Header({ cursor }: HeaderProps) {
   useMenuInputMode();
   const { pathname } = useLocation();
   const onHome = pathname === '/';
-  const lenis = useLenis();
   const reducedMotion = useReducedMotion();
   const sessionDotRef = useRef<HTMLSpanElement>(null);
   useSessionDotPulse(sessionDotRef, !reducedMotion);
@@ -65,35 +63,9 @@ export function Header({ cursor }: HeaderProps) {
       <div className={styles.surface} aria-hidden="true" />
       {/* One brand row: status, centered logo and responsive menu. */}
       <div className={styles.topRow} data-header-brand-row="1">
-        {onHome ? (
-          <a
-            href="#hero"
-            className={styles.wordmark}
-            onClick={(e) => {
-              // Already on Home, so this is a same-document fragment click — React
-              // Router's `useLocation().hash` never updates for it (no pushState/
-              // popstate gets dispatched), so Home's `useHomeEntryScroll` effect never
-              // re-runs and the browser's own native anchor-jump is left to fight
-              // Lenis alone — on mobile, after a long touch-scroll, that native jump
-              // regularly lost and settled on "О себе" instead of the hero. Scrolling
-              // here directly, the same Lenis-aware way useHomeEntryScroll does, fixes
-              // it regardless of router state.
-              const el = document.getElementById('hero');
-              if (!el) return;
-              e.preventDefault();
-              if (lenis) lenis.scrollTo(el.getBoundingClientRect().top + window.scrollY, { immediate: true });
-              else el.scrollIntoView();
-            }}
-          >
-
-            {tagContent}
-          </a>
-        ) : (
-          <RouterLink to="/#hero" className={styles.wordmark}>
-
-            {tagContent}
-          </RouterLink>
-        )}
+        <span className={styles.wordmark} data-header-status="1" data-noasm="1">
+          {tagContent}
+        </span>
         <HeaderLogo onHome={onHome} />
         <DesktopInlineMenu cursor={cursor} />
         <button

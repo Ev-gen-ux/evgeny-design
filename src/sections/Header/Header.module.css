@@ -244,6 +244,9 @@
 }
 
 .wordmark {
+  /* Keep the former resting palette without link hover/focus overrides. */
+  --color-text-secondary: var(--color-interactive-muted);
+  --color-accent: var(--color-interactive);
   display: flex;
   align-items: baseline;
   gap: var(--header-wordmark-gap);

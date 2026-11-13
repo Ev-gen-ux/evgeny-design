@@ -1071,7 +1071,7 @@ export const tokenValues = {
   "icon-label-gap": "8px",
   "icon-baseline-offset": "-0.125em",
   "header-logo-gap": "8px",
-  "header-status-dot-offset-y": "1px",
+  "header-status-dot-offset-y": "0px",
   "desktop-menu-width": "0px",
   "selected-work-card-background": "transparent",
   "selected-work-card-backdrop-filter": "none"

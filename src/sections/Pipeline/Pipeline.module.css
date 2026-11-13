@@ -162,6 +162,24 @@
   position: sticky;
   top: var(--mobile-pipeline-top);
 }
+.mobile[data-pipeline-sticky='true'] [data-mobile-pipeline-panels] {
+  clip-path: inset(var(--mobile-pipeline-mask-edge, 0) 0 0);
+  will-change: clip-path;
+}
+/* Tie the hard clipping edge to native scroll progress rather than rAF.
+   The existing JS mask only softens the edge; it no longer guards the heading. */
+.mobile[data-pipeline-sticky='true'][data-native-clip='true'] [data-mobile-pipeline-panels] {
+  animation-name: mobilePipelineClip;
+  animation-duration: auto;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  animation-timeline: view(block var(--mobile-pipeline-clip-top) 0);
+  animation-range: exit-crossing 0% exit-crossing var(--mobile-pipeline-clip-limit);
+}
+@keyframes mobilePipelineClip {
+  from { clip-path: inset(0 0 0); }
+  to { clip-path: inset(var(--mobile-pipeline-clip-limit) 0 0); }
+}
 .mobile [data-mobile-pipeline-panels][data-overlap='true'] {
   -webkit-mask-image: linear-gradient(to bottom, transparent var(--mobile-pipeline-mask-edge), black calc(var(--mobile-pipeline-mask-edge) + var(--space-24)));
   mask-image: linear-gradient(to bottom, transparent var(--mobile-pipeline-mask-edge), black calc(var(--mobile-pipeline-mask-edge) + var(--space-24)));

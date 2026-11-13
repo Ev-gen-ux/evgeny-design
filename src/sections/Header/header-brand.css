@@ -34,7 +34,7 @@
 }
 
 /* Preserve the existing status typography; its former two-line name is gone. */
-[data-header-brand-row='1'] > a:first-child {
+[data-header-brand-row='1'] > [data-header-status='1'] {
   flex-direction: row;
   align-items: center;
 }
@@ -43,7 +43,7 @@
   [data-header-brand-row='1']:has([data-desktop-menu='1'][data-open='true']) {
     padding-top: var(--space-32);
   }
-  [data-header-brand-row='1']:has([data-desktop-menu='1'][data-open='true']) > a:first-child {
+  [data-header-brand-row='1']:has([data-desktop-menu='1'][data-open='true']) > [data-header-status='1'] {
     position: absolute;
     top: 0;
     min-height: var(--space-32);

@@ -1096,7 +1096,7 @@
     "icon-label-gap": "var(--space-inline-sm)",
     "icon-baseline-offset": "-0.125em",
     "header-logo-gap": "var(--space-8)",
-    "header-status-dot-offset-y": "1px",
+    "header-status-dot-offset-y": "0px",
     "desktop-menu-width": "0px",
     "selected-work-card-background": "transparent",
     "selected-work-card-backdrop-filter": "none"

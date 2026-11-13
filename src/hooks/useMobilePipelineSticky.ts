@@ -15,6 +15,9 @@ export function useMobilePipelineSticky(sectionRef: RefObject<HTMLElement | null
     const entries = Array.from(section.querySelectorAll<HTMLElement>('[data-pl-panel]'));
     const rows = Array.from(heading?.querySelectorAll<HTMLElement>('[data-pl-step]') ?? []);
     if (!header || !heading || !panels || !entries.length) return;
+    const nativeClip = CSS.supports('animation-timeline', 'view(block 0px 0px)')
+      && CSS.supports('animation-range', 'exit-crossing 0% exit-crossing 100px');
+    section.dataset.nativeClip = String(nativeClip);
     let raf = 0;
     let shift = 0;
     let disposed = false;
@@ -30,6 +33,12 @@ export function useMobilePipelineSticky(sectionRef: RefObject<HTMLElement | null
       const bottomReserve = parseFloat(computed.getPropertyValue('--space-80')) || 80;
       const pinned = heading.offsetHeight + top + bottomReserve + 160 < window.innerHeight;
       section.dataset.pipelineSticky = String(pinned);
+      const panelsRect = panels.getBoundingClientRect();
+      const lastRect = entries[entries.length - 1].getBoundingClientRect();
+      // Fixed viewport threshold until the outcome; then keep the clipped
+      // prefix constant as the heading and final panel leave together.
+      panels.style.setProperty('--mobile-pipeline-clip-top', `${top + heading.offsetHeight + gap}px`);
+      panels.style.setProperty('--mobile-pipeline-clip-limit', `${Math.max(0, lastRect.top - panelsRect.top - releaseGap + gap)}px`);
       const rect = heading.getBoundingClientRect();
       const nativeTop = rect.top + shift;
       const nativeBottom = rect.bottom + shift;
@@ -71,7 +80,10 @@ export function useMobilePipelineSticky(sectionRef: RefObject<HTMLElement | null
     observer.observe(header);
     observer.observe(heading);
     observer.observe(panels);
-    addEventListener('scroll', schedule, { passive: true });
+    // Older browsers use the same hard clip, updated in the scroll event
+    // itself instead of adding an extra animation-frame delay.
+    const onScroll = () => { if (nativeClip) schedule(); else update(); };
+    addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', schedule, { passive: true });
     document.fonts.ready.then(schedule);
     schedule();
@@ -79,13 +91,16 @@ export function useMobilePipelineSticky(sectionRef: RefObject<HTMLElement | null
       disposed = true;
       observer.disconnect();
       cancelAnimationFrame(raf);
-      removeEventListener('scroll', schedule);
+      removeEventListener('scroll', onScroll);
       removeEventListener('resize', schedule);
       heading.style.removeProperty('transform');
       section.style.removeProperty('--mobile-pipeline-top');
       delete section.dataset.pipelineSticky;
+      delete section.dataset.nativeClip;
       delete section.dataset.activeStage;
       panels.style.removeProperty('--mobile-pipeline-mask-edge');
+      panels.style.removeProperty('--mobile-pipeline-clip-top');
+      panels.style.removeProperty('--mobile-pipeline-clip-limit');
       delete panels.dataset.overlap;
       rows.forEach(row => {
         delete row.dataset.current;
